@@ -3,78 +3,21 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, Filter } from "lucide-react"
+import { getAllResearch, transformResearch } from "@/lib/contentful"
 
-const researchReports = [
-  {
-    title: "Early Childhood Development in Rural Bangladesh: Current State and Opportunities",
-    description:
-      "A comprehensive analysis of ECD programs and their effectiveness in rural communities across Bangladesh.",
-    date: "March 2024",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "New",
-    downloadUrl: "/resources/ecd-rural-bangladesh-2024.pdf",
-    type: "research" as const,
-    category: "Research Report",
-    author: "Dr. Rashida Ahmed",
-  },
-  {
-    title: "Impact Assessment of Community-Based ECD Centers",
-    description:
-      "Evaluation of the effectiveness of community-based early childhood development centers in improving child outcomes.",
-    date: "February 2024",
-    image: "/placeholder.svg?height=200&width=300",
-    downloadUrl: "/resources/impact-assessment-ecd-centers.pdf",
-    type: "research" as const,
-    category: "Impact Study",
-    author: "Prof. Mohammad Rahman",
-  },
-  {
-    title: "Nutrition and Early Brain Development: Bangladesh Context",
-    description:
-      "Research on the relationship between nutrition interventions and cognitive development in Bangladeshi children.",
-    date: "January 2024",
-    image: "/placeholder.svg?height=200&width=300",
-    downloadUrl: "/resources/nutrition-brain-development.pdf",
-    type: "research" as const,
-    category: "Health Research",
-    author: "Dr. Fatima Khatun",
-  },
-  {
-    title: "Policy Brief: Strengthening ECD Systems in Bangladesh",
-    description:
-      "Policy recommendations for improving early childhood development systems at national and local levels.",
-    date: "December 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Policy",
-    downloadUrl: "/resources/policy-brief-ecd-systems.pdf",
-    type: "research" as const,
-    category: "Policy Brief",
-    author: "Bangladesh ECD Network",
-  },
-  {
-    title: "Gender Equity in Early Childhood Education",
-    description: "Analysis of gender disparities in early childhood education access and quality in Bangladesh.",
-    date: "November 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    downloadUrl: "/resources/gender-equity-ece.pdf",
-    type: "research" as const,
-    category: "Research Report",
-    author: "Ms. Shahida Begum",
-  },
-  {
-    title: "COVID-19 Impact on Early Childhood Development Services",
-    description:
-      "Assessment of how the pandemic affected ECD services and recommendations for recovery and resilience.",
-    date: "October 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    downloadUrl: "/resources/covid-impact-ecd.pdf",
-    type: "research" as const,
-    category: "Impact Study",
-    author: "Dr. Salma Khatun",
-  },
-]
+async function getResearchReports() {
+  try {
+    const researchEntries = await getAllResearch()
+    return researchEntries.map(transformResearch)
+  } catch (error) {
+    console.error('Error fetching research reports:', error)
+    return []
+  }
+}
 
-export default function ResearchReportsPage() {
+export default async function ResearchReportsPage() {
+  const researchReports = await getResearchReports()
+
   return (
     <div className="flex flex-col">
       <section className="py-16 bg-primary text-primary-foreground">
@@ -126,17 +69,26 @@ export default function ResearchReportsPage() {
 
         {/* Reports Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {researchReports.map((report, index) => (
-            <ResourceCard key={index} {...report} />
-          ))}
+          {researchReports.length > 0 ? (
+            researchReports.map((report, index) => (
+              <ResourceCard key={report.id || index} {...report} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground text-lg">No research reports found.</p>
+              <p className="text-sm text-muted-foreground mt-2">Please check back later for new publications.</p>
+            </div>
+          )}
         </div>
 
         {/* Load More */}
-        <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
-            Load More Reports
-          </Button>
-        </div>
+        {researchReports.length > 0 && (
+          <div className="text-center mt-12">
+            <Button variant="outline" size="lg">
+              Load More Reports
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

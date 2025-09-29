@@ -5,79 +5,21 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import Image from "next/image"
 import { Calendar, Search, Filter, User } from "lucide-react"
+import { getAllNews, transformNews } from "@/lib/contentful"
 
-const newsArticles = [
-  {
-    id: "1",
-    title: "Bangladesh ECD Network Launches New Research Initiative",
-    excerpt:
-      "A comprehensive study on early childhood development outcomes in urban and rural settings begins with support from international partners.",
-    date: "March 15, 2024",
-    author: "Dr. Rashida Ahmed",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Breaking News",
-    category: "Research",
-    href: "/media/news/new-research-initiative-2024",
-  },
-  {
-    id: "2",
-    title: "Partnership Agreement Signed with UNICEF Bangladesh",
-    excerpt:
-      "New three-year partnership will focus on strengthening early childhood development systems across the country.",
-    date: "March 10, 2024",
-    author: "Communications Team",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Partnership",
-    category: "Partnerships",
-    href: "/media/news/unicef-partnership-2024",
-  },
-  {
-    id: "3",
-    title: "Training Program Graduates 50 New ECD Practitioners",
-    excerpt: "Latest cohort of early childhood development practitioners completes comprehensive training program.",
-    date: "March 5, 2024",
-    author: "Training Department",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Training",
-    href: "/media/news/training-graduates-march-2024",
-  },
-  {
-    id: "4",
-    title: "New ECD Centers Open in Rural Communities",
-    excerpt: "Five new community-based early childhood development centers inaugurated in remote areas of Bangladesh.",
-    date: "February 28, 2024",
-    author: "Field Operations",
-    image: "/placeholder.svg?height=200&width=300",
-    category: "Community",
-    href: "/media/news/new-ecd-centers-february-2024",
-  },
-  {
-    id: "5",
-    title: "Research Findings Published in International Journal",
-    excerpt:
-      "Network's research on nutrition and early brain development featured in prestigious international publication.",
-    date: "February 20, 2024",
-    author: "Research Team",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Publication",
-    category: "Research",
-    href: "/media/news/international-publication-february-2024",
-  },
-  {
-    id: "6",
-    title: "Annual Conference 2024 Registration Now Open",
-    excerpt:
-      "Join us for three days of learning, networking, and sharing best practices in early childhood development.",
-    date: "February 15, 2024",
-    author: "Events Team",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Event",
-    category: "Events",
-    href: "/media/news/conference-registration-2024",
-  },
-]
+async function getNewsArticles() {
+  try {
+    const newsEntries = await getAllNews()
+    return newsEntries.map(transformNews)
+  } catch (error) {
+    console.error('Error fetching news:', error)
+    return []
+  }
+}
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const newsArticles = await getNewsArticles()
+
   return (
     <div className="flex flex-col">
       <section className="py-16 bg-primary text-primary-foreground">
@@ -132,7 +74,8 @@ export default function NewsPage() {
 
         {/* News Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {newsArticles.map((article) => (
+          {newsArticles.length > 0 ? (
+            newsArticles.map((article) => (
             <Card key={article.id} className="group hover:shadow-lg transition-all duration-300">
               <CardHeader className="p-0">
                 <div className="relative h-48 overflow-hidden rounded-t-lg">
@@ -176,15 +119,23 @@ export default function NewsPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground text-lg">No news articles found.</p>
+              <p className="text-sm text-muted-foreground mt-2">Please check back later for updates.</p>
+            </div>
+          )}
         </div>
 
         {/* Load More */}
-        <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
-            Load More Articles
-          </Button>
-        </div>
+        {newsArticles.length > 0 && (
+          <div className="text-center mt-12">
+            <Button variant="outline" size="lg">
+              Load More Articles
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

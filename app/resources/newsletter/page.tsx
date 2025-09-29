@@ -3,68 +3,21 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail } from "lucide-react"
 import Link from "next/link"
+import { getAllNewsletters, transformNewsletter } from "@/lib/contentful"
 
-const newsletters = [
-  {
-    title: "ECD Network Quarterly Update - Q1 2024",
-    description: "Latest updates on network activities, research findings, upcoming events, and member spotlights.",
-    date: "March 2024",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Latest",
-    href: "/resources/newsletter/q1-2024",
-    type: "newsletter" as const,
-    category: "Quarterly Update",
-  },
-  {
-    title: "ECD Network Quarterly Update - Q4 2023",
-    description: "Year-end review of achievements, new research publications, and plans for 2024.",
-    date: "December 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/newsletter/q4-2023",
-    type: "newsletter" as const,
-    category: "Quarterly Update",
-  },
-  {
-    title: "Special Issue: ECD Policy Developments",
-    description:
-      "Focus on recent policy developments and their implications for early childhood development in Bangladesh.",
-    date: "November 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Special",
-    href: "/resources/newsletter/policy-special-2023",
-    type: "newsletter" as const,
-    category: "Special Issue",
-  },
-  {
-    title: "ECD Network Quarterly Update - Q3 2023",
-    description: "Updates on research projects, training programs, and partnership developments.",
-    date: "September 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/newsletter/q3-2023",
-    type: "newsletter" as const,
-    category: "Quarterly Update",
-  },
-  {
-    title: "ECD Network Quarterly Update - Q2 2023",
-    description: "Mid-year progress report, new member introductions, and upcoming conference announcements.",
-    date: "June 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/newsletter/q2-2023",
-    type: "newsletter" as const,
-    category: "Quarterly Update",
-  },
-  {
-    title: "ECD Network Quarterly Update - Q1 2023",
-    description: "New year initiatives, research highlights, and capacity building program updates.",
-    date: "March 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/newsletter/q1-2023",
-    type: "newsletter" as const,
-    category: "Quarterly Update",
-  },
-]
+async function getNewsletters() {
+  try {
+    const newsletterEntries = await getAllNewsletters()
+    return newsletterEntries.map(transformNewsletter)
+  } catch (error) {
+    console.error('Error fetching newsletters:', error)
+    return []
+  }
+}
 
-export default function NewsletterPage() {
+export default async function NewsletterPage() {
+  const newsletters = await getNewsletters()
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -105,17 +58,26 @@ export default function NewsletterPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {newsletters.map((newsletter, index) => (
-            <ResourceCard key={index} {...newsletter} />
-          ))}
+          {newsletters.length > 0 ? (
+            newsletters.map((newsletter, index) => (
+              <ResourceCard key={newsletter.id || index} {...newsletter} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground text-lg">No newsletters found.</p>
+              <p className="text-sm text-muted-foreground mt-2">Please check back later for new issues.</p>
+            </div>
+          )}
         </div>
 
         {/* Load More */}
-        <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
-            Load More Issues
-          </Button>
-        </div>
+        {newsletters.length > 0 && (
+          <div className="text-center mt-12">
+            <Button variant="outline" size="lg">
+              Load More Issues
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -3,72 +3,21 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, Filter } from "lucide-react"
+import { getAllVoices, transformVoice } from "@/lib/contentful"
 
-const voicesResources = [
-  {
-    title: "Community Mothers Share Their ECD Journey",
-    description:
-      "Inspiring stories from mothers in rural communities about their experiences with early childhood development programs.",
-    date: "March 2024",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "New",
-    href: "/resources/voices/community-mothers-journey",
-    type: "video" as const,
-    category: "Community Stories",
-  },
-  {
-    title: "Best Practices in Community-Based ECD Programs",
-    description:
-      "Video documentation of successful community-based early childhood development initiatives across Bangladesh.",
-    date: "February 2024",
-    image: "/placeholder.svg?height=200&width=300",
-    badge: "Featured",
-    href: "/resources/voices/best-practices-community-ecd",
-    type: "video" as const,
-    category: "Best Practices",
-  },
-  {
-    title: "Teacher Training Success Stories",
-    description: "ECD teachers share how professional development programs have transformed their teaching practices.",
-    date: "January 2024",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/voices/teacher-training-stories",
-    type: "video" as const,
-    category: "Professional Development",
-  },
-  {
-    title: "Children's Voices: What Makes Us Happy at School",
-    description:
-      "Young children express their thoughts about what they enjoy most in their early learning environments.",
-    date: "December 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/voices/children-voices-school",
-    type: "video" as const,
-    category: "Children's Perspectives",
-  },
-  {
-    title: "Parent Engagement in ECD: Real Stories",
-    description:
-      "Parents share their experiences and the impact of being actively involved in their children's early education.",
-    date: "November 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/voices/parent-engagement-stories",
-    type: "video" as const,
-    category: "Parent Engagement",
-  },
-  {
-    title: "Innovation in Rural ECD Centers",
-    description:
-      "Documenting innovative approaches and creative solutions implemented in rural early childhood centers.",
-    date: "October 2023",
-    image: "/placeholder.svg?height=200&width=300",
-    href: "/resources/voices/innovation-rural-ecd",
-    type: "video" as const,
-    category: "Innovation",
-  },
-]
+async function getVoices() {
+  try {
+    const voiceEntries = await getAllVoices()
+    return voiceEntries.map(transformVoice)
+  } catch (error) {
+    console.error('Error fetching voices:', error)
+    return []
+  }
+}
 
-export default function VoicesPage() {
+export default async function VoicesPage() {
+  const voicesResources = await getVoices()
+
   return (
     <div className="flex flex-col">
       <section className="py-16 bg-primary text-primary-foreground">
@@ -119,11 +68,21 @@ export default function VoicesPage() {
         <div className="text-sm text-muted-foreground mb-6">Showing {voicesResources.length} videos and stories</div>
 
         {/* Videos Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {voicesResources.map((resource, index) => (
-            <ResourceCard key={index} {...resource} />
-          ))}
-        </div>
+        {voicesResources.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {voicesResources.map((resource, index) => (
+              <ResourceCard key={index} {...resource} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🎬</div>
+            <h3 className="text-xl font-semibold mb-2">No Stories Available</h3>
+            <p className="text-muted-foreground">
+              We're working on adding inspiring voices and stories from our community.
+            </p>
+          </div>
+        )}
 
         {/* Load More */}
         <div className="text-center mt-12">
