@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Menu, X, ChevronDown } from "lucide-react"
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Menu, X, ChevronDown } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -12,20 +12,24 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+} from "@/components/ui/navigation-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const aboutLinks = [
   { title: "About Us", href: "/about" },
   { title: "Committee", href: "/about/committee" },
   { title: "Secretariat", href: "/about/secretariat" },
-]
+];
 
 const memberLinks = [
   { title: "Our Members", href: "/members" },
   { title: "Join Us", href: "/members/join" },
-]
+];
 
 const resourceLinks = [
   { title: "All Resources", href: "/resources" },
@@ -33,7 +37,7 @@ const resourceLinks = [
   { title: "Voices", href: "/resources/voices" },
   { title: "Newsletter", href: "/resources/newsletter" },
   { title: "Policies & Links", href: "/resources/policies" },
-]
+];
 
 const mediaLinks = [
   { title: "Media Hub", href: "/media" },
@@ -41,20 +45,24 @@ const mediaLinks = [
   { title: "Events", href: "/media/events" },
   { title: "Conference", href: "/media/conference" },
   { title: "Gallery", href: "/media/gallery" },
-]
+];
 
 const learningLinks = [
   { title: "Learning Center", href: "/learning" },
   { title: "Featured Courses", href: "/learning/courses" },
-]
+];
 
 export function Header() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [openSections, setOpenSections] = useState<string[]>([])
+  const [isOpen, setIsOpen] = useState(false);
+  const [openSections, setOpenSections] = useState<string[]>([]);
 
   const toggleSection = (section: string) => {
-    setOpenSections((prev) => (prev.includes(section) ? prev.filter((s) => s !== section) : [...prev, section]))
-  }
+    setOpenSections((prev) =>
+      prev.includes(section)
+        ? prev.filter((s) => s !== section)
+        : [...prev, section]
+    );
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white shadow-sm">
@@ -68,11 +76,13 @@ export function Header() {
               width={40}
               alt="Bangladesh ECD Network Logo"
             />
-            <span className="font-bold text-lg text-primary">Bangladesh ECD Network</span>
+            <span className="font-bold text-lg text-primary">
+              Bangladesh ECD Network
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden lg:flex">
+          <NavigationMenu className="hidden lg:flex" delayDuration={0}>
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger>About</NavigationMenuTrigger>
@@ -85,7 +95,9 @@ export function Header() {
                             href={link.href}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">{link.title}</div>
+                            <div className="text-sm font-medium leading-none">
+                              {link.title}
+                            </div>
                           </Link>
                         </NavigationMenuLink>
                       </li>
@@ -105,7 +117,9 @@ export function Header() {
                             href={link.href}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">{link.title}</div>
+                            <div className="text-sm font-medium leading-none">
+                              {link.title}
+                            </div>
                           </Link>
                         </NavigationMenuLink>
                       </li>
@@ -125,7 +139,9 @@ export function Header() {
                             href={link.href}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">{link.title}</div>
+                            <div className="text-sm font-medium leading-none">
+                              {link.title}
+                            </div>
                           </Link>
                         </NavigationMenuLink>
                       </li>
@@ -145,7 +161,9 @@ export function Header() {
                             href={link.href}
                             className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
-                            <div className="text-sm font-medium leading-none">{link.title}</div>
+                            <div className="text-sm font-medium leading-none">
+                              {link.title}
+                            </div>
                           </Link>
                         </NavigationMenuLink>
                       </li>
@@ -155,23 +173,12 @@ export function Header() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Learning</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4">
-                    {learningLinks.map((link) => (
-                      <li key={link.href}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={link.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">{link.title}</div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
+                <Link
+                  href="https://lms-edu-three.vercel.app/"
+                  className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 outline-none transition-colors"
+                >
+                  Learning
+                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -188,10 +195,14 @@ export function Header() {
             <SheetTrigger asChild className="lg:hidden">
               <Button variant="ghost" size="icon" className="relative">
                 <Menu
-                  className={`h-5 w-5 transition-all duration-200 ${isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"}`}
+                  className={`h-5 w-5 transition-all duration-200 ${
+                    isOpen ? "rotate-90 opacity-0" : "rotate-0 opacity-100"
+                  }`}
                 />
                 <X
-                  className={`h-5 w-5 absolute transition-all duration-200 ${isOpen ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"}`}
+                  className={`h-5 w-5 absolute transition-all duration-200 ${
+                    isOpen ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"
+                  }`}
                 />
                 <span className="sr-only">Toggle menu</span>
               </Button>
@@ -200,19 +211,28 @@ export function Header() {
               <div className="flex items-center justify-between p-6 border-b">
                 <div className="flex items-center space-x-2">
                   <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
-                    <span className="text-primary-foreground font-bold text-xs">BD</span>
+                    <span className="text-primary-foreground font-bold text-xs">
+                      BD
+                    </span>
                   </div>
-                  <span className="font-semibold text-primary">ECD Network</span>
+                  <span className="font-semibold text-primary">
+                    ECD Network
+                  </span>
                 </div>
               </div>
 
               <nav className="flex flex-col p-6 space-y-2">
                 {/* About Section */}
-                <Collapsible open={openSections.includes("about")} onOpenChange={() => toggleSection("about")}>
+                <Collapsible
+                  open={openSections.includes("about")}
+                  onOpenChange={() => toggleSection("about")}
+                >
                   <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors">
                     About
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${openSections.includes("about") ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        openSections.includes("about") ? "rotate-180" : ""
+                      }`}
                     />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1 mt-2 ml-4">
@@ -230,11 +250,16 @@ export function Header() {
                 </Collapsible>
 
                 {/* Members Section */}
-                <Collapsible open={openSections.includes("members")} onOpenChange={() => toggleSection("members")}>
+                <Collapsible
+                  open={openSections.includes("members")}
+                  onOpenChange={() => toggleSection("members")}
+                >
                   <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors">
                     Members
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${openSections.includes("members") ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        openSections.includes("members") ? "rotate-180" : ""
+                      }`}
                     />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1 mt-2 ml-4">
@@ -252,11 +277,16 @@ export function Header() {
                 </Collapsible>
 
                 {/* Resources Section */}
-                <Collapsible open={openSections.includes("resources")} onOpenChange={() => toggleSection("resources")}>
+                <Collapsible
+                  open={openSections.includes("resources")}
+                  onOpenChange={() => toggleSection("resources")}
+                >
                   <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors">
                     Resources
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${openSections.includes("resources") ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        openSections.includes("resources") ? "rotate-180" : ""
+                      }`}
                     />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1 mt-2 ml-4">
@@ -274,11 +304,16 @@ export function Header() {
                 </Collapsible>
 
                 {/* Media Section */}
-                <Collapsible open={openSections.includes("media")} onOpenChange={() => toggleSection("media")}>
+                <Collapsible
+                  open={openSections.includes("media")}
+                  onOpenChange={() => toggleSection("media")}
+                >
                   <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors">
                     Media
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${openSections.includes("media") ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        openSections.includes("media") ? "rotate-180" : ""
+                      }`}
                     />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="space-y-1 mt-2 ml-4">
@@ -295,27 +330,14 @@ export function Header() {
                   </CollapsibleContent>
                 </Collapsible>
 
-                {/* Learning Section */}
-                <Collapsible open={openSections.includes("learning")} onOpenChange={() => toggleSection("learning")}>
-                  <CollapsibleTrigger className="flex items-center justify-between w-full p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors">
-                    Learning
-                    <ChevronDown
-                      className={`h-4 w-4 transition-transform duration-200 ${openSections.includes("learning") ? "rotate-180" : ""}`}
-                    />
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-1 mt-2 ml-4">
-                    {learningLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="block px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {link.title}
-                      </Link>
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
+                {/* Learning Link */}
+                <Link
+                  href="/learning"
+                  className="block p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Learning
+                </Link>
 
                 {/* Direct Navigation Links */}
                 <div className="pt-4 border-t space-y-2">
@@ -342,5 +364,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
