@@ -124,3 +124,59 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix navigation menu hover delay */
+@layer components {
+  /* Force immediate display of navigation menu content */
+  [data-slot="navigation-menu"] {
+    --navigation-menu-trigger-delay: 0ms;
+    --navigation-menu-content-delay: 0ms;
+  }
+  
+  [data-slot="navigation-menu-content"] {
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
+  }
+  
+  /* Ensure navigation menu viewport appears immediately */
+  [data-slot="navigation-menu-viewport"] {
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
+    animation-duration: 150ms !important;
+  }
+  
+  /* Override any potential Radix UI timing issues */
+  [data-radix-navigation-menu-viewport] {
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
+  }
+  
+  [data-radix-navigation-menu-content] {
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
+  }
+  
+  /* Ensure hover state is responsive */
+  [data-slot="navigation-menu-trigger"]:hover {
+    transition-delay: 0ms !important;
+  }
+  
+  /* Custom dropdown animations */
+  .dropdown-enter {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    transition: opacity 150ms ease-out, transform 150ms ease-out;
+  }
+  
+  .dropdown-enter-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  
+  /* Ensure dropdowns appear above other content */
+  .custom-dropdown {
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}

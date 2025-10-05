@@ -16,31 +16,39 @@ const {
   CONTENTFUL_PREVIEW = 'false',
 } = process.env
 
-if (!CONTENTFUL_SPACE_ID) {
-  throw new Error('CONTENTFUL_SPACE_ID is required')
+// For development/build environments without Contentful
+const isContentfulConfigured = CONTENTFUL_SPACE_ID && CONTENTFUL_ACCESS_TOKEN
+
+if (!isContentfulConfigured) {
+  console.warn('Contentful environment variables not configured. Using mock data for development.')
 }
 
-if (!CONTENTFUL_ACCESS_TOKEN) {
-  throw new Error('CONTENTFUL_ACCESS_TOKEN is required')
+// Mock client for when Contentful is not configured
+const mockClient = {
+  getEntries: async () => ({ items: [] }),
+  getEntry: async () => null,
 }
 
 // Create the main client for published content
-export const contentfulClient = createClient({
-  space: CONTENTFUL_SPACE_ID,
-  accessToken: CONTENTFUL_ACCESS_TOKEN,
+export const contentfulClient = isContentfulConfigured ? createClient({
+  space: CONTENTFUL_SPACE_ID!,
+  accessToken: CONTENTFUL_ACCESS_TOKEN!,
   environment: CONTENTFUL_ENVIRONMENT,
-})
+}) : mockClient
 
 // Create preview client for draft content
-export const previewClient = createClient({
-  space: CONTENTFUL_SPACE_ID,
-  accessToken: CONTENTFUL_PREVIEW_ACCESS_TOKEN || CONTENTFUL_ACCESS_TOKEN,
+export const previewClient = isContentfulConfigured && CONTENTFUL_PREVIEW_ACCESS_TOKEN ? createClient({
+  space: CONTENTFUL_SPACE_ID!,
+  accessToken: CONTENTFUL_PREVIEW_ACCESS_TOKEN,
   environment: CONTENTFUL_ENVIRONMENT,
   host: 'preview.contentful.com',
-})
+}) : mockClient
 
 // Helper function to get the appropriate client
 export function getClient(preview = false) {
+  if (!isContentfulConfigured) {
+    return mockClient
+  }
   if (preview && CONTENTFUL_PREVIEW_ACCESS_TOKEN) {
     return previewClient
   }

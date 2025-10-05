@@ -5,14 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Collapsible,
@@ -55,6 +47,7 @@ const learningLinks = [
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<string[]>([]);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) =>
@@ -62,6 +55,14 @@ export function Header() {
         ? prev.filter((s) => s !== section)
         : [...prev, section]
     );
+  };
+
+  const handleMouseEnter = (item: string) => {
+    setHoveredItem(item);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredItem(null);
   };
 
   return (
@@ -82,106 +83,123 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <NavigationMenu className="hidden lg:flex" delayDuration={0}>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>About</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+          <nav className="hidden lg:flex space-x-1">
+            {/* About Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => handleMouseEnter('about')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                About
+                <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+              </button>
+              {hoveredItem === 'about' && (
+                <div className="absolute top-full left-0 mt-1 w-[500px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
+                  <div className="grid grid-cols-2 gap-3">
                     {aboutLinks.map((link) => (
-                      <li key={link.href}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={link.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              {link.title}
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block p-3 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        <div className="text-sm font-medium">{link.title}</div>
+                      </Link>
                     ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                  </div>
+                </div>
+              )}
+            </div>
 
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Members</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4">
+            {/* Members Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => handleMouseEnter('members')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                Members
+                <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+              </button>
+              {hoveredItem === 'members' && (
+                <div className="absolute top-full left-0 mt-1 w-[400px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
+                  <div className="space-y-1">
                     {memberLinks.map((link) => (
-                      <li key={link.href}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={link.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              {link.title}
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block p-3 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        <div className="text-sm font-medium">{link.title}</div>
+                      </Link>
                     ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                  </div>
+                </div>
+              )}
+            </div>
 
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+            {/* Resources Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => handleMouseEnter('resources')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                Resources
+                <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+              </button>
+              {hoveredItem === 'resources' && (
+                <div className="absolute top-full left-0 mt-1 w-[600px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
+                  <div className="grid grid-cols-2 gap-3">
                     {resourceLinks.map((link) => (
-                      <li key={link.href}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={link.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              {link.title}
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block p-3 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        <div className="text-sm font-medium">{link.title}</div>
+                      </Link>
                     ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                  </div>
+                </div>
+              )}
+            </div>
 
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Media</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+            {/* Media Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => handleMouseEnter('media')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+                Media
+                <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
+              </button>
+              {hoveredItem === 'media' && (
+                <div className="absolute top-full left-0 mt-1 w-[600px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
+                  <div className="grid grid-cols-2 gap-3">
                     {mediaLinks.map((link) => (
-                      <li key={link.href}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={link.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              {link.title}
-                            </div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block p-3 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        <div className="text-sm font-medium">{link.title}</div>
+                      </Link>
                     ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                  </div>
+                </div>
+              )}
+            </div>
 
-              <NavigationMenuItem>
-                <Link
-                  href="https://lms-edu-three.vercel.app/"
-                  className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 outline-none transition-colors"
-                >
-                  Learning
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+            {/* Learning Link */}
+            <Link
+              href="https://lms-edu-three.vercel.app/"
+              className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+            >
+              Learning
+            </Link>
+          </nav>
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center space-x-4">
