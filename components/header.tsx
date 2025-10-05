@@ -332,7 +332,7 @@ export function Header() {
 
                 {/* Learning Link */}
                 <Link
-                  href="/learning"
+                  href="https://lms-edu-three.vercel.app/"
                   className="block p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
