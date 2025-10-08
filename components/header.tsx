@@ -85,16 +85,16 @@ export function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex space-x-1">
             {/* About Dropdown */}
-            <div 
+            <div
               className="relative group"
-              onMouseEnter={() => handleMouseEnter('about')}
+              onMouseEnter={() => handleMouseEnter("about")}
               onMouseLeave={handleMouseLeave}
             >
               <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                 About
                 <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
               </button>
-              {hoveredItem === 'about' && (
+              {hoveredItem === "about" && (
                 <div className="absolute top-full left-0 mt-1 w-[500px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
                   <div className="grid grid-cols-2 gap-3">
                     {aboutLinks.map((link) => (
@@ -112,16 +112,16 @@ export function Header() {
             </div>
 
             {/* Members Dropdown */}
-            <div 
+            <div
               className="relative group"
-              onMouseEnter={() => handleMouseEnter('members')}
+              onMouseEnter={() => handleMouseEnter("members")}
               onMouseLeave={handleMouseLeave}
             >
               <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                 Members
                 <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
               </button>
-              {hoveredItem === 'members' && (
+              {hoveredItem === "members" && (
                 <div className="absolute top-full left-0 mt-1 w-[400px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
                   <div className="space-y-1">
                     {memberLinks.map((link) => (
@@ -139,16 +139,16 @@ export function Header() {
             </div>
 
             {/* Resources Dropdown */}
-            <div 
+            <div
               className="relative group"
-              onMouseEnter={() => handleMouseEnter('resources')}
+              onMouseEnter={() => handleMouseEnter("resources")}
               onMouseLeave={handleMouseLeave}
             >
               <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                 Resources
                 <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
               </button>
-              {hoveredItem === 'resources' && (
+              {hoveredItem === "resources" && (
                 <div className="absolute top-full left-0 mt-1 w-[600px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
                   <div className="grid grid-cols-2 gap-3">
                     {resourceLinks.map((link) => (
@@ -166,16 +166,16 @@ export function Header() {
             </div>
 
             {/* Media Dropdown */}
-            <div 
+            <div
               className="relative group"
-              onMouseEnter={() => handleMouseEnter('media')}
+              onMouseEnter={() => handleMouseEnter("media")}
               onMouseLeave={handleMouseLeave}
             >
               <button className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
                 Media
                 <ChevronDown className="ml-1 h-4 w-4 transition-transform group-hover:rotate-180" />
               </button>
-              {hoveredItem === 'media' && (
+              {hoveredItem === "media" && (
                 <div className="absolute top-full left-0 mt-1 w-[600px] bg-popover border border-border rounded-md shadow-lg z-50 p-4 custom-dropdown dropdown-enter dropdown-enter-active">
                   <div className="grid grid-cols-2 gap-3">
                     {mediaLinks.map((link) => (
