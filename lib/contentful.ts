@@ -16,6 +16,20 @@ import type {
   ProcessedResearch,
   VoiceSkeleton,
   ProcessedVoice,
+  AboutPageSkeleton,
+  ProcessedAboutPage,
+  AboutPageCoreValuesSkeleton,
+  ProcessedCoreValue,
+  CarouselSkeleton,
+  ProcessedCarousel,
+  HomepageCoreValuesSkeleton,
+  ProcessedHomepageCoreValues,
+  HomepageOurImpactSkeleton,
+  ProcessedHomepageOurImpact,
+  HomepageQuoteSkeleton,
+  ProcessedHomepageQuote,
+  HomepagePartnerSkeleton,
+  ProcessedHomepagePartner,
 } from "./contentful-types";
 
 // Environment variables validation
@@ -165,6 +179,32 @@ export function extractPlainText(richText: any): string {
 
   richText.content.forEach(traverse);
   return text;
+}
+
+// Helper function to extract paragraphs from rich text content
+export function extractParagraphs(richText: any): string[] {
+  if (!richText || !richText.content) return [];
+
+  const paragraphs: string[] = [];
+
+  function extractTextFromParagraphs(content: any[]) {
+    content.forEach((node) => {
+      if (node.nodeType === "paragraph" && node.content) {
+        let text = "";
+        node.content.forEach((textNode: any) => {
+          if (textNode.nodeType === "text") {
+            text += textNode.value;
+          }
+        });
+        if (text.trim()) {
+          paragraphs.push(text.trim());
+        }
+      }
+    });
+  }
+
+  extractTextFromParagraphs(richText.content);
+  return paragraphs;
 }
 
 // News-specific functions
@@ -749,4 +789,366 @@ function determineVoiceCategory(title: string): string {
 // Helper function to generate description when not provided
 function generateVoiceDescription(title: string): string {
   return `Video content sharing perspectives and experiences from the Bangladesh ECD community.`;
+}
+
+// About Page-specific functions
+export async function getAboutPage(
+  preview = false
+): Promise<Entry<AboutPageSkeleton> | null> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<AboutPageSkeleton>({
+      content_type: "aboutPage",
+      limit: 1,
+    });
+    return response.items[0] || null;
+  } catch (error) {
+    console.error("Error fetching about page:", error);
+    return null;
+  }
+}
+
+// Transform Contentful about page entry to processed format
+export function transformAboutPage(
+  entry: Entry<AboutPageSkeleton>
+): ProcessedAboutPage {
+  const { fields, sys } = entry;
+
+  return {
+    id: sys.id,
+    title: (fields.title as string) || "About Bangladesh ECD Network",
+    subtitle: fields.subtitle as string | undefined,
+    mission: fields.mission as string | undefined,
+    vision: fields.vision as string | undefined,
+    textSection: fields.textSection || null,
+    photo: getAssetUrl(fields.photoBesideText as Asset),
+  };
+}
+
+// Core Values-specific functions
+export async function getCoreValues(
+  preview = false
+): Promise<Entry<AboutPageCoreValuesSkeleton>[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<AboutPageCoreValuesSkeleton>({
+      content_type: "aboutPageCoreValues",
+      order: ["sys.createdAt"],
+    });
+    return response.items;
+  } catch (error) {
+    console.error("Error fetching core values:", error);
+    return [];
+  }
+}
+
+// Transform Contentful core value entry to processed format
+export function transformCoreValue(
+  entry: Entry<AboutPageCoreValuesSkeleton>
+): ProcessedCoreValue {
+  const { fields, sys } = entry;
+
+  return {
+    id: sys.id,
+    title: (fields.title as string) || "Core Value",
+    description: (fields.subtitle as string) || "Description of our core value",
+    iconUrl: getAssetUrl(fields.icon as Asset),
+  };
+}
+
+// Carousel-specific functions
+export async function getCarouselSlides(
+  preview = false
+): Promise<Entry<CarouselSkeleton>[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<CarouselSkeleton>({
+      content_type: "carousel",
+      order: ["sys.createdAt"],
+    });
+    return response.items;
+  } catch (error) {
+    console.error("Error fetching carousel slides:", error);
+    return [];
+  }
+}
+
+// Transform Contentful carousel entry to processed format
+export function transformCarousel(
+  entry: Entry<CarouselSkeleton>
+): ProcessedCarousel {
+  const { fields, sys } = entry;
+
+  return {
+    id: sys.id,
+    title: (fields.title as string) || "Welcome to Bangladesh ECD Network",
+    subtitle: (fields.subtitle as string) || "Supporting early childhood development across Bangladesh",
+    ctaText: fields.ctaText as string | undefined,
+    ctaLink: fields.ctaLink as string | undefined,
+    photo: getAssetUrl(fields.photo as Asset),
+  };
+}
+
+// Homepage Core Values-specific functions
+export async function getHomepageCoreValues(
+  preview = false
+): Promise<Entry<HomepageCoreValuesSkeleton> | null> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<HomepageCoreValuesSkeleton>({
+      content_type: "coreValues",
+      limit: 1,
+    });
+    return response.items[0] || null;
+  } catch (error) {
+    console.error("Error fetching homepage core values:", error);
+    return null;
+  }
+}
+
+// Transform Contentful homepage core values entry to processed format
+export function transformHomepageCoreValues(
+  entry: Entry<HomepageCoreValuesSkeleton>
+): ProcessedHomepageCoreValues {
+  const { fields, sys } = entry;
+
+  const stats = [];
+  
+  // Collect all stats that have at least a title
+  if (fields.stat1Title) {
+    stats.push({
+      title: fields.stat1Title as string,
+      subtitle: (fields.stat1Subtitle as string) || "",
+      iconUrl: getAssetUrl(fields.stat1Icon as Asset),
+    });
+  }
+  
+  if (fields.stat2Title) {
+    stats.push({
+      title: fields.stat2Title as string,
+      subtitle: (fields.stat2Subtitle as string) || "",
+      iconUrl: getAssetUrl(fields.stat2Icon as Asset),
+    });
+  }
+  
+  if (fields.stat3Title) {
+    stats.push({
+      title: fields.stat3Title as string,
+      subtitle: (fields.stat3Subtitle as string) || "",
+      iconUrl: getAssetUrl(fields.stat3Icon as Asset),
+    });
+  }
+  
+  if (fields.stat4Title) {
+    stats.push({
+      title: fields.stat4Title as string,
+      subtitle: (fields.stat4Subtitle as string) || "",
+      iconUrl: getAssetUrl(fields.stat4Icon as Asset),
+    });
+  }
+
+  return {
+    id: sys.id,
+    title: (fields.title as string) || "Our Impact",
+    subtitle: (fields.subtitle as string) || "Making a difference in early childhood development across Bangladesh",
+    stats,
+  };
+}
+
+// Homepage Our Impact-specific functions
+export async function getHomepageOurImpact(
+  preview = false
+): Promise<ProcessedHomepageOurImpact> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<HomepageOurImpactSkeleton>({
+      content_type: "ourImpact",
+      limit: 1,
+    });
+
+    if (response.items.length === 0) {
+      return {
+        id: "fallback",
+        sectionId: "fallback",
+        title: "Our Impact",
+        subtitle: "Making a Difference in Early Childhood Development",
+        stats: [
+          {
+            number: "150+",
+            title: "Network Members",
+            subtitle: "Active professionals across Bangladesh",
+            iconUrl: "",
+          },
+          {
+            number: "25+",
+            title: "Training Programs",
+            subtitle: "Conducted nationwide",
+            iconUrl: "",
+          },
+          {
+            number: "500+",
+            title: "Children Reached",
+            subtitle: "Through our initiatives",
+            iconUrl: "",
+          },
+          {
+            number: "15+",
+            title: "Research Papers",
+            subtitle: "Published and shared",
+            iconUrl: "",
+          },
+        ],
+      };
+    }
+
+    return transformHomepageOurImpact(response.items[0]);
+  } catch (error) {
+    console.error("Error fetching homepage our impact:", error);
+    return {
+      id: "fallback",
+      sectionId: "fallback",
+      title: "Our Impact",
+      subtitle: "Making a Difference in Early Childhood Development",
+      stats: [
+        {
+          number: "150+",
+          title: "Network Members",
+          subtitle: "Active professionals across Bangladesh",
+          iconUrl: "",
+        },
+        {
+          number: "25+",
+          title: "Training Programs",
+          subtitle: "Conducted nationwide",
+          iconUrl: "",
+        },
+        {
+          number: "500+",
+          title: "Children Reached",
+          subtitle: "Through our initiatives",
+          iconUrl: "",
+        },
+        {
+          number: "15+",
+          title: "Research Papers",
+          subtitle: "Published and shared",
+          iconUrl: "",
+        },
+      ],
+    };
+  }
+}
+
+function transformHomepageOurImpact(
+  item: Entry<HomepageOurImpactSkeleton>
+): ProcessedHomepageOurImpact {
+  return {
+    id: item.sys.id,
+    sectionId: item.sys.id, // Use the entry ID as section ID
+    title: (item.fields.title as string) || "Our Impact",
+    subtitle: (item.fields.subtitle as string) || "Making a Difference in Early Childhood Development",
+    stats: [
+      {
+        number: (item.fields.stat1Number as string) || "150+",
+        title: (item.fields.stat1Title as string) || "Network Members",
+        subtitle: (item.fields.stat1Subtitle as string) || "Active professionals across Bangladesh",
+        iconUrl: item.fields.stat1Icon ? getAssetUrl(item.fields.stat1Icon as any) : "",
+      },
+      {
+        number: (item.fields.stat2Number as string) || "25+",
+        title: (item.fields.stat2Title as string) || "Training Programs",
+        subtitle: (item.fields.stat2Subtitle as string) || "Conducted nationwide",
+        iconUrl: item.fields.stat2Icon ? getAssetUrl(item.fields.stat2Icon as any) : "",
+      },
+      {
+        number: (item.fields.stat3Number as string) || "500+",
+        title: (item.fields.stat3Title as string) || "Children Reached",
+        subtitle: (item.fields.stat3Subtitle as string) || "Through our initiatives",
+        iconUrl: item.fields.stat3Icon ? getAssetUrl(item.fields.stat3Icon as any) : "",
+      },
+      {
+        number: (item.fields.stat4Number as string) || "15+",
+        title: (item.fields.stat4Title as string) || "Research Papers",
+        subtitle: (item.fields.stat4Subtitle as string) || "Published and shared",
+        iconUrl: item.fields.stat4Icon ? getAssetUrl(item.fields.stat4Icon as any) : "",
+      },
+    ],
+  };
+}
+
+// Homepage Partners-specific functions
+export async function getHomepagePartners(
+  preview = false
+): Promise<Entry<HomepagePartnerSkeleton>[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<HomepagePartnerSkeleton>({
+      content_type: "partners",
+      order: ["sys.createdAt"],
+    });
+    return response.items;
+  } catch (error) {
+    console.error("Error fetching homepage partners:", error);
+    return [];
+  }
+}
+
+// Transform Contentful partner entry to processed format
+export function transformHomepagePartner(
+  entry: Entry<HomepagePartnerSkeleton>
+): ProcessedHomepagePartner {
+  const { fields, sys } = entry;
+
+  return {
+    id: sys.id,
+    title: (fields.title as string) || "Partner",
+    logoUrl: fields.logo ? getAssetUrl(fields.logo as Asset) : "/placeholder.svg",
+  };
+}
+
+// Homepage Quote-specific functions
+export async function getHomepageQuote(
+  preview = false
+): Promise<ProcessedHomepageQuote> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<HomepageQuoteSkeleton>({
+      content_type: "homepageQuote",
+      limit: 1,
+    });
+
+    if (response.items.length === 0) {
+      return {
+        id: "fallback",
+        author: "Dr. Maria Rahman",
+        authorDesignation: "Early Childhood Development Specialist",
+        authorPhoto: "",
+        quote: "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
+      };
+    }
+
+    return transformHomepageQuote(response.items[0]);
+  } catch (error) {
+    console.error("Error fetching homepage quote:", error);
+    return {
+      id: "fallback",
+      author: "Dr. Maria Rahman",
+      authorDesignation: "Early Childhood Development Specialist",
+      authorPhoto: "",
+      quote: "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
+    };
+  }
+}
+
+function transformHomepageQuote(
+  item: Entry<HomepageQuoteSkeleton>
+): ProcessedHomepageQuote {
+  return {
+    id: item.sys.id,
+    author: (item.fields.author as string) || "Dr. Maria Rahman",
+    authorDesignation: (item.fields.authorDesignation as string) || "Early Childhood Development Specialist",
+    authorPhoto: item.fields.authorPhoto ? getAssetUrl(item.fields.authorPhoto as any) : "",
+    quote: item.fields.quote ? extractPlainText(item.fields.quote) : "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
+    quoteRichText: item.fields.quote || null,
+  };
 }

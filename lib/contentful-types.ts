@@ -194,6 +194,107 @@ export interface VoiceSkeleton extends EntrySkeletonType {
   }
 }
 
+// About Page Content Type (matches Contentful structure)
+export interface AboutPageSkeleton extends EntrySkeletonType {
+  contentTypeId: 'aboutPage'
+  fields: {
+    title: EntryFieldTypes.Text
+    subtitle?: EntryFieldTypes.Text
+    mission?: EntryFieldTypes.Text
+    vision?: EntryFieldTypes.Text
+    textSection?: EntryFieldTypes.RichText
+    photoBesideText?: EntryFieldTypes.AssetLink
+  }
+}
+
+// About Page Core Values Content Type (matches Contentful structure)
+export interface AboutPageCoreValuesSkeleton extends EntrySkeletonType {
+  contentTypeId: 'aboutPageCoreValues'
+  fields: {
+    title?: EntryFieldTypes.Text
+    subtitle?: EntryFieldTypes.Text
+    icon?: EntryFieldTypes.AssetLink
+  }
+}
+
+// Homepage Carousel Content Type (matches Contentful structure)
+export interface CarouselSkeleton extends EntrySkeletonType {
+  contentTypeId: 'carousel'
+  fields: {
+    title?: EntryFieldTypes.Text
+    subtitle?: EntryFieldTypes.Text
+    ctaText?: EntryFieldTypes.Text
+    ctaLink?: EntryFieldTypes.Text
+    photo?: EntryFieldTypes.AssetLink
+  }
+}
+
+// Homepage Core Values Content Type (matches Contentful structure)
+export interface HomepageCoreValuesSkeleton extends EntrySkeletonType {
+  contentTypeId: 'coreValues'
+  fields: {
+    title?: EntryFieldTypes.Text
+    subtitle?: EntryFieldTypes.Text
+    stat1Title?: EntryFieldTypes.Text
+    stat1Subtitle?: EntryFieldTypes.Text
+    stat1Icon?: EntryFieldTypes.AssetLink
+    stat2Title?: EntryFieldTypes.Text
+    stat2Subtitle?: EntryFieldTypes.Text
+    stat2Icon?: EntryFieldTypes.AssetLink
+    stat3Title?: EntryFieldTypes.Text
+    stat3Subtitle?: EntryFieldTypes.Text
+    stat3Icon?: EntryFieldTypes.AssetLink
+    stat4Title?: EntryFieldTypes.Text
+    stat4Subtitle?: EntryFieldTypes.Text
+    stat4Icon?: EntryFieldTypes.AssetLink
+  }
+}
+
+// Homepage Our Impact Content Type (matches Contentful structure)
+export interface HomepageOurImpactSkeleton extends EntrySkeletonType {
+  contentTypeId: 'ourImpact'
+  fields: {
+    title?: EntryFieldTypes.Text
+    subtitle?: EntryFieldTypes.Text
+    stat1Number?: EntryFieldTypes.Text
+    stat1Title?: EntryFieldTypes.Text
+    stat1Subtitle?: EntryFieldTypes.Text
+    stat1Icon?: EntryFieldTypes.AssetLink
+    stat2Number?: EntryFieldTypes.Text
+    stat2Title?: EntryFieldTypes.Text
+    stat2Subtitle?: EntryFieldTypes.Text
+    stat2Icon?: EntryFieldTypes.AssetLink
+    stat3Number?: EntryFieldTypes.Text
+    stat3Title?: EntryFieldTypes.Text
+    stat3Subtitle?: EntryFieldTypes.Text
+    stat3Icon?: EntryFieldTypes.AssetLink
+    stat4Number?: EntryFieldTypes.Text
+    stat4Title?: EntryFieldTypes.Text
+    stat4Subtitle?: EntryFieldTypes.Text
+    stat4Icon?: EntryFieldTypes.AssetLink
+  }
+}
+
+// Homepage Quote Content Type (matches Contentful structure)
+export interface HomepageQuoteSkeleton extends EntrySkeletonType {
+  contentTypeId: 'homepageQuote'
+  fields: {
+    author?: EntryFieldTypes.Text
+    authorDesignation?: EntryFieldTypes.Text
+    authorPhoto?: EntryFieldTypes.AssetLink
+    quote?: EntryFieldTypes.RichText
+  }
+}
+
+// Homepage Partners Content Type (matches Contentful structure)
+export interface HomepagePartnerSkeleton extends EntrySkeletonType {
+  contentTypeId: 'partners'
+  fields: {
+    title?: EntryFieldTypes.Text
+    logo?: EntryFieldTypes.AssetLink
+  }
+}
+
 // Union type for all content types
 export type ContentfulSkeleton = 
   | NewsSkeleton
@@ -201,6 +302,12 @@ export type ContentfulSkeleton =
   | NewsletterSkeleton
   | ResearchSkeleton
   | VoiceSkeleton
+  | AboutPageSkeleton
+  | AboutPageCoreValuesSkeleton
+  | CarouselSkeleton
+  | HomepageCoreValuesSkeleton
+  | HomepageOurImpactSkeleton
+  | HomepageQuoteSkeleton
   | GalleryEventSkeleton
   | ResourceSkeleton
   | HeroSlideSkeleton
@@ -298,4 +405,69 @@ export interface ProcessedVoice {
   category: string
   videoUrl?: string
   featured?: boolean
+}
+
+export interface ProcessedAboutPage {
+  id: string
+  title: string
+  subtitle?: string
+  mission?: string
+  vision?: string
+  textSection?: any // Rich text content
+  photo?: string
+}
+
+export interface ProcessedCoreValue {
+  id: string
+  title: string
+  description: string
+  iconUrl?: string
+}
+
+export interface ProcessedCarousel {
+  id: string
+  title: string
+  subtitle: string
+  ctaText?: string
+  ctaLink?: string
+  photo: string
+}
+
+export interface ProcessedHomepageCoreValues {
+  id: string
+  title: string
+  subtitle: string
+  stats: Array<{
+    title: string
+    subtitle: string
+    iconUrl?: string
+  }>
+}
+
+export interface ProcessedHomepageOurImpact {
+  id: string
+  sectionId?: string
+  title: string
+  subtitle: string
+  stats: Array<{
+    number: string
+    title: string
+    subtitle: string
+    iconUrl?: string
+  }>
+}
+
+export interface ProcessedHomepageQuote {
+  id: string
+  author: string
+  authorDesignation: string
+  authorPhoto: string
+  quote: string // Extracted plain text from rich text
+  quoteRichText?: any // Original rich text if needed
+}
+
+export interface ProcessedHomepagePartner {
+  id: string
+  title: string
+  logoUrl: string
 }

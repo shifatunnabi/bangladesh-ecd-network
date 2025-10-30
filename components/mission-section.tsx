@@ -1,38 +1,51 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Heart, Users, BookOpen, Target } from "lucide-react"
+import { Heart, Users, BookOpen, Target, Star } from "lucide-react"
+import Image from "next/image"
+import { ProcessedHomepageCoreValues } from "@/lib/contentful-types"
 
-const values = [
+interface MissionSectionProps {
+  coreValuesData?: ProcessedHomepageCoreValues | null
+}
+
+const fallbackValues = [
   {
-    icon: Heart,
     title: "Child-Centered Approach",
-    description: "Putting children's wellbeing and development at the center of everything we do.",
+    subtitle: "Putting children's wellbeing and development at the center of everything we do.",
+    iconUrl: null,
   },
   {
-    icon: Users,
     title: "Collaborative Network",
-    description: "Building strong partnerships between organizations, researchers, and practitioners.",
+    subtitle: "Building strong partnerships between organizations, researchers, and practitioners.",
+    iconUrl: null,
   },
   {
-    icon: BookOpen,
     title: "Evidence-Based Practice",
-    description: "Using research and data to inform policies and improve ECD outcomes.",
+    subtitle: "Using research and data to inform policies and improve ECD outcomes.",
+    iconUrl: null,
   },
   {
-    icon: Target,
     title: "Sustainable Impact",
-    description: "Creating lasting change through systematic approaches and capacity building.",
+    subtitle: "Creating lasting change through systematic approaches and capacity building.",
+    iconUrl: null,
   },
 ]
 
-export function MissionSection() {
+export function MissionSection({ coreValuesData }: MissionSectionProps) {
+  const fallbackData = {
+    title: "Our Core Values",
+    subtitle: "Guided by principles that ensure every child in Bangladesh has the opportunity to thrive and reach their full potential.",
+    stats: fallbackValues,
+  }
+
+  const data = coreValuesData || fallbackData
+  const values = data.stats.length > 0 ? data.stats : fallbackValues
   return (
     <section className="py-16 bg-gradient-to-br from-blue-50 to-blue-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">Our Core Values</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">{data.title}</h2>
           <p className="text-lg text-blue-700 max-w-2xl mx-auto">
-            Guided by principles that ensure every child in Bangladesh has the opportunity to thrive and reach their
-            full potential.
+            {data.subtitle}
           </p>
         </div>
 
@@ -43,11 +56,21 @@ export function MissionSection() {
               className="text-center hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm border-blue-200 hover:border-blue-300"
             >
               <CardContent className="p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <value.icon className="w-8 h-8 text-blue-600" />
+                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  {value.iconUrl && value.iconUrl !== "/placeholder.svg" ? (
+                    <Image
+                      src={value.iconUrl}
+                      alt={value.title}
+                      width={32}
+                      height={32}
+                      className="w-8 h-8 brightness-0 invert"
+                    />
+                  ) : (
+                    <Star className="w-8 h-8 text-white" />
+                  )}
                 </div>
                 <h3 className="text-xl font-semibold mb-3 text-blue-900">{value.title}</h3>
-                <p className="text-blue-700 leading-relaxed">{value.description}</p>
+                <p className="text-blue-700 leading-relaxed">{value.subtitle}</p>
               </CardContent>
             </Card>
           ))}

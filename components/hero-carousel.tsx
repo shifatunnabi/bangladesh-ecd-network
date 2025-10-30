@@ -4,42 +4,41 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import { ProcessedCarousel } from "@/lib/contentful-types"
 
-const slides = [
+interface HeroCarouselProps {
+  slides?: ProcessedCarousel[]
+}
+
+const fallbackSlides = [
   {
-    id: 1,
+    id: "1",
     title: "Empowering Early Childhood Development in Bangladesh",
     subtitle: "Building a stronger future for our children through collaborative networks and evidence-based practices",
-    image: "/images/hero-slide-1.jpg",
-    cta: {
-      text: "Learn More",
-      href: "/about",
-    },
+    photo: "/images/hero-slide-1.jpg",
+    ctaText: "Learn More",
+    ctaLink: "/about",
   },
   {
-    id: 2,
+    id: "2", 
     title: "Research-Driven Solutions for Better Outcomes",
     subtitle: "Advancing early childhood development through cutting-edge research and policy advocacy",
-    image: "/images/hero-slide-2.jpg",
-    cta: {
-      text: "View Research",
-      href: "/resources/research-reports",
-    },
+    photo: "/images/hero-slide-2.jpg",
+    ctaText: "View Research",
+    ctaLink: "/resources/research-reports",
   },
   {
-    id: 3,
+    id: "3",
     title: "Join Our Growing Network of ECD Professionals",
-    subtitle:
-      "Connect with experts, policymakers, and practitioners working to improve children's lives across Bangladesh",
-    image: "/images/hero-slide-3.jpg",
-    cta: {
-      text: "Join Network",
-      href: "/membership",
-    },
+    subtitle: "Connect with experts, policymakers, and practitioners working to improve children's lives across Bangladesh",
+    photo: "/images/hero-slide-3.jpg",
+    ctaText: "Join Network",
+    ctaLink: "/membership",
   },
 ]
 
-export function HeroCarousel() {
+export function HeroCarousel({ slides: propSlides }: HeroCarouselProps) {
+  const slides = propSlides && propSlides.length > 0 ? propSlides : fallbackSlides
   const [currentSlide, setCurrentSlide] = useState(0)
 
   useEffect(() => {
@@ -69,7 +68,7 @@ export function HeroCarousel() {
         >
           {/* Background Image */}
           <div className="absolute inset-0">
-            <img src={slide.image || "/placeholder.svg"} alt={slide.title} className="w-full h-full object-cover" />
+            <img src={slide.photo || "/placeholder.svg"} alt={slide.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/40" />
           </div>
 
@@ -79,9 +78,11 @@ export function HeroCarousel() {
               <div className="max-w-3xl text-white">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">{slide.title}</h1>
                 <p className="text-lg md:text-xl mb-8 text-blue-100 text-pretty">{slide.subtitle}</p>
-                <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                  <Link href={slide.cta.href}>{slide.cta.text}</Link>
-                </Button>
+                {slide.ctaText && slide.ctaLink && (
+                  <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                    <Link href={slide.ctaLink}>{slide.ctaText}</Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
