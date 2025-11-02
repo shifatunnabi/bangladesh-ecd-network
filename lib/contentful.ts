@@ -30,6 +30,12 @@ import type {
   ProcessedHomepageQuote,
   HomepagePartnerSkeleton,
   ProcessedHomepagePartner,
+  GallerySkeleton,
+  ProcessedGallery,
+  ConferenceSkeleton,
+  ProcessedConference,
+  HomepageFinalSectionSkeleton,
+  ProcessedHomepageFinalSection,
 } from "./contentful-types";
 
 // Environment variables validation
@@ -1150,5 +1156,170 @@ function transformHomepageQuote(
     authorPhoto: item.fields.authorPhoto ? getAssetUrl(item.fields.authorPhoto as any) : "",
     quote: item.fields.quote ? extractPlainText(item.fields.quote) : "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
     quoteRichText: item.fields.quote || null,
+  };
+}
+
+// Gallery-specific functions
+export async function getGalleryItems(
+  preview = false
+): Promise<Entry<GallerySkeleton>[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<GallerySkeleton>({
+      content_type: "gallery",
+      order: ["-fields.date"], // Sort by date descending (newest first)
+    });
+    return response.items;
+  } catch (error) {
+    console.error("Error fetching gallery items:", error);
+    return [];
+  }
+}
+
+export function transformGallery(
+  item: Entry<GallerySkeleton>
+): ProcessedGallery {
+  // Extract photos URLs from the photos array
+  const photos: string[] = [];
+  if (item.fields.photos && Array.isArray(item.fields.photos)) {
+    item.fields.photos.forEach((photo: any) => {
+      if (photo) {
+        const photoUrl = getAssetUrl(photo);
+        if (photoUrl !== "/placeholder.svg") {
+          photos.push(photoUrl);
+        }
+      }
+    });
+  }
+  
+  // Use first photo as cover image, or fallback to placeholder
+  const coverImage = photos.length > 0 ? photos[0] : "/placeholder.svg";
+
+  // Determine badge based on date
+  const galleryDate = new Date(item.fields.date as string);
+  const now = new Date();
+  const daysDiff = Math.floor((now.getTime() - galleryDate.getTime()) / (1000 * 60 * 60 * 24));
+  let badge = "";
+  if (daysDiff <= 7) badge = "New";
+  else if (daysDiff <= 30) badge = "Recent";
+
+  return {
+    id: item.sys.id,
+    title: (item.fields.title as string) || "Gallery Event",
+    date: formatDate(item.fields.date as string),
+    type: (item.fields.type as string) || undefined,
+    description: (item.fields.description as string) || undefined,
+    photos,
+    coverImage,
+    category: (item.fields.type as string) || "Event",
+    badge,
+  };
+}
+
+// Conference-specific functions
+export async function getConferences(
+  preview = false
+): Promise<Entry<ConferenceSkeleton>[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<ConferenceSkeleton>({
+      content_type: "conference",
+      order: ["-fields.date"], // Sort by date descending (newest first)
+    });
+    return response.items;
+  } catch (error) {
+    console.error("Error fetching conferences:", error);
+    return [];
+  }
+}
+
+export function transformConference(
+  item: Entry<ConferenceSkeleton>
+): ProcessedConference {
+  // Determine status based on date
+  let status: "upcoming" | "completed" = "completed";
+  let badge = "";
+  
+  if (item.fields.date) {
+    const conferenceDate = new Date(item.fields.date as string);
+    const now = new Date();
+    
+    if (conferenceDate > now) {
+      status = "upcoming";
+      const daysDiff = Math.floor((conferenceDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysDiff <= 30) badge = "Upcoming";
+    }
+  }
+
+  return {
+    id: item.sys.id,
+    title: (item.fields.title as string) || "Conference",
+    subtitle: (item.fields.subtitle as string) || undefined,
+    date: item.fields.date ? formatDate(item.fields.date as string) : "Date TBD",
+    venue: (item.fields.venue as string) || undefined,
+    description: (item.fields.description as string) || undefined,
+    materialUrl: item.fields.material ? getAssetUrl(item.fields.material as any) : undefined,
+    thumbnailUrl: item.fields.thumbnail ? getAssetUrl(item.fields.thumbnail as any) : "/placeholder.svg",
+    registrationLink: (item.fields.registrationLink as string) || undefined,
+    status,
+    badge,
+  };
+}
+
+
+
+// Homepage Final Section-specific functions
+export async function getHomepageFinalSection(
+  preview = false
+): Promise<ProcessedHomepageFinalSection> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<HomepageFinalSectionSkeleton>({
+      content_type: "homepageFinalSection",
+      limit: 1,
+    });
+
+    if (response.items.length === 0) {
+      return {
+        id: "fallback",
+        title: "Support Our Mission",
+        thumbnailUrl: "/images/children-ecd-program.jpg",
+        content: "Your support helps us expand our reach and impact, ensuring that more children across Bangladesh have access to quality early childhood development programs and resources.",
+        cta1Text: "Donate Now",
+        cta1Link: "/donate",
+        cta2Text: "Learn More", 
+        cta2Link: "/about",
+      };
+    }
+
+    return transformHomepageFinalSection(response.items[0]);
+  } catch (error) {
+    console.error("Error fetching homepage final section:", error);
+    return {
+      id: "fallback",
+      title: "Support Our Mission",
+      thumbnailUrl: "/images/children-ecd-program.jpg",
+      content: "Your support helps us expand our reach and impact, ensuring that more children across Bangladesh have access to quality early childhood development programs and resources.",
+      cta1Text: "Donate Now",
+      cta1Link: "/donate",
+      cta2Text: "Learn More",
+      cta2Link: "/about",
+    };
+  }
+}
+
+function transformHomepageFinalSection(
+  item: Entry<HomepageFinalSectionSkeleton>
+): ProcessedHomepageFinalSection {
+  return {
+    id: item.sys.id,
+    title: (item.fields.title as string) || "Support Our Mission",
+    thumbnailUrl: item.fields.thumbnail ? getAssetUrl(item.fields.thumbnail as any) : "/images/children-ecd-program.jpg",
+    content: item.fields.content ? extractPlainText(item.fields.content) : "Your support helps us expand our reach and impact, ensuring that more children across Bangladesh have access to quality early childhood development programs and resources.",
+    contentRichText: item.fields.content || null,
+    cta1Text: (item.fields.cta1Text as string) || "Donate Now",
+    cta1Link: (item.fields.cta1Link as string) || "/donate",
+    cta2Text: (item.fields.cta2Text as string) || "Learn More",
+    cta2Link: (item.fields.cta2Link as string) || "/about",
   };
 }

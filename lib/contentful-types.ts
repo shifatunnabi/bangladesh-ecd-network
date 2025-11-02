@@ -295,6 +295,61 @@ export interface HomepagePartnerSkeleton extends EntrySkeletonType {
   }
 }
 
+// Gallery Content Type (matches Contentful structure)
+export interface GallerySkeleton extends EntrySkeletonType {
+  contentTypeId: 'gallery'
+  fields: {
+    title: EntryFieldTypes.Text
+    date: EntryFieldTypes.Date
+    type?: EntryFieldTypes.Text
+    description?: EntryFieldTypes.Text
+    photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
+  }
+}
+
+// Conference Content Type (matches Contentful structure)
+export interface ConferenceSkeleton extends EntrySkeletonType {
+  contentTypeId: 'conference'
+  fields: {
+    title: EntryFieldTypes.Text
+    subtitle?: EntryFieldTypes.Text
+    date?: EntryFieldTypes.Date
+    venue?: EntryFieldTypes.Text
+    description?: EntryFieldTypes.Text
+    material?: EntryFieldTypes.AssetLink
+    thumbnail?: EntryFieldTypes.AssetLink
+    registrationLink?: EntryFieldTypes.Text
+  }
+}
+
+// Homepage Final Section Content Type (matches Contentful structure)
+export interface HomepageFinalSectionSkeleton extends EntrySkeletonType {
+  contentTypeId: 'homepageFinalSection'
+  fields: {
+    title?: EntryFieldTypes.Text
+    thumbnail?: EntryFieldTypes.AssetLink
+    content?: EntryFieldTypes.RichText
+    cta1Text?: EntryFieldTypes.Text
+    cta1Link?: EntryFieldTypes.Text
+    cta2Text?: EntryFieldTypes.Text
+    cta2Link?: EntryFieldTypes.Text
+  }
+}
+
+// Union type for all content types
+export interface HomepageFinalSectionSkeleton extends EntrySkeletonType {
+  contentTypeId: 'homepageFinalSection'
+  fields: {
+    title?: EntryFieldTypes.Text
+    thumbnail?: EntryFieldTypes.AssetLink
+    content?: EntryFieldTypes.RichText
+    cta1Text?: EntryFieldTypes.Text
+    cta1Link?: EntryFieldTypes.Text
+    cta2Text?: EntryFieldTypes.Text
+    cta2Link?: EntryFieldTypes.Text
+  }
+}
+
 // Union type for all content types
 export type ContentfulSkeleton = 
   | NewsSkeleton
@@ -308,6 +363,10 @@ export type ContentfulSkeleton =
   | HomepageCoreValuesSkeleton
   | HomepageOurImpactSkeleton
   | HomepageQuoteSkeleton
+  | HomepagePartnerSkeleton
+  | GallerySkeleton
+  | ConferenceSkeleton
+  | HomepageFinalSectionSkeleton
   | GalleryEventSkeleton
   | ResourceSkeleton
   | HeroSlideSkeleton
@@ -470,4 +529,54 @@ export interface ProcessedHomepagePartner {
   id: string
   title: string
   logoUrl: string
+}
+
+export interface ProcessedGallery {
+  id: string
+  title: string
+  date: string
+  type?: string
+  description?: string
+  photos: string[]
+  coverImage: string
+  category: string
+  badge?: string
+}
+
+export interface ProcessedConference {
+  id: string
+  title: string
+  subtitle?: string
+  date: string
+  venue?: string
+  description?: string
+  materialUrl?: string
+  thumbnailUrl: string
+  registrationLink?: string
+  status: "upcoming" | "completed"
+  badge?: string
+}
+
+export interface ProcessedHomepageFinalSection {
+  id: string
+  title: string
+  thumbnailUrl: string
+  content: string // Extracted plain text from rich text
+  contentRichText?: any // Original rich text if needed
+  cta1Text?: string
+  cta1Link?: string
+  cta2Text?: string
+  cta2Link?: string
+}
+
+export interface ProcessedHomepageFinalSection {
+  id: string
+  title: string
+  thumbnailUrl: string
+  content: string // Extracted plain text from rich text
+  contentRichText?: any // Original rich text if needed
+  cta1Text?: string
+  cta1Link?: string
+  cta2Text?: string
+  cta2Link?: string
 }

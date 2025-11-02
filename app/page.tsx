@@ -7,7 +7,7 @@ import { DonateSection } from "@/components/donate-section"
 import { StatsSection } from "@/components/stats-section"
 import { TestimonialSection } from "@/components/testimonial-section"
 import { NewsletterSection } from "@/components/newsletter-section"
-import { getCarouselSlides, transformCarousel, getHomepageCoreValues, transformHomepageCoreValues, getHomepageOurImpact, getHomepageQuote, getHomepagePartners, transformHomepagePartner } from "@/lib/contentful"
+import { getCarouselSlides, transformCarousel, getHomepageCoreValues, transformHomepageCoreValues, getHomepageOurImpact, getHomepageQuote, getHomepagePartners, transformHomepagePartner, getHomepageFinalSection } from "@/lib/contentful"
 
 export default async function HomePage() {
   // Fetch carousel slides from Contentful
@@ -28,6 +28,9 @@ export default async function HomePage() {
   const partnersEntries = await getHomepagePartners();
   const partnersData = partnersEntries.map(transformHomepagePartner);
 
+  // Fetch final section data from Contentful
+  const finalSectionData = await getHomepageFinalSection();
+
   return (
     <div className="flex flex-col">
       <HeroCarousel slides={carouselSlides} />
@@ -37,7 +40,7 @@ export default async function HomePage() {
       <StatsSection impactData={ourImpactData} />
   <PartnersSection partnersData={partnersData} />
   <TestimonialSection quoteData={quoteData} />
-      <DonateSection />
+      <DonateSection finalSectionData={finalSectionData} />
       <NewsletterSection />
     </div>
   )
