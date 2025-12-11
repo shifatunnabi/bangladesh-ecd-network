@@ -74,8 +74,9 @@ export function ResourceCard({
             <Image
               src={image || "/placeholder.svg"}
               alt={title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              width={400}
+              height={192}
+              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
             />
             {badge && (
               <div className="absolute top-3 left-3">
