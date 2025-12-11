@@ -336,6 +336,16 @@ export interface HomepageFinalSectionSkeleton extends EntrySkeletonType {
   }
 }
 
+// Who We Are Content Type (matches Contentful structure)
+export interface WhoWeAreSkeleton extends EntrySkeletonType {
+  contentTypeId: 'whoWeAre'
+  fields: {
+    description: EntryFieldTypes.RichText
+    photo: EntryFieldTypes.AssetLink
+    vision?: EntryFieldTypes.RichText
+  }
+}
+
 // Union type for all content types
 export interface HomepageFinalSectionSkeleton extends EntrySkeletonType {
   contentTypeId: 'homepageFinalSection'
@@ -367,6 +377,7 @@ export type ContentfulSkeleton =
   | GallerySkeleton
   | ConferenceSkeleton
   | HomepageFinalSectionSkeleton
+  | WhoWeAreSkeleton
   | GalleryEventSkeleton
   | ResourceSkeleton
   | HeroSlideSkeleton
@@ -569,14 +580,11 @@ export interface ProcessedHomepageFinalSection {
   cta2Link?: string
 }
 
-export interface ProcessedHomepageFinalSection {
+export interface ProcessedWhoWeAre {
   id: string
-  title: string
-  thumbnailUrl: string
-  content: string // Extracted plain text from rich text
-  contentRichText?: any // Original rich text if needed
-  cta1Text?: string
-  cta1Link?: string
-  cta2Text?: string
-  cta2Link?: string
+  description: string // Extracted plain text from rich text
+  descriptionRichText: any // Original rich text
+  photoUrl: string
+  vision?: string // Extracted plain text from rich text
+  visionRichText?: any // Original rich text if needed
 }

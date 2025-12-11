@@ -36,6 +36,8 @@ import type {
   ProcessedConference,
   HomepageFinalSectionSkeleton,
   ProcessedHomepageFinalSection,
+  WhoWeAreSkeleton,
+  ProcessedWhoWeAre,
 } from "./contentful-types";
 
 // Environment variables validation
@@ -1321,5 +1323,54 @@ function transformHomepageFinalSection(
     cta1Link: (item.fields.cta1Link as string) || "/donate",
     cta2Text: (item.fields.cta2Text as string) || "Learn More",
     cta2Link: (item.fields.cta2Link as string) || "/about",
+  };
+}
+
+// Who We Are-specific functions
+export async function getWhoWeAre(
+  preview = false
+): Promise<ProcessedWhoWeAre> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<WhoWeAreSkeleton>({
+      content_type: "whoWeAre",
+      limit: 1,
+    });
+
+    if (response.items.length === 0) {
+      return {
+        id: "fallback",
+        description: "The Bangladesh ECD Network is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
+        descriptionRichText: null,
+        photoUrl: "/images/ecd-team-meeting.jpg",
+        vision: "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
+        visionRichText: null,
+      };
+    }
+
+    return transformWhoWeAre(response.items[0]);
+  } catch (error) {
+    console.error("Error fetching who we are:", error);
+    return {
+      id: "fallback",
+      description: "The Bangladesh ECD Network is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
+      descriptionRichText: null,
+      photoUrl: "/images/ecd-team-meeting.jpg",
+      vision: "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
+      visionRichText: null,
+    };
+  }
+}
+
+function transformWhoWeAre(
+  item: Entry<WhoWeAreSkeleton>
+): ProcessedWhoWeAre {
+  return {
+    id: item.sys.id,
+    description: item.fields.description ? extractPlainText(item.fields.description) : "The Bangladesh ECD Network is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
+    descriptionRichText: item.fields.description || null,
+    photoUrl: item.fields.photo ? getAssetUrl(item.fields.photo as any) : "/images/ecd-team-meeting.jpg",
+    vision: item.fields.vision ? extractPlainText(item.fields.vision) : "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
+    visionRichText: item.fields.vision || null,
   };
 }
