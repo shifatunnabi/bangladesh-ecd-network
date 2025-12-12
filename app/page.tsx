@@ -22,7 +22,7 @@ export default async function HomePage() {
   const ourImpactData = await getHomepageOurImpact();
 
   // Fetch quote data from Contentful
-  const quoteData = await getHomepageQuote();
+  const quotesData = await getHomepageQuote();
 
   // Fetch final section data from Contentful
   const finalSectionData = await getHomepageFinalSection();
@@ -38,7 +38,7 @@ export default async function HomePage() {
       <ResourceHighlights />
       <StatsSection impactData={ourImpactData} />
   <PartnersSection />
-  <TestimonialSection quoteData={quoteData} />
+  <TestimonialSection quotesData={quotesData} />
       <DonateSection finalSectionData={finalSectionData} />
       <NewsletterSection />
     </div>

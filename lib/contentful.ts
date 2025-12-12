@@ -1117,34 +1117,37 @@ export function transformHomepagePartner(
 // Homepage Quote-specific functions
 export async function getHomepageQuote(
   preview = false
-): Promise<ProcessedHomepageQuote> {
+): Promise<ProcessedHomepageQuote[]> {
   try {
     const client = getClient(preview);
     const response = await client.getEntries<HomepageQuoteSkeleton>({
       content_type: "homepageQuote",
-      limit: 1,
     });
 
     if (response.items.length === 0) {
-      return {
+      return [
+        {
+          id: "fallback",
+          author: "Dr. Maria Rahman",
+          authorDesignation: "Early Childhood Development Specialist",
+          authorPhoto: "",
+          quote: "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
+        },
+      ];
+    }
+
+    return response.items.map(transformHomepageQuote);
+  } catch (error) {
+    console.error("Error fetching homepage quote:", error);
+    return [
+      {
         id: "fallback",
         author: "Dr. Maria Rahman",
         authorDesignation: "Early Childhood Development Specialist",
         authorPhoto: "",
         quote: "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
-      };
-    }
-
-    return transformHomepageQuote(response.items[0]);
-  } catch (error) {
-    console.error("Error fetching homepage quote:", error);
-    return {
-      id: "fallback",
-      author: "Dr. Maria Rahman",
-      authorDesignation: "Early Childhood Development Specialist",
-      authorPhoto: "",
-      quote: "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
-    };
+      },
+    ];
   }
 }
 
