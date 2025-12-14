@@ -346,6 +346,30 @@ export interface WhoWeAreSkeleton extends EntrySkeletonType {
   }
 }
 
+// Committee Content Type
+export interface CommitteeSkeleton extends EntrySkeletonType {
+  contentTypeId: 'committee'
+  fields: {
+    name: EntryFieldTypes.Text
+    committeeType: EntryFieldTypes.Boolean // true = executive, false = steering
+    deisgnation?: EntryFieldTypes.Text
+    professionalDetails?: EntryFieldTypes.Text
+    photo?: EntryFieldTypes.AssetLink
+    biography?: EntryFieldTypes.RichText
+  }
+}
+
+// Secretariat Content Type
+export interface SecretariatSkeleton extends EntrySkeletonType {
+  contentTypeId: 'secretariat'
+  fields: {
+    name: EntryFieldTypes.Text
+    deisgnation?: EntryFieldTypes.Text
+    biography?: EntryFieldTypes.RichText
+    photo?: EntryFieldTypes.AssetLink
+  }
+}
+
 // Union type for all content types
 export interface HomepageFinalSectionSkeleton extends EntrySkeletonType {
   contentTypeId: 'homepageFinalSection'
@@ -386,6 +410,8 @@ export type ContentfulSkeleton =
   | PageSkeleton
   | TeamMemberSkeleton
   | SiteSettingsSkeleton
+  | CommitteeSkeleton
+  | SecretariatSkeleton
 
 // Helper type to extract fields from skeleton
 export type ContentfulFields<T extends EntrySkeletonType> = T['fields']
@@ -587,4 +613,24 @@ export interface ProcessedWhoWeAre {
   photoUrl: string
   vision?: string // Extracted plain text from rich text
   visionRichText?: any // Original rich text if needed
+}
+
+export interface ProcessedCommittee {
+  id: string
+  name: string
+  committeeType: boolean // true = executive, false = steering
+  designation: string
+  professionalDetails: string
+  photoUrl: string
+  biography: string // Extracted plain text from rich text
+  biographyRichText?: any // Original rich text if needed
+}
+
+export interface ProcessedSecretariat {
+  id: string
+  name: string
+  designation: string
+  photoUrl: string
+  biography: string // Extracted plain text from rich text
+  biographyRichText?: any // Original rich text if needed
 }

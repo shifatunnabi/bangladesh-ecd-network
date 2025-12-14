@@ -38,6 +38,10 @@ import type {
   ProcessedHomepageFinalSection,
   WhoWeAreSkeleton,
   ProcessedWhoWeAre,
+  CommitteeSkeleton,
+  ProcessedCommittee,
+  SecretariatSkeleton,
+  ProcessedSecretariat,
 } from "./contentful-types";
 
 // Environment variables validation
@@ -1375,5 +1379,75 @@ function transformWhoWeAre(
     photoUrl: item.fields.photo ? getAssetUrl(item.fields.photo as any) : "/images/ecd-team-meeting.jpg",
     vision: item.fields.vision ? extractPlainText(item.fields.vision) : "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
     visionRichText: item.fields.vision || null,
+  };
+}
+
+// Committee-specific functions
+export async function getCommitteeMembers(
+  preview = false
+): Promise<ProcessedCommittee[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<CommitteeSkeleton>({
+      content_type: "committee",
+    });
+
+    if (response.items.length === 0) {
+      return [];
+    }
+
+    return response.items.map(transformCommittee);
+  } catch (error) {
+    console.error("Error fetching committee members:", error);
+    return [];
+  }
+}
+
+function transformCommittee(
+  item: Entry<CommitteeSkeleton>
+): ProcessedCommittee {
+  return {
+    id: item.sys.id,
+    name: (item.fields.name as string) || "",
+    committeeType: (item.fields.committeeType as boolean) || false,
+    designation: (item.fields.deisgnation as string) || "",
+    professionalDetails: (item.fields.professionalDetails as string) || "",
+    photoUrl: item.fields.photo ? getAssetUrl(item.fields.photo as any) : "/placeholder.svg",
+    biography: item.fields.biography ? extractPlainText(item.fields.biography) : "",
+    biographyRichText: item.fields.biography || null,
+  };
+}
+
+// Secretariat-specific functions
+export async function getSecretariatMembers(
+  preview = false
+): Promise<ProcessedSecretariat[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<SecretariatSkeleton>({
+      content_type: "secretariat",
+    });
+
+    if (response.items.length === 0) {
+      return [];
+    }
+
+    return response.items.map(transformSecretariat);
+  } catch (error) {
+    console.error("Error fetching secretariat members:", error);
+    return [];
+  }
+}
+
+function transformSecretariat(
+  item: Entry<SecretariatSkeleton>
+): ProcessedSecretariat {
+  return {
+    id: item.sys.id,
+    name: (item.fields.name as string) || "",
+    designation: (item.fields.deisgnation as string) || "",
+    photoUrl: item.fields.photo ? getAssetUrl(item.fields.photo as any) : "/placeholder.svg",
+    biography: item.fields.biography ? extractPlainText(item.fields.biography) : "",
+    biographyRichText: item.fields.biography || null,
   };
 }
