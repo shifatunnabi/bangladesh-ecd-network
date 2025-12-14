@@ -1,10 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import Image from "next/image"
-import { Calendar, Search, Filter, User } from "lucide-react"
+import { Calendar, User, ExternalLink } from "lucide-react"
 import { getAllNews, transformNews } from "@/lib/contentful"
 
 async function getNewsArticles() {
@@ -35,40 +32,6 @@ export default async function NewsPage() {
       </section>
 
       <div className="container mx-auto px-4 py-12">
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input placeholder="Search news articles..." className="pl-10" />
-          </div>
-          <Button variant="outline" className="sm:w-auto bg-transparent">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-        </div>
-
-        {/* Filter Tags */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            All News
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Research
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Partnerships
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Training
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Community
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Events
-          </Badge>
-        </div>
-
         {/* Results Count */}
         <div className="text-sm text-muted-foreground mb-6">Showing {newsArticles.length} articles</div>
 
@@ -76,47 +39,29 @@ export default async function NewsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {newsArticles.length > 0 ? (
             newsArticles.map((article) => (
-            <Card key={article.id} className="group hover:shadow-lg transition-all duration-300">
-              <CardHeader className="p-0">
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
-                  <Image
-                    src={article.image || "/placeholder.svg"}
-                    alt={article.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  {article.badge && (
-                    <div className="absolute top-3 left-3">
-                      <Badge variant={article.badge === "Breaking News" ? "destructive" : "default"}>
-                        {article.badge}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{article.category}</p>
-                    <CardTitle className="text-base leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-                      {article.title}
-                    </CardTitle>
-                  </div>
-                  <p className="text-sm text-muted-foreground line-clamp-3">{article.excerpt}</p>
+            <Card key={article.id} className="group hover:shadow-lg transition-all duration-300 flex flex-col">
+              <CardContent className="p-6 flex-1 flex flex-col">
+                <div className="flex-1 space-y-4">
+                  <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
+                    {article.title}
+                  </CardTitle>
                   <div className="space-y-2">
                     <div className="flex items-center text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4 mr-1" />
+                      <Calendar className="w-4 h-4 mr-2" />
                       {article.date}
                     </div>
                     <div className="flex items-center text-sm text-muted-foreground">
-                      <User className="w-4 h-4 mr-1" />
+                      <User className="w-4 h-4 mr-2" />
                       {article.author}
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" className="w-full bg-transparent" asChild>
-                    <Link href={article.href}>Read Full Article</Link>
-                  </Button>
                 </div>
+                <Button variant="outline" size="sm" className="w-full bg-transparent mt-4" asChild>
+                  <a href={article.newsLink} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Read Full Article
+                  </a>
+                </Button>
               </CardContent>
             </Card>
             ))

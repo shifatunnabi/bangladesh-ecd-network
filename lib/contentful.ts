@@ -38,6 +38,8 @@ import type {
   ProcessedHomepageFinalSection,
   WhoWeAreSkeleton,
   ProcessedWhoWeAre,
+  PoliciesLinksSkeleton,
+  ProcessedPolicyLink,
   CommitteeSkeleton,
   ProcessedCommittee,
   SecretariatSkeleton,
@@ -223,7 +225,7 @@ export function extractParagraphs(richText: any): string[] {
 export async function getAllNews(
   preview = false
 ): Promise<Entry<NewsSkeleton>[]> {
-  return getEntries<NewsSkeleton>("news", { order: ["-fields.date"] }, preview);
+  return getEntries<NewsSkeleton>("news", { order: ["sys.createdAt"] }, preview);
 }
 
 export async function getNewsByCategory(
@@ -273,15 +275,10 @@ export function transformNews(entry: Entry<NewsSkeleton>): ProcessedNews {
 
   return {
     id: sys.id,
-    title: (fields.title as string) || "",
-    excerpt: (fields.excerpt as string) || "",
-    category: (fields.category as string) || "General",
-    author: (fields.author as string) || "Bangladesh ECD Network",
-    content: fields.content || null,
-    image: getAssetUrl(fields.thumbnail as Asset),
-    date: formatDate(fields.date as string),
-    badge: determineNewsBadge(fields.date as string),
-    href: `/media/news/${sys.id}`,
+    title: (fields.title as string) || "Untitled",
+    date: (fields.date as string) || "",
+    author: "Bangladesh ECD Network",
+    newsLink: (fields.newsLink as string) || "#",
   };
 }
 
@@ -1379,6 +1376,41 @@ function transformWhoWeAre(
     photoUrl: item.fields.photo ? getAssetUrl(item.fields.photo as any) : "/images/ecd-team-meeting.jpg",
     vision: item.fields.vision ? extractPlainText(item.fields.vision) : "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
     visionRichText: item.fields.vision || null,
+  };
+}
+
+// Policies & Links-specific functions
+export async function getPoliciesLinks(
+  preview = false
+): Promise<ProcessedPolicyLink[]> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<PoliciesLinksSkeleton>({
+      content_type: "policiesLinks",
+      order: ["sys.createdAt"], // Oldest first, most recent last
+    });
+
+    if (response.items.length === 0) {
+      return [];
+    }
+
+    return response.items.map(transformPolicyLink);
+  } catch (error) {
+    console.error("Error fetching policies and links:", error);
+    return [];
+  }
+}
+
+function transformPolicyLink(
+  item: Entry<PoliciesLinksSkeleton>
+): ProcessedPolicyLink {
+  return {
+    id: item.sys.id,
+    title: (item.fields.title as string) || "Untitled Policy",
+    fileUrl: item.fields.file ? getAssetUrl(item.fields.file as any) : "#",
+    type: (item.fields.type as string) || "General",
+    imageUrl: item.fields.image ? getAssetUrl(item.fields.image as any) : undefined,
+    year: (item.fields.year as string) || undefined,
   };
 }
 

@@ -15,12 +15,8 @@ export interface NewsSkeleton extends EntrySkeletonType {
   contentTypeId: 'news'
   fields: {
     title: EntryFieldTypes.Text
-    excerpt?: EntryFieldTypes.Text
-    category?: EntryFieldTypes.Text
-    author?: EntryFieldTypes.Text
-    content?: EntryFieldTypes.RichText
-    thumbnail?: EntryFieldTypes.AssetLink
-    date: EntryFieldTypes.Date
+    date: EntryFieldTypes.Text
+    newsLink: EntryFieldTypes.Text
   }
 }
 
@@ -345,7 +341,17 @@ export interface WhoWeAreSkeleton extends EntrySkeletonType {
     vision?: EntryFieldTypes.RichText
   }
 }
-
+// Policies & Links Content Type (matches Contentful structure)
+export interface PoliciesLinksSkeleton extends EntrySkeletonType {
+  contentTypeId: 'policiesLinks'
+  fields: {
+    title: EntryFieldTypes.Text
+    file: EntryFieldTypes.AssetLink
+    type: EntryFieldTypes.Text
+    image?: EntryFieldTypes.AssetLink
+    year?: EntryFieldTypes.Text
+  }
+}
 // Committee Content Type
 export interface CommitteeSkeleton extends EntrySkeletonType {
   contentTypeId: 'committee'
@@ -402,6 +408,7 @@ export type ContentfulSkeleton =
   | ConferenceSkeleton
   | HomepageFinalSectionSkeleton
   | WhoWeAreSkeleton
+  | PoliciesLinksSkeleton
   | GalleryEventSkeleton
   | ResourceSkeleton
   | HeroSlideSkeleton
@@ -420,14 +427,9 @@ export type ContentfulFields<T extends EntrySkeletonType> = T['fields']
 export interface ProcessedNews {
   id: string
   title: string
-  excerpt: string
-  category: string
-  author: string
-  content: any // Rich text content
-  image: string
   date: string
-  badge?: string
-  href: string
+  author: string
+  newsLink: string
 }
 
 export interface ProcessedEvent {
@@ -613,6 +615,15 @@ export interface ProcessedWhoWeAre {
   photoUrl: string
   vision?: string // Extracted plain text from rich text
   visionRichText?: any // Original rich text if needed
+}
+
+export interface ProcessedPolicyLink {
+  id: string
+  title: string
+  fileUrl: string
+  type: string
+  imageUrl?: string
+  year?: string
 }
 
 export interface ProcessedCommittee {

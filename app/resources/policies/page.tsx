@@ -2,97 +2,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { ExternalLink, FileText, Globe, BookOpen } from "lucide-react"
+import Image from "next/image"
+import { ExternalLink, FileText } from "lucide-react"
+import { getPoliciesLinks } from "@/lib/contentful"
 
-const policyCategories = [
-  {
-    title: "National ECD Policies",
-    description: "Key policy documents and frameworks governing early childhood development in Bangladesh",
-    icon: FileText,
-    links: [
-      {
-        title: "National Children Policy 2011",
-        description: "Comprehensive policy framework for children's rights and development",
-        url: "#",
-        type: "Government Policy",
-        date: "2011",
-      },
-      {
-        title: "Early Childhood Care and Development Policy",
-        description: "Specific policy guidelines for early childhood care and development programs",
-        url: "#",
-        type: "Government Policy",
-        date: "2013",
-      },
-      {
-        title: "National Education Policy 2010",
-        description: "Education policy with provisions for early childhood education",
-        url: "#",
-        type: "Government Policy",
-        date: "2010",
-      },
-    ],
-  },
-  {
-    title: "International Guidelines",
-    description: "Global frameworks and guidelines relevant to early childhood development",
-    icon: Globe,
-    links: [
-      {
-        title: "UN Convention on the Rights of the Child",
-        description:
-          "International treaty setting out civil, political, economic, social and cultural rights of children",
-        url: "https://www.unicef.org/child-rights-convention",
-        type: "International Treaty",
-        date: "1989",
-      },
-      {
-        title: "SDG 4: Quality Education",
-        description: "Sustainable Development Goal focusing on inclusive and equitable quality education",
-        url: "https://sdgs.un.org/goals/goal4",
-        type: "UN Framework",
-        date: "2015",
-      },
-      {
-        title: "WHO Early Childhood Development Guidelines",
-        description: "World Health Organization guidelines for nurturing care framework",
-        url: "https://www.who.int/activities/improving-early-childhood-development",
-        type: "WHO Guidelines",
-        date: "2018",
-      },
-    ],
-  },
-  {
-    title: "Research & Evidence",
-    description: "Key research publications and evidence-based resources for policy development",
-    icon: BookOpen,
-    links: [
-      {
-        title: "Lancet Series on Early Childhood Development",
-        description: "Comprehensive research series on early childhood development interventions",
-        url: "https://www.thelancet.com/series/ECD2016",
-        type: "Research Series",
-        date: "2016",
-      },
-      {
-        title: "ECD Action Network Resources",
-        description: "Global resources and tools for early childhood development programming",
-        url: "https://www.ecdan.org/resources",
-        type: "Resource Hub",
-        date: "Ongoing",
-      },
-      {
-        title: "World Bank ECD Resources",
-        description: "World Bank resources on early childhood development investments",
-        url: "https://www.worldbank.org/en/topic/earlychildhooddevelopment",
-        type: "Development Resources",
-        date: "Ongoing",
-      },
-    ],
-  },
-]
+export default async function PoliciesPage() {
+  // Fetch policies from Contentful
+  const policiesData = await getPoliciesLinks();
 
-export default function PoliciesPage() {
+  // Group policies by type while preserving order
+  const typeOrder: string[] = [];
+  const groupedPolicies = policiesData.reduce((acc, policy) => {
+    const type = policy.type;
+    if (!acc[type]) {
+      acc[type] = [];
+      typeOrder.push(type); // Track the order types appear
+    }
+    acc[type].push(policy);
+    return acc;
+  }, {} as Record<string, typeof policiesData>);
   return (
     <div className="flex flex-col">
       <section className="py-16 bg-primary text-primary-foreground">
@@ -108,49 +36,67 @@ export default function PoliciesPage() {
       </section>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="space-y-12">
-          {policyCategories.map((category, categoryIndex) => (
-            <div key={categoryIndex}>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                  <category.icon className="w-6 h-6 text-primary" />
+        {Object.keys(groupedPolicies).length > 0 ? (
+          <div className="space-y-12">
+            {typeOrder.map((type) => {
+              const policies = groupedPolicies[type];
+              return (
+              <div key={type}>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-primary">{type}</h2>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-primary">{category.title}</h2>
-                  <p className="text-muted-foreground">{category.description}</p>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {category.links.map((link, linkIndex) => (
-                  <Card key={linkIndex} className="hover:shadow-lg transition-shadow group">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
-                          {link.title}
-                        </CardTitle>
-                        <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 ml-2" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <p className="text-sm text-muted-foreground leading-relaxed">{link.description}</p>
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline">{link.type}</Badge>
-                        <span className="text-xs text-muted-foreground">{link.date}</span>
-                      </div>
-                      <Button variant="outline" size="sm" className="w-full bg-transparent" asChild>
-                        <a href={link.url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Access Resource
-                        </a>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {policies.map((policy) => (
+                    <Card key={policy.id} className="hover:shadow-lg transition-shadow group flex flex-col">
+                      {policy.imageUrl && (
+                        <CardHeader className="p-0">
+                          <div className="relative h-48 overflow-hidden rounded-t-lg">
+                            <Image
+                              src={policy.imageUrl}
+                              alt={policy.title}
+                              width={400}
+                              height={192}
+                              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
+                        </CardHeader>
+                      )}
+                      <CardContent className={`${policy.imageUrl ? 'p-4' : 'p-6'} flex-1 flex flex-col`}>
+                        <div className="flex-1 space-y-3">
+                          <CardTitle className="text-lg leading-tight group-hover:text-primary transition-colors">
+                            {policy.title}
+                          </CardTitle>
+                          {policy.year && (
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline">{policy.year}</Badge>
+                            </div>
+                          )}
+                        </div>
+                        <Button variant="outline" size="sm" className="w-full bg-transparent mt-4" asChild>
+                          <a href={policy.fileUrl} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            Access Resource
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No policies available at the moment.</p>
+          </div>
+        )}
 
         {/* Additional Resources */}
         <div className="mt-16 text-center">
