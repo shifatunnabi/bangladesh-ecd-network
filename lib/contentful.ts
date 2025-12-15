@@ -1173,7 +1173,6 @@ export async function getGalleryItems(
     const client = getClient(preview);
     const response = await client.getEntries<GallerySkeleton>({
       content_type: "gallery",
-      order: ["-fields.date"], // Sort by date descending (newest first)
     });
     return response.items;
   } catch (error) {
@@ -1191,34 +1190,18 @@ export function transformGallery(
     item.fields.photos.forEach((photo: any) => {
       if (photo) {
         const photoUrl = getAssetUrl(photo);
-        if (photoUrl !== "/placeholder.svg") {
+        if (photoUrl && photoUrl !== "/placeholder.svg") {
           photos.push(photoUrl);
         }
       }
     });
   }
-  
-  // Use first photo as cover image, or fallback to placeholder
-  const coverImage = photos.length > 0 ? photos[0] : "/placeholder.svg";
-
-  // Determine badge based on date
-  const galleryDate = new Date(item.fields.date as string);
-  const now = new Date();
-  const daysDiff = Math.floor((now.getTime() - galleryDate.getTime()) / (1000 * 60 * 60 * 24));
-  let badge = "";
-  if (daysDiff <= 7) badge = "New";
-  else if (daysDiff <= 30) badge = "Recent";
 
   return {
     id: item.sys.id,
-    title: (item.fields.title as string) || "Gallery Event",
-    date: formatDate(item.fields.date as string),
-    type: (item.fields.type as string) || undefined,
-    description: (item.fields.description as string) || undefined,
-    photos,
-    coverImage,
-    category: (item.fields.type as string) || "Event",
-    badge,
+    title: (item.fields.title as string) || "Untitled Gallery",
+    photos: photos.length > 0 ? photos : [],
+    typeOfContent: item.fields.typeOfContent === true, // true = photo, false = video
   };
 }
 

@@ -296,10 +296,8 @@ export interface GallerySkeleton extends EntrySkeletonType {
   contentTypeId: 'gallery'
   fields: {
     title: EntryFieldTypes.Text
-    date: EntryFieldTypes.Date
-    type?: EntryFieldTypes.Text
-    description?: EntryFieldTypes.Text
     photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
+    typeOfContent: EntryFieldTypes.Boolean // true = photo, false = video
   }
 }
 
@@ -573,13 +571,8 @@ export interface ProcessedHomepagePartner {
 export interface ProcessedGallery {
   id: string
   title: string
-  date: string
-  type?: string
-  description?: string
   photos: string[]
-  coverImage: string
-  category: string
-  badge?: string
+  typeOfContent: boolean // true = photo, false = video
 }
 
 export interface ProcessedConference {
