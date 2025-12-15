@@ -75,7 +75,9 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
                   {member.name}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-2">{member.designation}</p>
-                <p className="text-xs text-muted-foreground mb-4">Bangladesh ECD Network</p>
+                {'professionalDetails' in member && member.professionalDetails && (
+                  <p className="text-xs text-muted-foreground mb-4">{member.professionalDetails}</p>
+                )}
                 <DialogTrigger asChild>
                   <Button size="sm" className="text-xs px-3 py-1 h-auto">
                     View Details
@@ -94,9 +96,6 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
                     <DialogTitle className="text-2xl mb-2">{member.name}</DialogTitle>
                     <p className="text-base text-muted-foreground font-medium">
                       {member.designation}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Bangladesh ECD Network
                     </p>
                   </div>
                 </div>

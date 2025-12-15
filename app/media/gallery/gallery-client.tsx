@@ -6,16 +6,10 @@ import { Input } from "@/components/ui/input"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import Image from "next/image"
 import { Search, ChevronDown, ChevronUp } from "lucide-react"
-
-interface GalleryEvent {
-  id: string
-  title: string
-  photos: string[]
-  typeOfContent: boolean // true = photo, false = video
-}
+import { ProcessedGallery } from "@/lib/contentful-types"
 
 interface GalleryClientProps {
-  initialGalleryEvents: GalleryEvent[]
+  initialGalleryEvents: ProcessedGallery[]
 }
 
 export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
@@ -24,10 +18,11 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [expandAll, setExpandAll] = useState(false)
 
-  // Filter events based on search and active tab
+  // Filter events based on search and active tab  
   const filteredEvents = initialGalleryEvents.filter((event) => {
     if (!event || !event.title) return false
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase())
+    // typeOfContent: true = photo, false = video
     const matchesTab = activeTab === "photo" ? event.typeOfContent === true : event.typeOfContent === false
     return matchesSearch && matchesTab
   })
@@ -159,7 +154,9 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
                               src={photo || "/placeholder.svg"}
                               alt={`${event.title} - Image ${index + 1}`}
                               fill
+                              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                               className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              loading={index < 4 ? "eager" : "lazy"}
                             />
                           </div>
                         ))
