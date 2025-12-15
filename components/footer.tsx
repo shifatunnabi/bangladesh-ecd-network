@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Facebook, Twitter, Linkedin, Mail, Phone, MapPin } from "lucide-react"
+import { Facebook, Instagram, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react"
 
 export function Footer() {
   return (
@@ -15,21 +15,24 @@ export function Footer() {
               <span className="font-bold text-lg">Bangladesh ECD Network</span>
             </div>
             <p className="text-sm text-primary-foreground/80 leading-relaxed">
-              A professional network focused on improving outcomes for young children and their caregivers in
-              Bangladesh.
+               Building partnership for Early Childhood Development (ECD).
             </p>
             <div className="flex space-x-4">
-              <Link href="#" className="text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="https://www.facebook.com/bangladeshecdnetwork/" className="text-primary-foreground/80 hover:text-primary-foreground">
                 <Facebook className="h-5 w-5" />
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="text-primary-foreground/80 hover:text-primary-foreground">
-                <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
+              <Link href="https://www.instagram.com/bangladeshecdnetwork/" className="text-primary-foreground/80 hover:text-primary-foreground">
+                <Instagram className="h-5 w-5" />
+                <span className="sr-only">Instagram</span>
               </Link>
-              <Link href="#" className="text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="https://www.linkedin.com/company/bangladesh-ecd-network/" className="text-primary-foreground/80 hover:text-primary-foreground">
                 <Linkedin className="h-5 w-5" />
                 <span className="sr-only">LinkedIn</span>
+              </Link>
+              <Link href="https://www.youtube.com/playlist?list=PLpvxRLgU7mN1n9nXlqodkpikcWdEiFZMs" className="text-primary-foreground/80 hover:text-primary-foreground">
+                <Youtube className="h-5 w-5" />
+                <span className="sr-only">YouTube</span>
               </Link>
             </div>
           </div>
