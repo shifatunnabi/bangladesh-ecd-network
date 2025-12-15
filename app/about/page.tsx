@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Star } from "lucide-react"
 import { getAboutPage, transformAboutPage, extractParagraphs, getCoreValues, transformCoreValue } from "@/lib/contentful"
 import { ProcessedAboutPage, ProcessedCoreValue } from "@/lib/contentful-types"
+import { PartnersSection } from "@/components/partners-section"
 
 export default async function AboutPage() {
   // Fetch about page data from Contentful
@@ -185,7 +186,7 @@ export default async function AboutPage() {
 
       {/* Partners Section */}
       <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
+        {/* <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">Our Partners</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -216,7 +217,8 @@ export default async function AboutPage() {
               <Link href="/about/partners">View All Partners</Link>
             </Button>
           </div>
-        </div>
+        </div> */}
+        <PartnersSection />
       </section>
 
       {/* Donate CTA */}
