@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,7 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<string[]>([]);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) =>
@@ -58,11 +59,20 @@ export function Header() {
   };
 
   const handleMouseEnter = (item: string) => {
+    // Clear any pending hide timeout when entering a dropdown
+    if (hideTimeoutRef.current) {
+      clearTimeout(hideTimeoutRef.current);
+      hideTimeoutRef.current = null;
+    }
     setHoveredItem(item);
   };
 
   const handleMouseLeave = () => {
-    setHoveredItem(null);
+    // Set a 2-second delay before hiding the dropdown
+    hideTimeoutRef.current = setTimeout(() => {
+      setHoveredItem(null);
+      hideTimeoutRef.current = null;
+    }, 1000);
   };
 
   return (

@@ -113,23 +113,27 @@ export function Footer() {
             <h3 className="font-semibold text-lg">Contact Us</h3>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
-                <MapPin className="h-4 w-4 mt-1 text-primary-foreground/80" />
+                <MapPin className="h-8 w-8 mt-1 text-primary-foreground/80" />
                 <div className="text-sm text-primary-foreground/80">
-                  <p>Dhaka, Bangladesh</p>
+                  <p>House 113, Road 2, Block A, Niketon, Gulshan 1, Dhaka 1212, Bangladesh</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="h-4 w-4 text-primary-foreground/80" />
+                <Mail className="h8 w-8 text-primary-foreground/80" />
                 <a
-                  href="mailto:info@bangladeshecdnetwork.org"
+                  href="mailto:bangladehecdnetwork@gmail.com"
                   className="text-sm text-primary-foreground/80 hover:text-primary-foreground"
                 >
-                  info@bangladeshecdnetwork.org
+                  bangladehecdnetwork@gmail.com
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-primary-foreground/80" />
-                <span className="text-sm text-primary-foreground/80">+880 1XXX-XXXXXX</span>
+                <span className="text-sm text-primary-foreground/80">Tel: +88 02 58810627</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Phone className="h-4 w-4 text-primary-foreground/80" />
+                <span className="text-sm text-primary-foreground/80">Mob: +88 017 3825 9267</span>
               </div>
             </div>
           </div>
@@ -137,12 +141,12 @@ export function Footer() {
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-primary-foreground/80">© 2024 Bangladesh ECD Network. All rights reserved.</p>
+            <p className="text-sm text-primary-foreground/80">© 2026 Bangladesh ECD Network. All rights reserved.</p>
             <div className="flex space-x-6">
-              <Link href="/privacy" className="text-sm text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="/images/PP.pdf" target="_blank" className="text-sm text-primary-foreground/80 hover:text-primary-foreground">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="text-sm text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="/images/ToS.pdf" target="_blank" className="text-sm text-primary-foreground/80 hover:text-primary-foreground">
                 Terms of Service
               </Link>
             </div>
