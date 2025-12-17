@@ -99,8 +99,12 @@ export function WhoWeAreSection({ whoWeAreData }: WhoWeAreSectionProps) {
                 <Image
                   src={whoWeAreData?.photoUrl || "/images/ecd-team-meeting.jpg"}
                   alt="ECD Network team meeting"
-                  fill
-                  className="object-cover"
+                  width={600}
+                  height={400}
+                  className="object-cover w-full h-full"
+                  loading="lazy"
+                  quality={75}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
               {/* <div className="p-6 bg-white">

@@ -48,6 +48,8 @@ export function PartnersSection() {
                 width={120}
                 height={60}
                 className="max-h-16 w-auto object-contain"
+                loading="lazy"
+                quality={70}
               />
             </div>
           ))}

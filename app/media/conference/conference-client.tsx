@@ -18,10 +18,15 @@ const fallbackConferences: ProcessedConference[] = [
     id: "fallback-2024",
     title: "Annual ECD Conference 2024",
     subtitle: "Building Resilient Early Childhood Systems",
+    theme: "Building Resilient Early Childhood Systems",
     date: "April 20-22, 2024",
     venue: "Dhaka International Conference Center",
+    organizer: "Bangladesh ECD Network",
     status: "upcoming",
+    thumbnail: "/placeholder.svg?height=300&width=400",
     thumbnailUrl: "/placeholder.svg?height=300&width=400",
+    photos: [],
+    href: "/media/conference/fallback-2024",
     description:
       "Join us for three days of learning, networking, and sharing best practices in early childhood development. This year's theme focuses on building resilient systems that can adapt to changing needs and challenges.",
   },
@@ -29,10 +34,15 @@ const fallbackConferences: ProcessedConference[] = [
     id: "fallback-2023",
     title: "Annual ECD Conference 2023",
     subtitle: "Innovation in Early Childhood Development",
+    theme: "Innovation in Early Childhood Development",
     date: "May 15-17, 2023",
     venue: "Bangabandhu International Conference Center",
+    organizer: "Bangladesh ECD Network",
     status: "completed",
+    thumbnail: "/placeholder.svg?height=300&width=400",
     thumbnailUrl: "/placeholder.svg?height=300&width=400",
+    photos: [],
+    href: "/media/conference/fallback-2023",
     description:
       "Our 2023 conference brought together leading experts, practitioners, and policymakers to explore innovative approaches to early childhood development in Bangladesh and beyond.",
   },
@@ -40,10 +50,15 @@ const fallbackConferences: ProcessedConference[] = [
     id: "fallback-2022",
     title: "Annual ECD Conference 2022",
     subtitle: "Strengthening ECD Systems Post-Pandemic",
+    theme: "Strengthening ECD Systems Post-Pandemic",
     date: "June 10-12, 2022",
     venue: "Virtual Conference",
+    organizer: "Bangladesh ECD Network",
     status: "completed",
+    thumbnail: "/placeholder.svg?height=300&width=400",
     thumbnailUrl: "/placeholder.svg?height=300&width=400",
+    photos: [],
+    href: "/media/conference/fallback-2022",
     description:
       "Our first virtual conference addressed the challenges and opportunities in early childhood development following the COVID-19 pandemic, with a focus on system strengthening and recovery.",
   },
@@ -75,12 +90,15 @@ export function ConferenceClient({ conferences }: ConferenceClientProps) {
             <Card key={conference.id} className="overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
                 {/* Image */}
-                <div className="relative h-64 lg:h-auto">
+                <div className="relative h-64 lg:h-auto bg-gray-100">
                   <Image
                     src={conference.thumbnailUrl || "/placeholder.svg"}
                     alt={conference.title}
                     fill
                     className="object-cover"
+                    loading="lazy"
+                    unoptimized
+                    sizes="(max-width: 1024px) 100vw, 33vw"
                   />
                   <div className="absolute top-4 left-4">
                     <Badge variant={conference.status === "upcoming" ? "default" : "secondary"}>
@@ -121,44 +139,7 @@ export function ConferenceClient({ conferences }: ConferenceClientProps) {
                       <p className="text-muted-foreground leading-relaxed">{conference.description}</p>
                     )}
 
-                    {/* Materials */}
-                    <div className="space-y-3">
-                      {conference.materialUrl && (
-                        <div>
-                          <h4 className="font-semibold mb-3">Conference Materials</h4>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="justify-start bg-transparent"
-                            asChild
-                          >
-                            <a 
-                              href={conference.materialUrl} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >
-                              <Download className="w-4 h-4 mr-2" />
-                              Download Materials
-                            </a>
-                          </Button>
-                        </div>
-                      )}
-
-                      {conference.registrationLink && conference.status === "upcoming" && (
-                        <div className="pt-4">
-                          <Button size="lg" asChild>
-                            <a 
-                              href={conference.registrationLink} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >
-                              <ExternalLink className="w-4 h-4 mr-2" />
-                              Register Now
-                            </a>
-                          </Button>
-                        </div>
-                      )}
-                    </div>
+                    {/* No materials or registration links in new model */}
                   </div>
                 </div>
               </div>

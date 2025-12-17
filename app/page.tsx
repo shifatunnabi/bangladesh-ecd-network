@@ -10,28 +10,27 @@ import { NewsletterSection } from "@/components/newsletter-section"
 import { getCarouselSlides, transformCarousel, getHomepageCoreValues, transformHomepageCoreValues, getHomepageOurImpact, getHomepageQuote, getHomepageFinalSection, getWhoWeAre, getLatestResources } from "@/lib/contentful"
 
 export default async function HomePage() {
-  // Fetch carousel slides from Contentful
-  const carouselEntries = await getCarouselSlides();
+  // Parallelize all API calls for faster loading
+  const [
+    carouselEntries,
+    coreValuesEntry,
+    ourImpactData,
+    quotesData,
+    finalSectionData,
+    whoWeAreData,
+    latestResources,
+  ] = await Promise.all([
+    getCarouselSlides(),
+    getHomepageCoreValues(),
+    getHomepageOurImpact(),
+    getHomepageQuote(),
+    getHomepageFinalSection(),
+    getWhoWeAre(),
+    getLatestResources(),
+  ]);
+
   const carouselSlides = carouselEntries.map(transformCarousel);
-
-  // Fetch homepage core values from Contentful
-  const coreValuesEntry = await getHomepageCoreValues();
   const coreValuesData = coreValuesEntry ? transformHomepageCoreValues(coreValuesEntry) : null;
-
-  // Fetch our impact data from Contentful
-  const ourImpactData = await getHomepageOurImpact();
-
-  // Fetch quote data from Contentful
-  const quotesData = await getHomepageQuote();
-
-  // Fetch final section data from Contentful
-  const finalSectionData = await getHomepageFinalSection();
-
-  // Fetch who we are data from Contentful
-  const whoWeAreData = await getWhoWeAre();
-
-  // Fetch latest resources from Contentful
-  const latestResources = await getLatestResources();
 
   return (
     <div className="flex flex-col">

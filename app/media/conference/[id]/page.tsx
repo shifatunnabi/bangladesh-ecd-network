@@ -88,7 +88,7 @@ export default async function ConferenceDetailsPage({
               {conference.photos.map((photo, index) => (
                 <div
                   key={index}
-                  className="relative aspect-video overflow-hidden rounded-lg"
+                  className="relative aspect-video overflow-hidden rounded-lg bg-gray-100"
                 >
                   <Image
                     src={photo}
@@ -96,7 +96,8 @@ export default async function ConferenceDetailsPage({
                     width={400}
                     height={225}
                     className="object-cover w-full h-full"
-                    loading={index < 6 ? 'eager' : 'lazy'}
+                    loading="lazy"
+                    unoptimized
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>

@@ -15,7 +15,7 @@ interface ResourceHighlightsProps {
 
 export function ResourceHighlights({ latestResearch, latestVoice, latestNewsletter, latestPolicy }: ResourceHighlightsProps) {
   const resources = [
-    latestResearch && {
+    latestResearch ? {
       type: "Research Report",
       title: latestResearch.title,
       date: latestResearch.date,
@@ -24,8 +24,8 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
       href: `/resources/research-reports/${latestResearch.id}`,
       action: "Download PDF",
       icon: Download,
-    },
-    latestVoice && {
+    } : null,
+    latestVoice ? {
       type: "Video Resource",
       title: latestVoice.title,
       date: latestVoice.date,
@@ -34,8 +34,8 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
       href: `/resources/voices/${latestVoice.id}`,
       action: "Watch Video",
       icon: Play,
-    },
-    latestPolicy && {
+    } : null,
+    latestPolicy ? {
       type: "Policy Brief",
       title: latestPolicy.title,
       date: latestPolicy.year || "Recent",
@@ -44,8 +44,8 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
       href: latestPolicy.fileUrl,
       action: "Read More",
       icon: ExternalLink,
-    },
-    latestNewsletter && {
+    } : null,
+    latestNewsletter ? {
       type: "Newsletter",
       title: latestNewsletter.title,
       date: latestNewsletter.date,
@@ -54,8 +54,8 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
       href: latestNewsletter.href,
       action: "View Newsletter",
       icon: FileText,
-    },
-  ].filter(Boolean);
+    } : null,
+  ].filter((resource): resource is NonNullable<typeof resource> => resource !== null);
 
   if (resources.length === 0) {
     return null;
@@ -82,8 +82,12 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
                   <Image
                     src={resource.image || "/placeholder.svg"}
                     alt={resource.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    width={400}
+                    height={192}
+                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                    quality={75}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                   <div className="absolute top-3 left-3">
                     <Badge variant={resource.badge === "New" ? "default" : "secondary"}>{resource.badge}</Badge>

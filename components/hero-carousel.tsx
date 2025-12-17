@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { ProcessedCarousel } from "@/lib/contentful-types"
 
 interface HeroCarouselProps {
@@ -68,7 +69,15 @@ export function HeroCarousel({ slides: propSlides }: HeroCarouselProps) {
         >
           {/* Background Image */}
           <div className="absolute inset-0">
-            <img src={slide.photo || "/placeholder.svg"} alt={slide.title} className="w-full h-full object-cover" />
+            <Image 
+              src={slide.photo || "/placeholder.svg"} 
+              alt={slide.title} 
+              fill
+              className="object-cover"
+              priority={index === 0}
+              quality={75}
+              sizes="100vw"
+            />
             <div className="absolute inset-0 bg-black/40" />
           </div>
 

@@ -161,13 +161,37 @@ export async function getEntryByField<T extends EntrySkeletonType>(
 }
 
 // Helper function to extract asset URL
-export function getAssetUrl(asset: Asset | undefined): string {
-  if (!asset?.fields?.file?.url) {
+export function getAssetUrl(asset: any, width?: number, quality?: number): string {
+  if (!asset) {
     return "/placeholder.svg";
   }
 
-  const url = asset.fields.file.url as string;
-  return url.startsWith("//") ? `https:${url}` : url;
+  // Handle both direct Asset objects and references
+  const assetFields = asset.fields || asset;
+  
+  if (!assetFields?.file?.url) {
+    return "/placeholder.svg";
+  }
+
+  let url = assetFields.file.url as string;
+  
+  // Ensure URL has protocol
+  if (url.startsWith("//")) {
+    url = `https:${url}`;
+  } else if (!url.startsWith("http")) {
+    url = `https:${url}`;
+  }
+  
+  // Use Contentful's image optimization for images
+  if (url.includes('images.ctfassets.net') && (width || quality)) {
+    const params = new URLSearchParams();
+    if (width) params.append('w', width.toString());
+    if (quality) params.append('q', quality.toString());
+    params.append('fm', 'webp'); // Use WebP format for better compression
+    url += `?${params.toString()}`;
+  }
+  
+  return url;
 }
 
 // Helper function to format date
@@ -385,7 +409,22 @@ export function transformEvent(entry: Entry<EventSkeleton>): ProcessedEvent {
 // Helper function to determine event badge based on date
 function determineEventBadge(startDateString: string | undefined): string {
   if (!startDateString) return "TBD";
-
+  
+  const startDate = new Date(startDateString);
+  const now = new Date();
+  const daysUntilEvent = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  
+  if (daysUntilEvent < 0) {
+    return "Completed";
+  } else if (daysUntilEvent === 0) {
+    return "Today";
+  } else if (daysUntilEvent <= 7) {
+    return "This Week";
+  } else if (daysUntilEvent <= 30) {
+    return "This Month";
+  } else {
+    return "Upcoming";
+  }
 }
 
 // Newsletter-specific functions
@@ -1069,6 +1108,7 @@ export async function getGalleryItems(
     const response = await client.getEntries<GallerySkeleton>({
       content_type: "gallery",
       order: ["fields.order"], // Sort by order field ascending
+      include: 2, // Include linked assets (photos)
     });
     return response.items;
   } catch (error) {
@@ -1085,8 +1125,8 @@ export function transformGallery(
   if (item.fields.photos && Array.isArray(item.fields.photos)) {
     item.fields.photos.forEach((photo: any) => {
       if (photo) {
-        const photoUrl = getAssetUrl(photo);
-        if (photoUrl !== "/placeholder.svg") {
+        const photoUrl = getAssetUrl(photo, 800, 80);
+        if (photoUrl && photoUrl !== "/placeholder.svg") {
           photos.push(photoUrl);
         }
       }
@@ -1115,7 +1155,8 @@ export async function getConferences(
     const client = getClient(preview);
     const response = await client.getEntries<ConferenceSkeleton>({
       content_type: "conference",
-      order: ["-fields.date"], // Sort by date descending (newest first)
+      order: ["-sys.createdAt"], // Sort by creation date descending (newest first)
+      include: 2, // Include linked assets (photos)
     });
     return response.items;
   } catch (error) {
@@ -1127,29 +1168,49 @@ export async function getConferences(
 export function transformConference(
   item: Entry<ConferenceSkeleton>
 ): ProcessedConference {
-  const thumbnail = item.fields.thumbnail as Asset | undefined;
-  const conferencePhotos = (item.fields.conferencePhotos || []) as Asset[];
+  const thumbnailUrl = getAssetUrl(item.fields.thumbnail as any, 600, 80);
+  const conferencePhotos = (item.fields.conferencePhotos || []) as any[];
+  
+  // Determine status based on date
+  const conferenceDate = new Date(item.fields.date as string);
+  const now = new Date();
+  const status = conferenceDate > now ? "upcoming" : "completed";
+
+  // Transform conference photos
+  const photos: string[] = [];
+  conferencePhotos.forEach((photo: any) => {
+    if (photo) {
+      const photoUrl = getAssetUrl(photo, 800, 80);
+      if (photoUrl && photoUrl !== "/placeholder.svg") {
+        photos.push(photoUrl);
+      }
+    }
+  });
 
   return {
     id: item.sys.id,
     title: (item.fields.title as string) || '',
+    subtitle: (item.fields.theme as string) || '',
     theme: (item.fields.theme as string) || '',
     date: (item.fields.date as string) || '',
     venue: (item.fields.venue as string) || '',
     organizer: (item.fields.organizer as string) || '',
     description: (item.fields.description as string) || '',
-    thumbnail: thumbnail?.fields.file?.url ? `https:${thumbnail.fields.file.url}` : '',
-    photos: conferencePhotos
-      .filter(photo => photo?.fields?.file?.url)
-      .map(photo => `https:${photo.fields.file!.url}`),
+    thumbnail: thumbnailUrl,
+    thumbnailUrl: thumbnailUrl,
+    photos: photos,
     href: `/media/conference/${item.sys.id}`,
+    status,
   };
 }
 
 export async function getConferenceById(id: string, preview = false): Promise<ProcessedConference | null> {
   try {
     const client = getClient(preview);
-    const entry = await client.getEntry<ConferenceSkeleton>(id);
+    const entry = await client.getEntry<ConferenceSkeleton>(id, {
+      include: 2, // Include linked assets (photos)
+    });
+    if (!entry) return null;
     return transformConference(entry);
   } catch (error) {
     console.error('Error fetching conference:', error);
@@ -1174,7 +1235,8 @@ export async function getMediaCounts(preview = false) {
 
     const totalPhotos = photoGalleries.reduce((sum, item) => {
       const photos = item.fields.photos || [];
-      return sum + photos.length;
+      const photosArray = Array.isArray(photos) ? photos : [];
+      return sum + photosArray.length;
     }, 0);
 
     return {
@@ -1379,14 +1441,32 @@ export async function getPoliciesLinks(
     const client = getClient(preview);
     const response = await client.getEntries<PoliciesLinksSkeleton>({
       content_type: "policiesLinks",
-      order: ["sys.createdAt"], // Oldest first, most recent last
     });
 
     if (response.items.length === 0) {
       return [];
     }
 
-    return response.items.map(transformPolicyLink);
+    const policies = response.items.map(transformPolicyLink);
+    
+    // Group policies by type and find minimum orderOfType for each type
+    const typeOrderMap = new Map<string, number>();
+    policies.forEach(policy => {
+      const currentMin = typeOrderMap.get(policy.type) ?? 999;
+      typeOrderMap.set(policy.type, Math.min(currentMin, policy.orderOfType));
+    });
+    
+    // Sort by type order first, then by individual order within each type
+    return policies.sort((a, b) => {
+      const typeOrderA = typeOrderMap.get(a.type) ?? 999;
+      const typeOrderB = typeOrderMap.get(b.type) ?? 999;
+      
+      if (typeOrderA !== typeOrderB) {
+        return typeOrderA - typeOrderB; // Sort types by their minimum orderOfType
+      }
+      
+      return a.order - b.order; // Within same type, sort by individual order
+    });
   } catch (error) {
     console.error("Error fetching policies and links:", error);
     return [];
@@ -1401,6 +1481,8 @@ function transformPolicyLink(
     title: (item.fields.title as string) || "Untitled Policy",
     fileUrl: item.fields.file ? getAssetUrl(item.fields.file as any) : "#",
     type: (item.fields.type as string) || "General",
+    order: (item.fields.order as number) || 999,
+    orderOfType: (item.fields.orderOfType as number) || 999,
     imageUrl: item.fields.image ? getAssetUrl(item.fields.image as any) : undefined,
     year: (item.fields.year as string) || undefined,
   };

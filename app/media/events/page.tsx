@@ -45,9 +45,12 @@ export default async function EventsPage() {
                 <Image
                   src={event.thumbnail || "/placeholder.svg"}
                   alt={event.title}
-                  fill
+                  width={400}
+                  height={256}
+                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                  quality={75}
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
               <CardContent className="p-5 flex-1 flex flex-col">

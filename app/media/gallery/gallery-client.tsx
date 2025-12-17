@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import Image from "next/image"
-import { Search, ChevronDown, ChevronUp } from "lucide-react"
+import { Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X } from "lucide-react"
 import { ProcessedGallery } from "@/lib/contentful-types"
 
 interface GalleryClientProps {
@@ -17,6 +18,28 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
   const [activeTab, setActiveTab] = useState<"photo" | "video">("photo")
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [expandAll, setExpandAll] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
+  const [currentEventPhotos, setCurrentEventPhotos] = useState<string[]>([])
+  const [currentEventTitle, setCurrentEventTitle] = useState("")
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        setCurrentPhotoIndex((prev) => (prev === 0 ? currentEventPhotos.length - 1 : prev - 1))
+      } else if (e.key === "ArrowRight") {
+        setCurrentPhotoIndex((prev) => (prev === currentEventPhotos.length - 1 ? 0 : prev + 1))
+      } else if (e.key === "Escape") {
+        setLightboxOpen(false)
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [lightboxOpen, currentEventPhotos.length])
 
   // Filter events based on search and active tab  
   const filteredEvents = initialGalleryEvents.filter((event) => {
@@ -167,6 +190,12 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
                             <div
                               key={index}
                               className="relative aspect-square rounded-lg overflow-hidden group cursor-pointer hover:shadow-lg transition-all bg-muted"
+                              onClick={() => {
+                                setCurrentEventPhotos(event.photos || [])
+                                setCurrentEventTitle(event.title)
+                                setCurrentPhotoIndex(index)
+                                setLightboxOpen(true)
+                              }}
                             >
                               <Image
                                 src={photo || "/placeholder.svg"}
@@ -176,8 +205,7 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
                                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                                 className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                                 loading="lazy"
-                                placeholder="blur"
-                                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YwZjBmMCIvPjwvc3ZnPg=="
+                                unoptimized
                               />
                             </div>
                           ))
@@ -201,6 +229,68 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
           </div>
         )}
       </div>
+
+      {/* Photo Lightbox */}
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent className="max-w-[95vw] w-[95vw] h-[90vh] p-0 bg-black/95 border-0">
+          <div className="relative w-full h-full flex items-center justify-center">
+            {/* Close Button */}
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+              aria-label="Close"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            {/* Previous Button */}
+            {currentEventPhotos.length > 1 && (
+              <button
+                onClick={() => setCurrentPhotoIndex((prev) => (prev === 0 ? currentEventPhotos.length - 1 : prev - 1))}
+                className="absolute left-4 z-50 p-3 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+                aria-label="Previous photo"
+              >
+                <ChevronLeft className="h-8 w-8" />
+              </button>
+            )}
+
+            {/* Image */}
+            <div className="relative w-full h-full flex items-center justify-center px-20 py-16">
+              {currentEventPhotos[currentPhotoIndex] && (
+                <Image
+                  src={currentEventPhotos[currentPhotoIndex]}
+                  alt={`${currentEventTitle} - Image ${currentPhotoIndex + 1}`}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                  priority
+                />
+              )}
+            </div>
+
+            {/* Next Button */}
+            {currentEventPhotos.length > 1 && (
+              <button
+                onClick={() => setCurrentPhotoIndex((prev) => (prev === currentEventPhotos.length - 1 ? 0 : prev + 1))}
+                className="absolute right-4 z-50 p-3 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+                aria-label="Next photo"
+              >
+                <ChevronRight className="h-8 w-8" />
+              </button>
+            )}
+
+            {/* Photo Counter */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-black/50 text-white text-sm">
+              {currentPhotoIndex + 1} / {currentEventPhotos.length}
+            </div>
+
+            {/* Event Title */}
+            <div className="absolute top-4 left-4 z-50 px-4 py-2 rounded-lg bg-black/50 text-white">
+              <h3 className="font-semibold">{currentEventTitle}</h3>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

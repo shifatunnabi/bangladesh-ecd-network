@@ -20,7 +20,7 @@ const aboutLinks = [
 
 const memberLinks = [
   { title: "Our Members", href: "/members" },
-  { title: "Join Us", href: "/members/join" },
+  { title: "Join Us", href: "/membership" },
 ];
 
 const resourceLinks = [
@@ -72,7 +72,7 @@ export function Header() {
     hideTimeoutRef.current = setTimeout(() => {
       setHoveredItem(null);
       hideTimeoutRef.current = null;
-    }, 1000);
+    }, 500);
   };
 
   return (

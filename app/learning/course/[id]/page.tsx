@@ -235,7 +235,7 @@ export default function CoursePage({ params }: CoursePageProps) {
                             <span className="text-muted-foreground">{lesson.duration}</span>
                             {lesson.completed ? (
                               <CheckCircle className="w-3 h-3 text-green-500" />
-                            ) : lesson.current ? (
+                            ) : 'current' in lesson && lesson.current ? (
                               <Circle className="w-3 h-3 text-primary" />
                             ) : (
                               <Circle className="w-3 h-3 text-muted-foreground" />

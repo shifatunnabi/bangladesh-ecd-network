@@ -585,13 +585,13 @@ export default function BENMembershipForm() {
           >
             <div className="space-y-6">
               <div className="flex items-center space-x-3">
-                <input type="checkbox" {...register(`${key}.hasProgram`)} className="h-4 w-4" />
+                <input type="checkbox" {...register(`${key}.hasProgram` as any)} className="h-4 w-4" />
                 <label className="text-sm font-medium text-gray-700">
                   Does your organization have a program for {ageGroup} year old children?
                 </label>
               </div>
 
-              {watch(`${key}.hasProgram`) && (
+              {watch(`${key}.hasProgram` as any) && (
                 <div className="border-l-4 border-indigo-200 pl-4 space-y-6">
                   <FormInput label="Name of the Program/Project" name={`${key}.programName`} register={register} />
 
@@ -639,7 +639,7 @@ export default function BENMembershipForm() {
                         <FormInput label="Fathers" name={`${key}.parentingEducation.fathers`} register={register} type="number" />
                       </div>
                       <label className="flex items-center space-x-2">
-                        <input type="checkbox" {...register(`${key}.parentingEducation.hasSupportGroup`)} className="h-4 w-4" />
+                        <input type="checkbox" {...register(`${key}.parentingEducation.hasSupportGroup` as any)} className="h-4 w-4" />
                         <span className="text-sm text-gray-700">Do you have community support group for parenting education?</span>
                       </label>
                     </div>
@@ -656,10 +656,10 @@ export default function BENMembershipForm() {
 
                   <div className="border-t pt-4">
                     <label className="flex items-center space-x-2 mb-3">
-                      <input type="checkbox" {...register(`${key}.healthAndNutrition.hasActivities`)} className="h-4 w-4" />
+                      <input type="checkbox" {...register(`${key}.healthAndNutrition.hasActivities` as any)} className="h-4 w-4" />
                       <span className="text-sm font-medium text-gray-700">Do you have health and nutrition activities?</span>
                     </label>
-                    {watch(`${key}.healthAndNutrition.hasActivities`) && (
+                    {watch(`${key}.healthAndNutrition.hasActivities` as any) && (
                       <FormCheckboxGroup
                         label="Health and Nutrition Activities"
                         name={`${key}.healthAndNutrition.activities`}
@@ -702,12 +702,12 @@ export default function BENMembershipForm() {
                   {ageGroup === '6-8' && (
                     <div className="border-t pt-4">
                       <label className="flex items-center space-x-2 mb-3">
-                        <input type="checkbox" {...register(`${key}.supportProgramEarlyGrades.hasProgram`)} className="h-4 w-4" />
+                        <input type="checkbox" {...register(`${key}.supportProgramEarlyGrades.hasProgram` as any)} className="h-4 w-4" />
                         <span className="text-sm font-medium text-gray-700">
                           Do you have support program in early grades for pre-school graduates?
                         </span>
                       </label>
-                      {watch(`${key}.supportProgramEarlyGrades.hasProgram`) && (
+                      {watch(`${key}.supportProgramEarlyGrades.hasProgram` as any) && (
                         <FormTextarea label="Description (e.g. study cycle, reading circle)" name={`${key}.supportProgramEarlyGrades.description`} register={register} rows={2} />
                       )}
                     </div>
@@ -723,10 +723,10 @@ export default function BENMembershipForm() {
 
                   <div className="border-t pt-4">
                     <label className="flex items-center space-x-2 mb-3">
-                      <input type="checkbox" {...register(`${key}.otherActivities.hasOther`)} className="h-4 w-4" />
+                      <input type="checkbox" {...register(`${key}.otherActivities.hasOther` as any)} className="h-4 w-4" />
                       <span className="text-sm font-medium text-gray-700">Do you have any other program activity?</span>
                     </label>
-                    {watch(`${key}.otherActivities.hasOther`) && (
+                    {watch(`${key}.otherActivities.hasOther` as any) && (
                       <FormTextarea label="Please describe" name={`${key}.otherActivities.description`} register={register} rows={2} />
                     )}
                   </div>

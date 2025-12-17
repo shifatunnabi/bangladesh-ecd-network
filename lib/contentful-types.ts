@@ -303,20 +303,6 @@ export interface GallerySkeleton extends EntrySkeletonType {
 }
 
 // Conference Content Type (matches Contentful structure)
-export interface ConferenceSkeleton extends EntrySkeletonType {
-  contentTypeId: 'conference'
-  fields: {
-    title: EntryFieldTypes.Text
-    subtitle?: EntryFieldTypes.Text
-    date?: EntryFieldTypes.Date
-    venue?: EntryFieldTypes.Text
-    description?: EntryFieldTypes.Text
-    material?: EntryFieldTypes.AssetLink
-    thumbnail?: EntryFieldTypes.AssetLink
-    registrationLink?: EntryFieldTypes.Text
-  }
-}
-
 // Homepage Final Section Content Type (matches Contentful structure)
 export interface HomepageFinalSectionSkeleton extends EntrySkeletonType {
   contentTypeId: 'homepageFinalSection'
@@ -347,8 +333,10 @@ export interface PoliciesLinksSkeleton extends EntrySkeletonType {
     title: EntryFieldTypes.Text
     file: EntryFieldTypes.AssetLink
     type: EntryFieldTypes.Text
+    order?: EntryFieldTypes.Integer
     image?: EntryFieldTypes.AssetLink
     year?: EntryFieldTypes.Text
+    orderOfType?: EntryFieldTypes.Integer
   }
 }
 // Committee Content Type
@@ -461,14 +449,17 @@ export interface ConferenceSkeleton extends EntrySkeletonType {
 export interface ProcessedConference {
   id: string;
   title: string;
+  subtitle?: string;
   theme: string;
   date: string;
   venue: string;
   organizer: string;
   description: string;
   thumbnail: string;
+  thumbnailUrl: string;
   photos: string[];
   href: string;
+  status?: "upcoming" | "completed";
 }
 export interface ProcessedResource {
   id: string
@@ -601,20 +592,6 @@ export interface ProcessedGallery {
   youtubeLink?: string
 }
 
-export interface ProcessedConference {
-  id: string
-  title: string
-  subtitle?: string
-  date: string
-  venue?: string
-  description?: string
-  materialUrl?: string
-  thumbnailUrl: string
-  registrationLink?: string
-  status: "upcoming" | "completed"
-  badge?: string
-}
-
 export interface ProcessedHomepageFinalSection {
   id: string
   title: string
@@ -641,6 +618,8 @@ export interface ProcessedPolicyLink {
   title: string
   fileUrl: string
   type: string
+  order: number
+  orderOfType: number
   imageUrl?: string
   year?: string
 }

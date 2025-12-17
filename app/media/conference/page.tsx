@@ -34,6 +34,9 @@ export default async function ConferencePage() {
                     width={400}
                     height={256}
                     className="object-cover w-full h-full"
+                    loading="lazy"
+                    quality={75}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
               )}
