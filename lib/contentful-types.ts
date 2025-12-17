@@ -298,6 +298,7 @@ export interface GallerySkeleton extends EntrySkeletonType {
     typeOfContent: EntryFieldTypes.Boolean
     order?: EntryFieldTypes.Integer
     photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
+    youtubeLinkOnlyForVideos?: EntryFieldTypes.Symbol
   }
 }
 
@@ -597,6 +598,7 @@ export interface ProcessedGallery {
   order: number
   photos: string[]
   coverImage: string
+  youtubeLink?: string
 }
 
 export interface ProcessedConference {

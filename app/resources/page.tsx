@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ResourceCard } from "@/components/resource-card"
 import Link from "next/link"
 import { BookOpen, Video, FileText, ExternalLink } from "lucide-react"
+import { getResourceCounts } from "@/lib/contentful"
 
 const featuredResources = [
   {
@@ -38,38 +39,39 @@ const featuredResources = [
   },
 ]
 
-const resourceCategories = [
+const getResourceCategories = (counts: { researchCount: number; voicesCount: number; newslettersCount: number; policiesCount: number }) => [
   {
     icon: BookOpen,
     title: "Research & Reports",
     description: "Access our latest research findings, policy briefs, and analytical reports on ECD in Bangladesh.",
     href: "/resources/research-reports",
-    count: "25+ Reports",
+    count: `${counts.researchCount} Report${counts.researchCount !== 1 ? 's' : ''}`,
   },
   {
     icon: Video,
     title: "Voices & Stories",
     description: "Watch videos and read stories from practitioners, families, and communities.",
     href: "/resources/voices",
-    count: "15+ Videos",
+    count: `${counts.voicesCount} Video${counts.voicesCount !== 1 ? 's' : ''}`,
   },
   {
     icon: FileText,
     title: "Newsletter",
     description: "Stay updated with our quarterly newsletters featuring network activities and insights.",
     href: "/resources/newsletter",
-    count: "12+ Issues",
+    count: `${counts.newslettersCount} Issue${counts.newslettersCount !== 1 ? 's' : ''}`,
   },
   {
     icon: ExternalLink,
     title: "Policies & Links",
     description: "Important policy documents, guidelines, and useful external resources.",
     href: "/resources/policies",
-    count: "30+ Links",
+    count: `${counts.policiesCount} Link${counts.policiesCount !== 1 ? 's' : ''}`,
   },
 ]
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const counts = await getResourceCounts();
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -85,7 +87,7 @@ export default function ResourcesPage() {
         </div>
       </section>
 
-      {/* Featured Resources */}
+      {/* Featured Resources
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -102,7 +104,7 @@ export default function ResourcesPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Resource Categories */}
       <section className="py-16 bg-muted/30">
@@ -115,7 +117,7 @@ export default function ResourcesPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {resourceCategories.map((category, index) => (
+            {getResourceCategories(counts).map((category, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-all duration-300 group">
                 <CardHeader>
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
@@ -137,7 +139,7 @@ export default function ResourcesPage() {
       </section>
 
       {/* Quick Stats */}
-      <section className="py-16">
+      {/* <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="space-y-2">
@@ -157,7 +159,7 @@ export default function ResourcesPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Call to Action */}
       <section className="py-16 bg-secondary">

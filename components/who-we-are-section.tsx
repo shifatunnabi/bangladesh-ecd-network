@@ -103,7 +103,7 @@ export function WhoWeAreSection({ whoWeAreData }: WhoWeAreSectionProps) {
                   className="object-cover"
                 />
               </div>
-              <div className="p-6 bg-white">
+              {/* <div className="p-6 bg-white">
                 <h3 className="text-xl font-semibold mb-2 text-blue-900">Our Vision</h3>
                 {whoWeAreData?.visionRichText ? (
                   <div className="text-blue-700">
@@ -123,7 +123,7 @@ export function WhoWeAreSection({ whoWeAreData }: WhoWeAreSectionProps) {
                     {whoWeAreData?.vision || "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe."}
                   </p>
                 )}
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         </div>

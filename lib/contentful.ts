@@ -922,18 +922,7 @@ export async function getHomepageOurImpact(
             subtitle: "Conducted nationwide",
             iconUrl: "",
           },
-          {
-            number: "500+",
-            title: "Children Reached",
-            subtitle: "Through our initiatives",
-            iconUrl: "",
-          },
-          {
-            number: "15+",
-            title: "Research Papers",
-            subtitle: "Published and shared",
-            iconUrl: "",
-          },
+          
         ],
       };
     }
@@ -959,18 +948,7 @@ export async function getHomepageOurImpact(
           subtitle: "Conducted nationwide",
           iconUrl: "",
         },
-        {
-          number: "500+",
-          title: "Children Reached",
-          subtitle: "Through our initiatives",
-          iconUrl: "",
-        },
-        {
-          number: "15+",
-          title: "Research Papers",
-          subtitle: "Published and shared",
-          iconUrl: "",
-        },
+        
       ],
     };
   }
@@ -997,18 +975,7 @@ function transformHomepageOurImpact(
         subtitle: (item.fields.stat2Subtitle as string) || "Conducted nationwide",
         iconUrl: item.fields.stat2Icon ? getAssetUrl(item.fields.stat2Icon as any) : "",
       },
-      {
-        number: (item.fields.stat3Number as string) || "500+",
-        title: (item.fields.stat3Title as string) || "Children Reached",
-        subtitle: (item.fields.stat3Subtitle as string) || "Through our initiatives",
-        iconUrl: item.fields.stat3Icon ? getAssetUrl(item.fields.stat3Icon as any) : "",
-      },
-      {
-        number: (item.fields.stat4Number as string) || "15+",
-        title: (item.fields.stat4Title as string) || "Research Papers",
-        subtitle: (item.fields.stat4Subtitle as string) || "Published and shared",
-        iconUrl: item.fields.stat4Icon ? getAssetUrl(item.fields.stat4Icon as any) : "",
-      },
+      
     ],
   };
 }
@@ -1136,6 +1103,7 @@ export function transformGallery(
     order: (item.fields.order as number) || 999,
     photos,
     coverImage,
+    youtubeLink: (item.fields.youtubeLinkOnlyForVideos as string) || undefined,
   };
 }
 
@@ -1189,7 +1157,114 @@ export async function getConferenceById(id: string, preview = false): Promise<Pr
   }
 }
 
+// Count helper functions for stats
+export async function getMediaCounts(preview = false) {
+  try {
+    const [news, events, conferences, gallery] = await Promise.all([
+      getAllNews(preview),
+      getAllEvents(preview),
+      getConferences(preview),
+      getGalleryItems(preview),
+    ]);
 
+    const photoGalleries = gallery.filter(item => {
+      const typeOfContent = item.fields.typeOfContent as boolean;
+      return typeOfContent === true; // true = photo
+    });
+
+    const totalPhotos = photoGalleries.reduce((sum, item) => {
+      const photos = item.fields.photos || [];
+      return sum + photos.length;
+    }, 0);
+
+    return {
+      newsCount: news.length,
+      eventsCount: events.length,
+      conferencesCount: conferences.length,
+      photosCount: totalPhotos,
+    };
+  } catch (error) {
+    console.error('Error fetching media counts:', error);
+    return {
+      newsCount: 0,
+      eventsCount: 0,
+      conferencesCount: 0,
+      photosCount: 0,
+    };
+  }
+}
+
+export async function getResourceCounts(preview = false) {
+  try {
+    const [research, voices, newsletters, policies] = await Promise.all([
+      getAllResearch(preview),
+      getAllVoices(preview),
+      getAllNewsletters(preview),
+      getPoliciesLinks(preview),
+    ]);
+
+    return {
+      researchCount: research.length,
+      voicesCount: voices.length,
+      newslettersCount: newsletters.length,
+      policiesCount: policies.length,
+      totalResources: research.length + voices.length + newsletters.length,
+    };
+  } catch (error) {
+    console.error('Error fetching resource counts:', error);
+    return {
+      researchCount: 0,
+      voicesCount: 0,
+      newslettersCount: 0,
+      policiesCount: 0,
+      totalResources: 0,
+    };
+  }
+}
+
+export async function getLatestResources(preview = false) {
+  try {
+    const client = getClient(preview);
+    
+    const [researchEntries, voiceEntries, newsletterEntries, policyEntries] = await Promise.all([
+      client.getEntries<ResearchSkeleton>({
+        content_type: 'research',
+        order: ['-fields.date'],
+        limit: 1,
+      }),
+      client.getEntries<VoiceSkeleton>({
+        content_type: 'voice',
+        order: ['-fields.date'],
+        limit: 1,
+      }),
+      client.getEntries<NewsletterSkeleton>({
+        content_type: 'newsletter',
+        order: ['-fields.date'],
+        limit: 1,
+      }),
+      client.getEntries<PoliciesLinksSkeleton>({
+        content_type: 'policiesLinks',
+        order: ['-sys.createdAt'],
+        limit: 1,
+      }),
+    ]);
+
+    return {
+      latestResearch: researchEntries.items.length > 0 ? transformResearch(researchEntries.items[0]) : null,
+      latestVoice: voiceEntries.items.length > 0 ? transformVoice(voiceEntries.items[0]) : null,
+      latestNewsletter: newsletterEntries.items.length > 0 ? transformNewsletter(newsletterEntries.items[0]) : null,
+      latestPolicy: policyEntries.items.length > 0 ? transformPolicyLink(policyEntries.items[0]) : null,
+    };
+  } catch (error) {
+    console.error('Error fetching latest resources:', error);
+    return {
+      latestResearch: null,
+      latestVoice: null,
+      latestNewsletter: null,
+      latestPolicy: null,
+    };
+  }
+}
 
 // Homepage Final Section-specific functions
 export async function getHomepageFinalSection(

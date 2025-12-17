@@ -34,22 +34,7 @@ export default async function NewsletterPage() {
       </section>
 
       <div className="container mx-auto px-4 py-12">
-        {/* Newsletter Subscription */}
-        <Card className="max-w-2xl mx-auto mb-12 bg-muted/30">
-          <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Mail className="w-8 h-8 text-primary" />
-            </div>
-            <h2 className="text-2xl font-bold text-primary mb-4">Subscribe to Our Newsletter</h2>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              Get the latest updates delivered directly to your inbox. Join our community of ECD professionals and stay
-              connected with the latest developments.
-            </p>
-            <Button size="lg" asChild>
-              <Link href="/newsletter/subscribe">Subscribe Now</Link>
-            </Button>
-          </CardContent>
-        </Card>
+
 
         {/* Newsletter Archive */}
         <div className="text-center mb-8">
@@ -79,6 +64,24 @@ export default async function NewsletterPage() {
           </div>
         )}
       </div>
+
+
+              {/* Newsletter Subscription */}
+        <Card className="max-w-2xl mx-auto mb-12 bg-muted/30">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Mail className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold text-primary mb-4">Subscribe to Our Newsletter</h2>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              Get the latest updates delivered directly to your inbox. Join our community of ECD professionals and stay
+              connected with the latest developments.
+            </p>
+            <Button size="lg" asChild>
+              <Link href="/newsletter/subscribe">Subscribe Now</Link>
+            </Button>
+          </CardContent>
+        </Card>
     </div>
   )
 }
