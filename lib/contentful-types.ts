@@ -443,7 +443,32 @@ export interface ProcessedEvent {
   photos: string[]
   href: string
 }
+export interface ConferenceSkeleton extends EntrySkeletonType {
+  contentTypeId: 'conference';
+  fields: {
+    title: EntryFieldTypes.Symbol;
+    theme: EntryFieldTypes.Text;
+    date: EntryFieldTypes.Text;
+    venue: EntryFieldTypes.Symbol;
+    organizer: EntryFieldTypes.Text;
+    description: EntryFieldTypes.Text;
+    thumbnail: EntryFieldTypes.AssetLink;
+    conferencePhotos: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
+  };
+}
 
+export interface ProcessedConference {
+  id: string;
+  title: string;
+  theme: string;
+  date: string;
+  venue: string;
+  organizer: string;
+  description: string;
+  thumbnail: string;
+  photos: string[];
+  href: string;
+}
 export interface ProcessedResource {
   id: string
   title: string

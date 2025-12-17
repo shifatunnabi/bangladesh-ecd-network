@@ -1159,34 +1159,34 @@ export async function getConferences(
 export function transformConference(
   item: Entry<ConferenceSkeleton>
 ): ProcessedConference {
-  // Determine status based on date
-  let status: "upcoming" | "completed" = "completed";
-  let badge = "";
-  
-  if (item.fields.date) {
-    const conferenceDate = new Date(item.fields.date as string);
-    const now = new Date();
-    
-    if (conferenceDate > now) {
-      status = "upcoming";
-      const daysDiff = Math.floor((conferenceDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      if (daysDiff <= 30) badge = "Upcoming";
-    }
-  }
+  const thumbnail = item.fields.thumbnail as Asset | undefined;
+  const conferencePhotos = (item.fields.conferencePhotos || []) as Asset[];
 
   return {
     id: item.sys.id,
-    title: (item.fields.title as string) || "Conference",
-    subtitle: (item.fields.subtitle as string) || undefined,
-    date: item.fields.date ? formatDate(item.fields.date as string) : "Date TBD",
-    venue: (item.fields.venue as string) || undefined,
-    description: (item.fields.description as string) || undefined,
-    materialUrl: item.fields.material ? getAssetUrl(item.fields.material as any) : undefined,
-    thumbnailUrl: item.fields.thumbnail ? getAssetUrl(item.fields.thumbnail as any) : "/placeholder.svg",
-    registrationLink: (item.fields.registrationLink as string) || undefined,
-    status,
-    badge,
+    title: (item.fields.title as string) || '',
+    theme: (item.fields.theme as string) || '',
+    date: (item.fields.date as string) || '',
+    venue: (item.fields.venue as string) || '',
+    organizer: (item.fields.organizer as string) || '',
+    description: (item.fields.description as string) || '',
+    thumbnail: thumbnail?.fields.file?.url ? `https:${thumbnail.fields.file.url}` : '',
+    photos: conferencePhotos
+      .filter(photo => photo?.fields?.file?.url)
+      .map(photo => `https:${photo.fields.file!.url}`),
+    href: `/media/conference/${item.sys.id}`,
   };
+}
+
+export async function getConferenceById(id: string, preview = false): Promise<ProcessedConference | null> {
+  try {
+    const client = getClient(preview);
+    const entry = await client.getEntry<ConferenceSkeleton>(id);
+    return transformConference(entry);
+  } catch (error) {
+    console.error('Error fetching conference:', error);
+    return null;
+  }
 }
 
 
