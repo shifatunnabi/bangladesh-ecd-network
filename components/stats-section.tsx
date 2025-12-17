@@ -6,28 +6,17 @@ import Image from "next/image"
 const defaultStats = [
   {
     icon: Users,
-    number: "150+",
+    number: "133",
     label: "Network Members",
     description: "Professionals and organizations",
   },
   {
     icon: Building,
-    number: "45",
+    number: "18",
     label: "Partner Organizations",
     description: "Across Bangladesh",
   },
-  {
-    icon: FileText,
-    number: "25",
-    label: "Research Publications",
-    description: "Evidence-based studies",
-  },
-  {
-    icon: GraduationCap,
-    number: "500+",
-    label: "Professionals Trained",
-    description: "Through our programs",
-  },
+  
 ]
 
 interface StatsSectionProps {
@@ -57,32 +46,34 @@ export function StatsSection({ impactData }: StatsSectionProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {statsToDisplay.map((stat, index) => (
-            <Card
-              key={index}
-              className="text-center bg-white hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200"
-            >
-              <CardContent className="p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  {stat.iconUrl ? (
-                    <Image
-                      src={stat.iconUrl}
-                      alt={stat.label}
-                      width={32}
-                      height={32}
-                      className="w-8 h-8 brightness-0 invert"
-                    />
-                  ) : (
-                    <stat.icon className="w-8 h-8 text-blue-600" />
-                  )}
-                </div>
-                <div className="text-3xl font-bold text-blue-600 mb-2">{stat.number}</div>
-                <div className="text-lg font-semibold text-blue-900 mb-1">{stat.label}</div>
-                <p className="text-sm text-blue-700">{stat.description}</p>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="flex justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+            {statsToDisplay.map((stat, index) => (
+              <Card
+                key={index}
+                className="text-center bg-white hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200"
+              >
+                <CardContent className="p-8">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                    {stat.iconUrl ? (
+                      <Image
+                        src={stat.iconUrl}
+                        alt={stat.label}
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 brightness-0 invert"
+                      />
+                    ) : (
+                      <stat.icon className="w-10 h-10 text-blue-600" />
+                    )}
+                  </div>
+                  <div className="text-4xl font-bold text-blue-600 mb-2">{stat.number}</div>
+                  <div className="text-xl font-semibold text-blue-900 mb-1">{stat.label}</div>
+                  <p className="text-base text-blue-700">{stat.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </section>

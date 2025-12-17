@@ -6,16 +6,10 @@ import { Input } from "@/components/ui/input"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import Image from "next/image"
 import { Search, ChevronDown, ChevronUp } from "lucide-react"
-
-interface GalleryEvent {
-  id: string
-  title: string
-  photos: string[]
-  typeOfContent: boolean // true = photo, false = video
-}
+import { ProcessedGallery } from "@/lib/contentful-types"
 
 interface GalleryClientProps {
-  initialGalleryEvents: GalleryEvent[]
+  initialGalleryEvents: ProcessedGallery[]
 }
 
 export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
@@ -24,10 +18,11 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [expandAll, setExpandAll] = useState(false)
 
-  // Filter events based on search and active tab
+  // Filter events based on search and active tab  
   const filteredEvents = initialGalleryEvents.filter((event) => {
     if (!event || !event.title) return false
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase())
+    // typeOfContent: true = photo, false = video
     const matchesTab = activeTab === "photo" ? event.typeOfContent === true : event.typeOfContent === false
     return matchesSearch && matchesTab
   })
@@ -123,55 +118,79 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
 
         {/* Gallery Sections */}
         {filteredEvents.length > 0 ? (
-          <div className="space-y-4">
+          <div className={activeTab === "video" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
             {filteredEvents.map((event) => (
-              <Collapsible
-                key={event.id}
-                open={expandedSections.has(event.id)}
-                onOpenChange={() => toggleSection(event.id)}
-                className="border rounded-lg"
-              >
-                <CollapsibleTrigger className="w-full">
-                  <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-lg font-semibold text-left">{event.title}</h3>
-                      <span className="text-sm text-muted-foreground">
-                        • {event.photos?.length || 0} {(event.photos?.length || 0) === 1 ? 'item' : 'items'}
-                      </span>
-                    </div>
-                    {expandedSections.has(event.id) ? (
-                      <ChevronUp className="h-5 w-5 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                    )}
+              activeTab === "video" && !event.typeOfContent && event.youtubeLink ? (
+                /* Video Card */
+                <div key={event.id} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  <div className="aspect-video bg-black">
+                    <iframe
+                      src={event.youtubeLink.replace('watch?v=', 'embed/')}
+                      title={event.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
                   </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="p-4 pt-0">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                      {event.photos && event.photos.length > 0 ? (
-                        event.photos.map((photo, index) => (
-                          <div
-                            key={index}
-                            className="relative aspect-square rounded-lg overflow-hidden group cursor-pointer hover:shadow-lg transition-all"
-                          >
-                            <Image
-                              src={photo || "/placeholder.svg"}
-                              alt={`${event.title} - Image ${index + 1}`}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        ))
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold">{event.title}</h3>
+                  </div>
+                </div>
+              ) : (
+                /* Photo Collapsible */
+                <Collapsible
+                  key={event.id}
+                  open={expandedSections.has(event.id)}
+                  onOpenChange={() => toggleSection(event.id)}
+                  className="border rounded-lg"
+                >
+                  <CollapsibleTrigger className="w-full">
+                    <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-lg font-semibold text-left">{event.title}</h3>
+                        <span className="text-sm text-muted-foreground">
+                          • {event.photos?.length || 0} {(event.photos?.length || 0) === 1 ? 'item' : 'items'}
+                        </span>
+                      </div>
+                      {expandedSections.has(event.id) ? (
+                        <ChevronUp className="h-5 w-5 text-muted-foreground" />
                       ) : (
-                        <div className="col-span-full text-center py-8 text-muted-foreground">
-                          No images available
-                        </div>
+                        <ChevronDown className="h-5 w-5 text-muted-foreground" />
                       )}
                     </div>
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="p-4 pt-0">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {event.photos && event.photos.length > 0 ? (
+                          event.photos.map((photo, index) => (
+                            <div
+                              key={index}
+                              className="relative aspect-square rounded-lg overflow-hidden group cursor-pointer hover:shadow-lg transition-all bg-muted"
+                            >
+                              <Image
+                                src={photo || "/placeholder.svg"}
+                                alt={`${event.title} - Image ${index + 1}`}
+                                width={400}
+                                height={400}
+                                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                                loading="lazy"
+                                placeholder="blur"
+                                blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iI2YwZjBmMCIvPjwvc3ZnPg=="
+                              />
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-span-full text-center py-8 text-muted-foreground">
+                            No images available
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )
             ))}
           </div>
         ) : (

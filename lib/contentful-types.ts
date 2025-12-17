@@ -24,15 +24,14 @@ export interface NewsSkeleton extends EntrySkeletonType {
 export interface EventSkeleton extends EntrySkeletonType {
   contentTypeId: 'event'
   fields: {
-    title: EntryFieldTypes.Text
-    shortDescription?: EntryFieldTypes.Text
-    startDate?: EntryFieldTypes.Date
-    endDate?: EntryFieldTypes.Date
-    address?: EntryFieldTypes.Text
-    locationPin?: EntryFieldTypes.Location
-    entryFee?: EntryFieldTypes.Text
+    title: EntryFieldTypes.Symbol
+    date?: EntryFieldTypes.Symbol
+    time?: EntryFieldTypes.Symbol
+    location?: EntryFieldTypes.Symbol
+    organizer?: EntryFieldTypes.Text
+    description?: EntryFieldTypes.Text
     thumbnail?: EntryFieldTypes.AssetLink
-    content?: EntryFieldTypes.RichText
+    photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
   }
 }
 
@@ -296,8 +295,10 @@ export interface GallerySkeleton extends EntrySkeletonType {
   contentTypeId: 'gallery'
   fields: {
     title: EntryFieldTypes.Text
+    typeOfContent: EntryFieldTypes.Boolean
+    order?: EntryFieldTypes.Integer
     photos?: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>
-    typeOfContent: EntryFieldTypes.Boolean // true = photo, false = video
+    youtubeLinkOnlyForVideos?: EntryFieldTypes.Symbol
   }
 }
 
@@ -360,6 +361,7 @@ export interface CommitteeSkeleton extends EntrySkeletonType {
     professionalDetails?: EntryFieldTypes.Text
     photo?: EntryFieldTypes.AssetLink
     biography?: EntryFieldTypes.RichText
+    order?: EntryFieldTypes.Integer
   }
 }
 
@@ -433,20 +435,41 @@ export interface ProcessedNews {
 export interface ProcessedEvent {
   id: string
   title: string
-  description: string
   date: string
   time: string
   location: string
-  image: string
-  badge: string
-  type: string
-  capacity: string
+  organizer: string
+  description: string
+  thumbnail: string
+  photos: string[]
   href: string
-  registrationOpen: boolean
-  content?: any
-  entryFee?: string
+}
+export interface ConferenceSkeleton extends EntrySkeletonType {
+  contentTypeId: 'conference';
+  fields: {
+    title: EntryFieldTypes.Symbol;
+    theme: EntryFieldTypes.Text;
+    date: EntryFieldTypes.Text;
+    venue: EntryFieldTypes.Symbol;
+    organizer: EntryFieldTypes.Text;
+    description: EntryFieldTypes.Text;
+    thumbnail: EntryFieldTypes.AssetLink;
+    conferencePhotos: EntryFieldTypes.Array<EntryFieldTypes.AssetLink>;
+  };
 }
 
+export interface ProcessedConference {
+  id: string;
+  title: string;
+  theme: string;
+  date: string;
+  venue: string;
+  organizer: string;
+  description: string;
+  thumbnail: string;
+  photos: string[];
+  href: string;
+}
 export interface ProcessedResource {
   id: string
   title: string
@@ -571,8 +594,11 @@ export interface ProcessedHomepagePartner {
 export interface ProcessedGallery {
   id: string
   title: string
-  photos: string[]
   typeOfContent: boolean // true = photo, false = video
+  order: number
+  photos: string[]
+  coverImage: string
+  youtubeLink?: string
 }
 
 export interface ProcessedConference {
@@ -628,6 +654,7 @@ export interface ProcessedCommittee {
   photoUrl: string
   biography: string // Extracted plain text from rich text
   biographyRichText?: any // Original rich text if needed
+  order: number
 }
 
 export interface ProcessedSecretariat {
@@ -637,4 +664,27 @@ export interface ProcessedSecretariat {
   photoUrl: string
   biography: string // Extracted plain text from rich text
   biographyRichText?: any // Original rich text if needed
+}
+
+export interface AboutSkeleton {
+  contentTypeId: "about";
+  fields: {
+    name: EntryFieldTypes.Symbol;
+    historyPara1: EntryFieldTypes.Text;
+    historyPara2: EntryFieldTypes.Text;
+    photo: EntryFieldTypes.AssetLink;
+    formerMembers: EntryFieldTypes.Array<EntryFieldTypes.Symbol>;
+  };
+}
+
+export interface ProcessedAbout {
+  id: string;
+  name: string;
+  historyPara1: string;
+  historyPara2: string;
+  photo: string;
+  formerMembers: Array<{
+    name: string;
+    designation: string;
+  }>;
 }

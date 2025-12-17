@@ -34,7 +34,7 @@ export default async function NewsletterPage() {
       </section>
 
       <div className="container mx-auto px-4 py-12">
-        
+
 
         {/* Newsletter Archive */}
         <div className="text-center mb-8">
@@ -57,14 +57,16 @@ export default async function NewsletterPage() {
 
         {/* Load More */}
         {newsletters.length > 0 && (
-          <div className="text-center my-12 ">
+          <div className="text-center mt-12">
             <Button variant="outline" size="lg">
               Load More Issues
             </Button>
           </div>
         )}
+      </div>
 
-        {/* Newsletter Subscription */}
+
+              {/* Newsletter Subscription */}
         <Card className="max-w-2xl mx-auto mb-12 bg-muted/30">
           <CardContent className="p-8 text-center">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -80,7 +82,6 @@ export default async function NewsletterPage() {
             </Button>
           </CardContent>
         </Card>
-      </div>
     </div>
   )
 }

@@ -32,8 +32,8 @@ const fallbackValues = [
 
 export function MissionSection({ coreValuesData }: MissionSectionProps) {
   const fallbackData = {
-    title: "Our Core Values",
-    subtitle: "Guided by principles that ensure every child in Bangladesh has the opportunity to thrive and reach their full potential.",
+    title: "Our Strategic Goals",
+    subtitle: "Driving impactful change in early childhood development across Bangladesh.",
     stats: fallbackValues,
   }
 
@@ -70,7 +70,7 @@ export function MissionSection({ coreValuesData }: MissionSectionProps) {
                   )}
                 </div>
                 <h3 className="text-xl font-semibold mb-3 text-blue-900">{value.title}</h3>
-                <p className="text-blue-700 leading-relaxed">{value.subtitle}</p>
+                <p className="text-blue-700 leading-relaxed text-justify">{value.subtitle}</p>
               </CardContent>
             </Card>
           ))}

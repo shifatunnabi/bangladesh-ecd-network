@@ -44,6 +44,8 @@ import type {
   ProcessedCommittee,
   SecretariatSkeleton,
   ProcessedSecretariat,
+  AboutSkeleton,
+  ProcessedAbout,
 } from "./contentful-types";
 
 // Environment variables validation
@@ -301,7 +303,7 @@ export async function getAllEvents(
 ): Promise<Entry<EventSkeleton>[]> {
   return getEntries<EventSkeleton>(
     "event",
-    { order: ["fields.startDate"] },
+    { order: ["sys.createdAt"] },
     preview
   );
 }
@@ -311,12 +313,10 @@ export async function getUpcomingEvents(
 ): Promise<Entry<EventSkeleton>[]> {
   try {
     const client = getClient(preview);
-    const now = new Date().toISOString();
     const query: any = {
       content_type: "event",
-      order: ["fields.startDate"],
+      order: ["sys.createdAt"],
     };
-    query["fields.startDate[gte]"] = now;
 
     const response = await client.getEntries<EventSkeleton>(query);
     return response.items;
@@ -331,12 +331,10 @@ export async function getPastEvents(
 ): Promise<Entry<EventSkeleton>[]> {
   try {
     const client = getClient(preview);
-    const now = new Date().toISOString();
     const query: any = {
       content_type: "event",
-      order: ["-fields.startDate"],
+      order: ["-sys.createdAt"],
     };
-    query["fields.startDate[lt]"] = now;
 
     const response = await client.getEntries<EventSkeleton>(query);
     return response.items;
@@ -357,60 +355,30 @@ export async function getEventById(
 export function transformEvent(entry: Entry<EventSkeleton>): ProcessedEvent {
   const { fields, sys } = entry;
 
-  // Format dates
-  const startDate = fields.startDate
-    ? new Date(fields.startDate as string)
-    : null;
-  const endDate = fields.endDate ? new Date(fields.endDate as string) : null;
-
-  // Format date range
-  let dateString = "";
-  let timeString = "";
-
-  if (startDate) {
-    if (endDate && startDate.toDateString() !== endDate.toDateString()) {
-      // Multi-day event
-      dateString = `${formatDate(fields.startDate as string)} - ${formatDate(
-        fields.endDate as string
-      )}`;
-      timeString = "Multi-day event";
-    } else {
-      // Single day event
-      dateString = formatDate(fields.startDate as string);
-      timeString = startDate.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      });
-
-      if (endDate) {
-        timeString += ` - ${endDate.toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-        })}`;
+  // Extract photos URLs from the photos array
+  const photos: string[] = [];
+  if (fields.photos && Array.isArray(fields.photos)) {
+    fields.photos.forEach((photo: any) => {
+      if (photo) {
+        const photoUrl = getAssetUrl(photo);
+        if (photoUrl !== "/placeholder.svg") {
+          photos.push(photoUrl);
+        }
       }
-    }
-  } else {
-    dateString = "Date TBD";
-    timeString = "Time TBD";
+    });
   }
 
   return {
     id: sys.id,
     title: (fields.title as string) || "",
-    description: (fields.shortDescription as string) || "",
-    date: dateString,
-    time: timeString,
-    location: (fields.address as string) || "Location TBD",
-    image: getAssetUrl(fields.thumbnail as Asset),
-    badge: determineEventBadge(fields.startDate as string),
-    type: determineEventType(fields.title as string),
-    capacity: "Registration Required",
+    date: (fields.date as string) || "Date TBD",
+    time: (fields.time as string) || "",
+    location: (fields.location as string) || "Location TBD",
+    organizer: (fields.organizer as string) || "",
+    description: (fields.description as string) || "",
+    thumbnail: getAssetUrl(fields.thumbnail as Asset),
+    photos,
     href: `/media/events/${sys.id}`,
-    registrationOpen: isRegistrationOpen(fields.startDate as string),
-    content: fields.content || null,
-    entryFee: (fields.entryFee as string) || "Free",
   };
 }
 
@@ -418,46 +386,6 @@ export function transformEvent(entry: Entry<EventSkeleton>): ProcessedEvent {
 function determineEventBadge(startDateString: string | undefined): string {
   if (!startDateString) return "TBD";
 
-  const eventDate = new Date(startDateString);
-  const now = new Date();
-  const daysDiff = Math.floor(
-    (eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  if (daysDiff < 0) return "Completed";
-  if (daysDiff <= 7) return "Upcoming";
-  if (daysDiff <= 30) return "This Month";
-  return "Future";
-}
-
-// Helper function to determine event type from title
-function determineEventType(title: string): string {
-  const titleLower = title.toLowerCase();
-
-  if (titleLower.includes("conference")) return "Conference";
-  if (titleLower.includes("workshop")) return "Workshop";
-  if (titleLower.includes("training")) return "Training";
-  if (titleLower.includes("seminar")) return "Seminar";
-  if (titleLower.includes("launch")) return "Launch Event";
-  if (titleLower.includes("dialogue")) return "Policy Dialogue";
-  if (titleLower.includes("community")) return "Community Event";
-
-  return "Event";
-}
-
-// Helper function to check if registration is open
-function isRegistrationOpen(startDateString: string | undefined): boolean {
-  if (!startDateString) return false;
-
-  const eventDate = new Date(startDateString);
-  const now = new Date();
-
-  // Registration closes 1 day before event or if event has passed
-  const daysDiff = Math.floor(
-    (eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  return daysDiff > 1;
 }
 
 // Newsletter-specific functions
@@ -994,18 +922,7 @@ export async function getHomepageOurImpact(
             subtitle: "Conducted nationwide",
             iconUrl: "",
           },
-          {
-            number: "500+",
-            title: "Children Reached",
-            subtitle: "Through our initiatives",
-            iconUrl: "",
-          },
-          {
-            number: "15+",
-            title: "Research Papers",
-            subtitle: "Published and shared",
-            iconUrl: "",
-          },
+          
         ],
       };
     }
@@ -1031,18 +948,7 @@ export async function getHomepageOurImpact(
           subtitle: "Conducted nationwide",
           iconUrl: "",
         },
-        {
-          number: "500+",
-          title: "Children Reached",
-          subtitle: "Through our initiatives",
-          iconUrl: "",
-        },
-        {
-          number: "15+",
-          title: "Research Papers",
-          subtitle: "Published and shared",
-          iconUrl: "",
-        },
+        
       ],
     };
   }
@@ -1069,18 +975,7 @@ function transformHomepageOurImpact(
         subtitle: (item.fields.stat2Subtitle as string) || "Conducted nationwide",
         iconUrl: item.fields.stat2Icon ? getAssetUrl(item.fields.stat2Icon as any) : "",
       },
-      {
-        number: (item.fields.stat3Number as string) || "500+",
-        title: (item.fields.stat3Title as string) || "Children Reached",
-        subtitle: (item.fields.stat3Subtitle as string) || "Through our initiatives",
-        iconUrl: item.fields.stat3Icon ? getAssetUrl(item.fields.stat3Icon as any) : "",
-      },
-      {
-        number: (item.fields.stat4Number as string) || "15+",
-        title: (item.fields.stat4Title as string) || "Research Papers",
-        subtitle: (item.fields.stat4Subtitle as string) || "Published and shared",
-        iconUrl: item.fields.stat4Icon ? getAssetUrl(item.fields.stat4Icon as any) : "",
-      },
+      
     ],
   };
 }
@@ -1173,6 +1068,7 @@ export async function getGalleryItems(
     const client = getClient(preview);
     const response = await client.getEntries<GallerySkeleton>({
       content_type: "gallery",
+      order: ["fields.order"], // Sort by order field ascending
     });
     return response.items;
   } catch (error) {
@@ -1190,18 +1086,24 @@ export function transformGallery(
     item.fields.photos.forEach((photo: any) => {
       if (photo) {
         const photoUrl = getAssetUrl(photo);
-        if (photoUrl && photoUrl !== "/placeholder.svg") {
+        if (photoUrl !== "/placeholder.svg") {
           photos.push(photoUrl);
         }
       }
     });
   }
+  
+  // Use first photo as cover image, or fallback to placeholder
+  const coverImage = photos.length > 0 ? photos[0] : "/placeholder.svg";
 
   return {
     id: item.sys.id,
-    title: (item.fields.title as string) || "Untitled Gallery",
-    photos: photos.length > 0 ? photos : [],
-    typeOfContent: item.fields.typeOfContent === true, // true = photo, false = video
+    title: (item.fields.title as string) || "Gallery Event",
+    typeOfContent: (item.fields.typeOfContent as boolean) ?? true, // Default to photo (true)
+    order: (item.fields.order as number) || 999,
+    photos,
+    coverImage,
+    youtubeLink: (item.fields.youtubeLinkOnlyForVideos as string) || undefined,
   };
 }
 
@@ -1225,37 +1127,144 @@ export async function getConferences(
 export function transformConference(
   item: Entry<ConferenceSkeleton>
 ): ProcessedConference {
-  // Determine status based on date
-  let status: "upcoming" | "completed" = "completed";
-  let badge = "";
-  
-  if (item.fields.date) {
-    const conferenceDate = new Date(item.fields.date as string);
-    const now = new Date();
-    
-    if (conferenceDate > now) {
-      status = "upcoming";
-      const daysDiff = Math.floor((conferenceDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      if (daysDiff <= 30) badge = "Upcoming";
-    }
-  }
+  const thumbnail = item.fields.thumbnail as Asset | undefined;
+  const conferencePhotos = (item.fields.conferencePhotos || []) as Asset[];
 
   return {
     id: item.sys.id,
-    title: (item.fields.title as string) || "Conference",
-    subtitle: (item.fields.subtitle as string) || undefined,
-    date: item.fields.date ? formatDate(item.fields.date as string) : "Date TBD",
-    venue: (item.fields.venue as string) || undefined,
-    description: (item.fields.description as string) || undefined,
-    materialUrl: item.fields.material ? getAssetUrl(item.fields.material as any) : undefined,
-    thumbnailUrl: item.fields.thumbnail ? getAssetUrl(item.fields.thumbnail as any) : "/placeholder.svg",
-    registrationLink: (item.fields.registrationLink as string) || undefined,
-    status,
-    badge,
+    title: (item.fields.title as string) || '',
+    theme: (item.fields.theme as string) || '',
+    date: (item.fields.date as string) || '',
+    venue: (item.fields.venue as string) || '',
+    organizer: (item.fields.organizer as string) || '',
+    description: (item.fields.description as string) || '',
+    thumbnail: thumbnail?.fields.file?.url ? `https:${thumbnail.fields.file.url}` : '',
+    photos: conferencePhotos
+      .filter(photo => photo?.fields?.file?.url)
+      .map(photo => `https:${photo.fields.file!.url}`),
+    href: `/media/conference/${item.sys.id}`,
   };
 }
 
+export async function getConferenceById(id: string, preview = false): Promise<ProcessedConference | null> {
+  try {
+    const client = getClient(preview);
+    const entry = await client.getEntry<ConferenceSkeleton>(id);
+    return transformConference(entry);
+  } catch (error) {
+    console.error('Error fetching conference:', error);
+    return null;
+  }
+}
 
+// Count helper functions for stats
+export async function getMediaCounts(preview = false) {
+  try {
+    const [news, events, conferences, gallery] = await Promise.all([
+      getAllNews(preview),
+      getAllEvents(preview),
+      getConferences(preview),
+      getGalleryItems(preview),
+    ]);
+
+    const photoGalleries = gallery.filter(item => {
+      const typeOfContent = item.fields.typeOfContent as boolean;
+      return typeOfContent === true; // true = photo
+    });
+
+    const totalPhotos = photoGalleries.reduce((sum, item) => {
+      const photos = item.fields.photos || [];
+      return sum + photos.length;
+    }, 0);
+
+    return {
+      newsCount: news.length,
+      eventsCount: events.length,
+      conferencesCount: conferences.length,
+      photosCount: totalPhotos,
+    };
+  } catch (error) {
+    console.error('Error fetching media counts:', error);
+    return {
+      newsCount: 0,
+      eventsCount: 0,
+      conferencesCount: 0,
+      photosCount: 0,
+    };
+  }
+}
+
+export async function getResourceCounts(preview = false) {
+  try {
+    const [research, voices, newsletters, policies] = await Promise.all([
+      getAllResearch(preview),
+      getAllVoices(preview),
+      getAllNewsletters(preview),
+      getPoliciesLinks(preview),
+    ]);
+
+    return {
+      researchCount: research.length,
+      voicesCount: voices.length,
+      newslettersCount: newsletters.length,
+      policiesCount: policies.length,
+      totalResources: research.length + voices.length + newsletters.length,
+    };
+  } catch (error) {
+    console.error('Error fetching resource counts:', error);
+    return {
+      researchCount: 0,
+      voicesCount: 0,
+      newslettersCount: 0,
+      policiesCount: 0,
+      totalResources: 0,
+    };
+  }
+}
+
+export async function getLatestResources(preview = false) {
+  try {
+    const client = getClient(preview);
+    
+    const [researchEntries, voiceEntries, newsletterEntries, policyEntries] = await Promise.all([
+      client.getEntries<ResearchSkeleton>({
+        content_type: 'research',
+        order: ['-fields.date'],
+        limit: 1,
+      }),
+      client.getEntries<VoiceSkeleton>({
+        content_type: 'voice',
+        order: ['-fields.date'],
+        limit: 1,
+      }),
+      client.getEntries<NewsletterSkeleton>({
+        content_type: 'newsletter',
+        order: ['-fields.date'],
+        limit: 1,
+      }),
+      client.getEntries<PoliciesLinksSkeleton>({
+        content_type: 'policiesLinks',
+        order: ['-sys.createdAt'],
+        limit: 1,
+      }),
+    ]);
+
+    return {
+      latestResearch: researchEntries.items.length > 0 ? transformResearch(researchEntries.items[0]) : null,
+      latestVoice: voiceEntries.items.length > 0 ? transformVoice(voiceEntries.items[0]) : null,
+      latestNewsletter: newsletterEntries.items.length > 0 ? transformNewsletter(newsletterEntries.items[0]) : null,
+      latestPolicy: policyEntries.items.length > 0 ? transformPolicyLink(policyEntries.items[0]) : null,
+    };
+  } catch (error) {
+    console.error('Error fetching latest resources:', error);
+    return {
+      latestResearch: null,
+      latestVoice: null,
+      latestNewsletter: null,
+      latestPolicy: null,
+    };
+  }
+}
 
 // Homepage Final Section-specific functions
 export async function getHomepageFinalSection(
@@ -1430,6 +1439,7 @@ function transformCommittee(
     photoUrl: item.fields.photo ? getAssetUrl(item.fields.photo as any) : "/placeholder.svg",
     biography: item.fields.biography ? extractPlainText(item.fields.biography) : "",
     biographyRichText: item.fields.biography || null,
+    order: (item.fields.order as number) || 999,
   };
 }
 
@@ -1465,4 +1475,52 @@ function transformSecretariat(
     biography: item.fields.biography ? extractPlainText(item.fields.biography) : "",
     biographyRichText: item.fields.biography || null,
   };
+}
+
+// About page-specific functions
+function transformAbout(entry: Entry<AboutSkeleton>): ProcessedAbout {
+  const photo = entry.fields.photo as Asset | undefined;
+  const photoUrl = photo?.fields?.file?.url
+    ? `https:${photo.fields.file.url}`
+    : "/placeholder.svg";
+
+  // Parse former members from "name, designation" format
+  const formerMembersRaw = entry.fields.formerMembers as string[] | undefined;
+  const formerMembers = (formerMembersRaw || []).map((member: string) => {
+    const parts = member.split(",");
+    const name = parts[0]?.trim() || "";
+    const designation = parts[1]?.trim() || "";
+    return {
+      name,
+      designation,
+    };
+  });
+
+  return {
+    id: entry.sys.id,
+    name: (entry.fields.name as string) || "",
+    historyPara1: (entry.fields.historyPara1 as string) || "",
+    historyPara2: (entry.fields.historyPara2 as string) || "",
+    photo: photoUrl,
+    formerMembers,
+  };
+}
+
+export async function getAbout(preview = false): Promise<ProcessedAbout | null> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<AboutSkeleton>({
+      content_type: "about",
+      limit: 1,
+    });
+
+    if (response.items.length === 0) {
+      return null;
+    }
+
+    return transformAbout(response.items[0]);
+  } catch (error) {
+    console.error("Error fetching about data:", error);
+    return null;
+  }
 }

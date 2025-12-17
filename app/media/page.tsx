@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import Image from "next/image"
 import { Calendar, Camera, Newspaper, Users } from "lucide-react"
+import { getMediaCounts } from "@/lib/contentful"
 
 const featuredContent = [
   {
@@ -36,13 +37,13 @@ const featuredContent = [
   },
 ]
 
-const mediaCategories = [
+const getMediaCategories = (counts: { newsCount: number; eventsCount: number; conferencesCount: number; photosCount: number }) => [
   {
     icon: Newspaper,
     title: "News & Updates",
     description: "Latest news, announcements, and updates from the Bangladesh ECD Network and partners.",
     href: "/media/news",
-    count: "25+ Articles",
+    count: `${counts.newsCount} Article${counts.newsCount !== 1 ? 's' : ''}`,
     color: "bg-blue-50 text-blue-600",
   },
   {
@@ -50,7 +51,7 @@ const mediaCategories = [
     title: "Events",
     description: "Upcoming conferences, workshops, training sessions, and networking events.",
     href: "/media/events",
-    count: "15+ Events",
+    count: `${counts.eventsCount} Event${counts.eventsCount !== 1 ? 's' : ''}`,
     color: "bg-green-50 text-green-600",
   },
   {
@@ -58,20 +59,21 @@ const mediaCategories = [
     title: "Conference",
     description: "Annual conference materials, presentations, and documentation from past events.",
     href: "/media/conference",
-    count: "5+ Conferences",
+    count: `${counts.conferencesCount} Conference${counts.conferencesCount !== 1 ? 's' : ''}`,
     color: "bg-purple-50 text-purple-600",
   },
   {
     icon: Camera,
-    title: "Photo Gallery",
+    title: "Gallery",
     description: "Visual documentation of our activities, events, and community engagement initiatives.",
     href: "/media/gallery",
-    count: "200+ Photos",
+    count: `${counts.photosCount} Photo${counts.photosCount !== 1 ? 's' : ''}`,
     color: "bg-orange-50 text-orange-600",
   },
 ]
 
-export default function MediaPage() {
+export default async function MediaPage() {
+  const counts = await getMediaCounts();
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
@@ -88,7 +90,7 @@ export default function MediaPage() {
       </section>
 
       {/* Featured Content */}
-      <section className="py-16">
+      {/* <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">Featured Content</h2>
@@ -137,7 +139,7 @@ export default function MediaPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Media Categories */}
       <section className="py-16 bg-muted/30">
@@ -150,7 +152,7 @@ export default function MediaPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {mediaCategories.map((category, index) => (
+            {getMediaCategories(counts).map((category, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-all duration-300 group">
                 <CardHeader>
                   <div
@@ -174,7 +176,7 @@ export default function MediaPage() {
       </section>
 
       {/* Quick Stats */}
-      <section className="py-16">
+      {/* <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="space-y-2">
@@ -199,7 +201,7 @@ export default function MediaPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Newsletter Signup */}
       <section className="py-16 bg-secondary">

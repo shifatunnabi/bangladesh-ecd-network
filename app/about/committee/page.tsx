@@ -5,9 +5,13 @@ export default async function CommitteePage() {
   // Fetch committee members from Contentful
   const committeeMembers = await getCommitteeMembers()
   
-  // Separate executive and steering committee members
-  const executiveMembers = committeeMembers.filter(member => member.committeeType === true)
-  const steeringMembers = committeeMembers.filter(member => member.committeeType === false)
+  // Separate executive and steering committee members and sort by order
+  const executiveMembers = committeeMembers
+    .filter(member => member.committeeType === true)
+    .sort((a, b) => a.order - b.order)
+  const steeringMembers = committeeMembers
+    .filter(member => member.committeeType === false)
+    .sort((a, b) => a.order - b.order)
 
   return (
     <div className="flex flex-col">

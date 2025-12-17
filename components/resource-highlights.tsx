@@ -3,52 +3,64 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import Image from "next/image"
-import { Calendar, Download, Play, ExternalLink } from "lucide-react"
+import { Calendar, Download, Play, ExternalLink, FileText } from "lucide-react"
+import type { ProcessedResearch, ProcessedVoice, ProcessedNewsletter, ProcessedPolicyLink } from "@/lib/contentful-types"
 
-const resources = [
-  {
-    type: "Research Report",
-    title: "Early Childhood Development in Rural Bangladesh: Current State and Opportunities",
-    date: "March 2024",
-    image: "/images/resources/research-report-cover.jpg", // Updated to use generated research report cover
-    badge: "New",
-    href: "/resources/research-reports",
-    action: "Download PDF",
-    icon: Download,
-  },
-  {
-    type: "Video Resource",
-    title: "Best Practices in Community-Based ECD Programs",
-    date: "February 2024",
-    image: "/images/resources/video-thumbnail.jpg", // Updated to use generated video thumbnail
-    badge: "Featured",
-    href: "/resources/voices",
-    action: "Watch Video",
-    icon: Play,
-  },
-  {
-    type: "Policy Brief",
-    title: "Strengthening ECD Systems: Policy Recommendations for Bangladesh",
-    date: "January 2024",
-    image: "/images/resources/policy-brief-cover.jpg", // Updated to use generated policy brief cover
-    badge: "Policy",
-    href: "/resources/research-reports",
-    action: "Read More",
-    icon: ExternalLink,
-  },
-  {
-    type: "Newsletter",
-    title: "ECD Network Quarterly Update - Q1 2024",
-    date: "March 2024",
-    image: "/images/resources/newsletter-cover.jpg", // Updated to use generated newsletter cover
-    badge: "Latest",
-    href: "/resources/newsletter",
-    action: "View Newsletter",
-    icon: ExternalLink,
-  },
-]
+interface ResourceHighlightsProps {
+  latestResearch: ProcessedResearch | null;
+  latestVoice: ProcessedVoice | null;
+  latestNewsletter: ProcessedNewsletter | null;
+  latestPolicy: ProcessedPolicyLink | null;
+}
 
-export function ResourceHighlights() {
+export function ResourceHighlights({ latestResearch, latestVoice, latestNewsletter, latestPolicy }: ResourceHighlightsProps) {
+  const resources = [
+    latestResearch && {
+      type: "Research Report",
+      title: latestResearch.title,
+      date: latestResearch.date,
+      image: latestResearch.image || "/images/resources/research-report-cover.jpg",
+      badge: latestResearch.badge || "New",
+      href: `/resources/research-reports/${latestResearch.id}`,
+      action: "Download PDF",
+      icon: Download,
+    },
+    latestVoice && {
+      type: "Video Resource",
+      title: latestVoice.title,
+      date: latestVoice.date,
+      image: latestVoice.image || "/images/resources/video-thumbnail.jpg",
+      badge: latestVoice.badge || "Featured",
+      href: `/resources/voices/${latestVoice.id}`,
+      action: "Watch Video",
+      icon: Play,
+    },
+    latestPolicy && {
+      type: "Policy Brief",
+      title: latestPolicy.title,
+      date: latestPolicy.year || "Recent",
+      image: latestPolicy.imageUrl || "/images/resources/policy-brief-cover.jpg",
+      badge: "Policy",
+      href: latestPolicy.fileUrl,
+      action: "Read More",
+      icon: ExternalLink,
+    },
+    latestNewsletter && {
+      type: "Newsletter",
+      title: latestNewsletter.title,
+      date: latestNewsletter.date,
+      image: latestNewsletter.image || "/images/resources/newsletter-cover.jpg",
+      badge: latestNewsletter.badge || "Latest",
+      href: latestNewsletter.href,
+      action: "View Newsletter",
+      icon: FileText,
+    },
+  ].filter(Boolean);
+
+  if (resources.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-16 bg-gradient-to-br from-blue-50 via-slate-50 to-blue-100">
       <div className="container mx-auto px-4">
@@ -66,7 +78,7 @@ export function ResourceHighlights() {
               className="group hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-blue-200 hover:border-blue-300"
             >
               <CardHeader className="p-0">
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                <div className="relative h-48 overflow-hidden rounded-t-lg border-b border-blue-200">
                   <Image
                     src={resource.image || "/placeholder.svg"}
                     alt={resource.title}

@@ -7,7 +7,7 @@ import { DonateSection } from "@/components/donate-section"
 import { StatsSection } from "@/components/stats-section"
 import { TestimonialSection } from "@/components/testimonial-section"
 import { NewsletterSection } from "@/components/newsletter-section"
-import { getCarouselSlides, transformCarousel, getHomepageCoreValues, transformHomepageCoreValues, getHomepageOurImpact, getHomepageQuote, getHomepageFinalSection, getWhoWeAre } from "@/lib/contentful"
+import { getCarouselSlides, transformCarousel, getHomepageCoreValues, transformHomepageCoreValues, getHomepageOurImpact, getHomepageQuote, getHomepageFinalSection, getWhoWeAre, getLatestResources } from "@/lib/contentful"
 
 export default async function HomePage() {
   // Fetch carousel slides from Contentful
@@ -30,16 +30,24 @@ export default async function HomePage() {
   // Fetch who we are data from Contentful
   const whoWeAreData = await getWhoWeAre();
 
+  // Fetch latest resources from Contentful
+  const latestResources = await getLatestResources();
+
   return (
     <div className="flex flex-col">
       <HeroCarousel slides={carouselSlides} />
       <MissionSection coreValuesData={coreValuesData} />
       <WhoWeAreSection whoWeAreData={whoWeAreData} />
-      <ResourceHighlights />
+      <ResourceHighlights 
+        latestResearch={latestResources.latestResearch}
+        latestVoice={latestResources.latestVoice}
+        latestNewsletter={latestResources.latestNewsletter}
+        latestPolicy={latestResources.latestPolicy}
+      />
       <StatsSection impactData={ourImpactData} />
-  <PartnersSection />
-  <TestimonialSection quotesData={quotesData} />
-      <DonateSection finalSectionData={finalSectionData} />
+      <PartnersSection />
+      <TestimonialSection quotesData={quotesData} />
+      {/* <DonateSection finalSectionData={finalSectionData} /> */}
       <NewsletterSection />
     </div>
   )
