@@ -112,10 +112,17 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
                     className="w-full bg-transparent border-blue-300 text-blue-700 hover:bg-blue-50"
                     asChild
                   >
-                    <Link href={resource.href}>
-                      <resource.icon className="w-4 h-4 mr-2" />
-                      {resource.action}
-                    </Link>
+                    {resource.type === "Policy Brief" ? (
+                      <a href={resource.href} target="_blank" rel="noopener noreferrer">
+                        <resource.icon className="w-4 h-4 mr-2" />
+                        {resource.action}
+                      </a>
+                    ) : (
+                      <Link href={resource.href}>
+                        <resource.icon className="w-4 h-4 mr-2" />
+                        {resource.action}
+                      </Link>
+                    )}
                   </Button>
                 </div>
               </CardContent>

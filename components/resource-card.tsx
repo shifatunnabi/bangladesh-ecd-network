@@ -92,7 +92,7 @@ export function ResourceCard({
           <div>
             {category && <p className="text-sm text-muted-foreground">{category}</p>}
             <CardTitle className="text-base leading-tight line-clamp-2">{title}</CardTitle>
-            {description && <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{description}</p>}
+            {/* {description && <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{description}</p>} */}
           </div>
 
           <div className="space-y-2">
@@ -107,7 +107,7 @@ export function ResourceCard({
         <div className="mt-4 flex gap-2">
           {downloadUrl && (
             <Button variant="outline" size="sm" className="flex-1 bg-transparent" asChild>
-              <a href={downloadUrl} download>
+              <a href={downloadUrl} target="_blank" rel="noopener noreferrer">
                 <Icon className="w-4 h-4 mr-2" />
                 {getActionText()}
               </a>

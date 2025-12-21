@@ -18,19 +18,19 @@ export function Footer() {
                Building partnership for Early Childhood Development (ECD).
             </p>
             <div className="flex space-x-4">
-              <Link href="https://www.facebook.com/bangladeshecdnetwork/" className="text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="https://www.facebook.com/bangladeshecdnetwork/" className="text-primary-foreground/80 hover:text-primary-foreground" target="_blank" rel="noopener noreferrer">
                 <Facebook className="h-5 w-5" />
                 <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="https://www.instagram.com/bangladeshecdnetwork/" className="text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="https://www.instagram.com/bangladeshecdnetwork/" className="text-primary-foreground/80 hover:text-primary-foreground" target="_blank" rel="noopener noreferrer">
                 <Instagram className="h-5 w-5" />
                 <span className="sr-only">Instagram</span>
               </Link>
-              <Link href="https://www.linkedin.com/company/bangladesh-ecd-network/" className="text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="https://www.linkedin.com/company/bangladesh-ecd-network/" className="text-primary-foreground/80 hover:text-primary-foreground" target="_blank" rel="noopener noreferrer">
                 <Linkedin className="h-5 w-5" />
                 <span className="sr-only">LinkedIn</span>
               </Link>
-              <Link href="https://www.youtube.com/playlist?list=PLpvxRLgU7mN1n9nXlqodkpikcWdEiFZMs" className="text-primary-foreground/80 hover:text-primary-foreground">
+              <Link href="https://www.youtube.com/playlist?list=PLpvxRLgU7mN1n9nXlqodkpikcWdEiFZMs" className="text-primary-foreground/80 hover:text-primary-foreground" target="_blank" rel="noopener noreferrer">
                 <Youtube className="h-5 w-5" />
                 <span className="sr-only">YouTube</span>
               </Link>

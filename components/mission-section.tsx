@@ -70,7 +70,7 @@ export function MissionSection({ coreValuesData }: MissionSectionProps) {
                   )}
                 </div>
                 <h3 className="text-xl font-semibold mb-3 text-blue-900">{value.title}</h3>
-                <p className="text-blue-700 leading-relaxed text-justify">{value.subtitle}</p>
+                <p className="text-blue-700 leading-relaxed text-left">{value.subtitle}</p>
               </CardContent>
             </Card>
           ))}

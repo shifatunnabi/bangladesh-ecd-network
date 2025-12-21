@@ -43,7 +43,7 @@ const getResourceCategories = (counts: { researchCount: number; voicesCount: num
   {
     icon: BookOpen,
     title: "Research & Reports",
-    description: "Access our latest research findings, policy briefs, and analytical reports on ECD in Bangladesh.",
+    description: "Access our latest research, policy briefs, and analytical reports on ECD",
     href: "/resources/research-reports",
     count: `${counts.researchCount} Report${counts.researchCount !== 1 ? 's' : ''}`,
   },
@@ -57,7 +57,7 @@ const getResourceCategories = (counts: { researchCount: number; voicesCount: num
   {
     icon: FileText,
     title: "Newsletter",
-    description: "Stay updated with our quarterly newsletters featuring network activities and insights.",
+    description: "Stay updated with our newsletters featuring network activities and insights.",
     href: "/resources/newsletter",
     count: `${counts.newslettersCount} Issue${counts.newslettersCount !== 1 ? 's' : ''}`,
   },

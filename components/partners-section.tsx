@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 
 const partners = [
@@ -26,8 +28,11 @@ const partners = [
 ]
 
 export function PartnersSection() {
+  // Duplicate partners array for seamless infinite scroll
+  const duplicatedPartners = [...partners, ...partners]
+
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-primary mb-4">Our Key Partners</h2>
@@ -36,25 +41,51 @@ export function PartnersSection() {
           </p>
         </div>
         
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 items-center justify-items-center max-w-6xl mx-auto">
-          {partners.map((partner, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-center p-4 bg-white rounded-lg hover:shadow-md transition-shadow duration-300 w-full h-24"
-            >
-              <Image
-                src={partner.logo}
-                alt={partner.name}
-                width={120}
-                height={60}
-                className="max-h-16 w-auto object-contain"
-                loading="lazy"
-                quality={70}
-              />
-            </div>
-          ))}
+        <div className="relative">
+          {/* Gradient overlays for fade effect */}
+          {/* <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" /> */}
+          
+          {/* Scrolling container */}
+          <div className="flex gap-8 animate-scroll-left">
+            {duplicatedPartners.map((partner, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 flex items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 w-48 h-32"
+              >
+                <Image
+                  src={partner.logo}
+                  alt={partner.name}
+                  width={150}
+                  height={80}
+                  className="max-h-20 w-auto object-contain"
+                  loading="lazy"
+                  quality={70}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        .animate-scroll-left {
+          animation: scroll-left 40s linear infinite;
+        }
+
+        .animate-scroll-left:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
     </section>
   )
 }

@@ -75,9 +75,9 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
                   {member.name}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-2">{member.designation}</p>
-                {'professionalDetails' in member && member.professionalDetails && (
+                {/* {'professionalDetails' in member && member.professionalDetails && (
                   <p className="text-xs text-muted-foreground mb-4">{member.professionalDetails}</p>
-                )}
+                )} */}
                 <DialogTrigger asChild>
                   <Button size="sm" className="text-xs px-3 py-1 h-auto">
                     View Details
@@ -105,18 +105,22 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
                 {'professionalDetails' in member && member.professionalDetails && (
                   <div>
                     <h4 className="font-semibold text-lg mb-3">Professional Details</h4>
-                    <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                      {member.professionalDetails}
-                    </p>
+                    <div className="text-muted-foreground leading-relaxed space-y-4">
+                      {member.professionalDetails.split(/\n\s*\n/).filter(p => p.trim()).map((paragraph, index) => (
+                        <p key={index}>{paragraph.replace(/\n/g, ' ')}</p>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {member.biography && (
                   <div>
                     <h4 className="font-semibold text-lg mb-3">Biography</h4>
-                    <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                      {member.biography}
-                    </p>
+                    <div className="text-muted-foreground leading-relaxed space-y-4">
+                      {member.biography.split(/\n\s*\n/).filter(p => p.trim()).map((paragraph, index) => (
+                        <p key={index}>{paragraph.replace(/\n/g, ' ')}</p>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
