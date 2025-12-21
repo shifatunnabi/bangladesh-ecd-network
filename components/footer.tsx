@@ -30,7 +30,7 @@ export function Footer() {
                 <Linkedin className="h-5 w-5" />
                 <span className="sr-only">LinkedIn</span>
               </Link>
-              <Link href="https://www.youtube.com/playlist?list=PLpvxRLgU7mN1n9nXlqodkpikcWdEiFZMs" className="text-primary-foreground/80 hover:text-primary-foreground" target="_blank" rel="noopener noreferrer">
+              <Link href="https://www.youtube.com/@BangladeshECDNetwork" className="text-primary-foreground/80 hover:text-primary-foreground" target="_blank" rel="noopener noreferrer">
                 <Youtube className="h-5 w-5" />
                 <span className="sr-only">YouTube</span>
               </Link>

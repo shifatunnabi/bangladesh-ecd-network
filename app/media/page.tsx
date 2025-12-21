@@ -41,7 +41,7 @@ const getMediaCategories = (counts: { newsCount: number; eventsCount: number; co
   {
     icon: Newspaper,
     title: "News & Updates",
-    description: "Latest news, announcements, and updates from the Bangladesh ECD Network and partners.",
+    description: "Latest news, announcements, and updates from the BEN.",
     href: "/media/news",
     count: `${counts.newsCount} Article${counts.newsCount !== 1 ? 's' : ''}`,
     color: "bg-blue-50 text-blue-600",
@@ -57,7 +57,7 @@ const getMediaCategories = (counts: { newsCount: number; eventsCount: number; co
   {
     icon: Users,
     title: "Conference",
-    description: "Annual conference materials, presentations, and documentation from past events.",
+    description: "Conference materials, presentations, and docs from past events.",
     href: "/media/conference",
     count: `${counts.conferencesCount} Conference${counts.conferencesCount !== 1 ? 's' : ''}`,
     color: "bg-purple-50 text-purple-600",
@@ -65,7 +65,7 @@ const getMediaCategories = (counts: { newsCount: number; eventsCount: number; co
   {
     icon: Camera,
     title: "Gallery",
-    description: "Visual documentation of our activities, events, and community engagement initiatives.",
+    description: "Visual documentation of our activities, events, and community initiatives.",
     href: "/media/gallery",
     count: `${counts.photosCount} Photo${counts.photosCount !== 1 ? 's' : ''}`,
     color: "bg-orange-50 text-orange-600",
