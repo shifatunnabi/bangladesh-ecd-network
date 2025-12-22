@@ -82,16 +82,16 @@ export function HeroCarousel({ slides: propSlides }: HeroCarouselProps) {
           </div>
 
           {/* Content */}
-          <div className="relative h-full flex items-center">
+          <div className="relative h-full flex items-end pb-16">
             <div className="container mx-auto px-4">
               <div className="max-w-3xl text-white">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">{slide.title}</h1>
                 <p className="text-lg md:text-xl mb-8 text-blue-100 text-pretty">{slide.subtitle}</p>
-                {slide.ctaText && slide.ctaLink && (
+                {/* {slide.ctaText && slide.ctaLink && (
                   <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
                     <Link href={slide.ctaLink}>{slide.ctaText}</Link>
                   </Button>
-                )}
+                )} */}
               </div>
             </div>
           </div>
