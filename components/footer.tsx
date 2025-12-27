@@ -9,9 +9,7 @@ export function Footer() {
           {/* About Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-full bg-primary-foreground flex items-center justify-center">
-                <span className="text-primary font-bold text-sm">BD</span>
-              </div>
+              
               <span className="font-bold text-lg">Bangladesh ECD Network</span>
             </div>
             <p className="text-sm text-primary-foreground/80 leading-relaxed">

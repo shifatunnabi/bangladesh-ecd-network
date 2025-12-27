@@ -45,10 +45,10 @@ export function HeroCarousel({ slides: propSlides }: HeroCarouselProps) {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 5000)
+    }, 3000)
 
     return () => clearInterval(timer)
-  }, [])
+  }, [slides.length])
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length)
@@ -59,12 +59,12 @@ export function HeroCarousel({ slides: propSlides }: HeroCarouselProps) {
   }
 
   return (
-    <section className="relative h-[500px] md:h-[600px] overflow-hidden">
+    <section className="relative w-full aspect-[3/2] lg:aspect-[16/7] overflow-hidden">
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentSlide ? "opacity-100" : "opacity-0"
+          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+            index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
           {/* Background Image */}
@@ -82,11 +82,11 @@ export function HeroCarousel({ slides: propSlides }: HeroCarouselProps) {
           </div>
 
           {/* Content */}
-          <div className="relative h-full flex items-end pb-16">
+          <div className="relative h-full flex items-end pb-8 md:pb-12 lg:pb-16">
             <div className="container mx-auto px-4">
-              <div className="max-w-3xl text-white">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">{slide.title}</h1>
-                <p className="text-lg md:text-xl mb-8 text-blue-100 text-pretty">{slide.subtitle}</p>
+              <div className="max-w-2xl lg:max-w-3xl text-white">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 md:mb-4 lg:mb-6 text-balance">{slide.title}</h1>
+                <p className="text-sm sm:text-base md:text-lg lg:text-xl mb-4 md:mb-6 lg:mb-8 text-blue-100 text-pretty">{slide.subtitle}</p>
                 {/* {slide.ctaText && slide.ctaLink && (
                   <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
                     <Link href={slide.ctaLink}>{slide.ctaText}</Link>

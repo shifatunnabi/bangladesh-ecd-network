@@ -12,8 +12,8 @@ interface WhoWeAreSectionProps {
 
 export function WhoWeAreSection({ whoWeAreData }: WhoWeAreSectionProps) {
   return (
-    <section className="py-16 bg-[#0055a3]">
-      <div className="container mx-auto px-4">
+    <section className="bg-[#0055a3]">
+      <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
           <div className="space-y-6">
@@ -95,13 +95,12 @@ export function WhoWeAreSection({ whoWeAreData }: WhoWeAreSectionProps) {
           {/* Image Card */}
           <Card className="overflow-hidden border-blue-200 shadow-lg hover:shadow-xl transition-shadow">
             <CardContent className="p-0">
-              <div className="relative h-[400px]">
+              <div className="relative w-full aspect-[3/2]">
                 <Image
                   src={whoWeAreData?.photoUrl || "/images/ecd-team-meeting.jpg"}
                   alt="ECD Network team meeting"
-                  width={600}
-                  height={400}
-                  className="object-cover w-full h-full"
+                  fill
+                  className="object-cover"
                   loading="lazy"
                   quality={75}
                   sizes="(max-width: 768px) 100vw, 50vw"
