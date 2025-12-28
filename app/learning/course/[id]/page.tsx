@@ -30,7 +30,7 @@ const courseData = {
     level: "Beginner",
     students: 245,
     rating: 4.8,
-    image: "/placeholder.svg?height=300&width=500",
+    image: "/placeholder.svg",
     category: "Fundamentals",
     overview:
       "This course provides a comprehensive foundation in early childhood development, covering key theories, developmental milestones, and evidence-based practices. Participants will gain essential knowledge about child development from birth to age 8, learning how to support optimal growth and learning in young children.",

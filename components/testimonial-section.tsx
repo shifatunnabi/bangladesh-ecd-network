@@ -83,8 +83,8 @@ export function TestimonialSection({ quotesData }: TestimonialSectionProps) {
             </CarouselContent>
             {quotes.length > 1 && (
               <>
-                <CarouselPrevious className="left-0 -translate-x-12" />
-                <CarouselNext className="right-0 translate-x-12" />
+                <CarouselPrevious className="hidden lg:flex left-0 -translate-x-12" />
+                <CarouselNext className="hidden lg:flex right-0 translate-x-12" />
               </>
             )}
           </Carousel>

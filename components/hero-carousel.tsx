@@ -75,7 +75,8 @@ export function HeroCarousel({ slides: propSlides }: HeroCarouselProps) {
               fill
               className="object-cover"
               priority={index === 0}
-              quality={75}
+              loading={index === 0 ? "eager" : "lazy"}
+              quality={index === 0 ? 85 : 60}
               sizes="100vw"
             />
             <div className="absolute inset-0 bg-black/40" />

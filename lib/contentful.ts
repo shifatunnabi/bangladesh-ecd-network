@@ -647,7 +647,7 @@ export async function getAllVoices(
 ): Promise<Entry<VoiceSkeleton>[]> {
   return getEntries<VoiceSkeleton>(
     "voice",
-    { order: ["-fields.date"] },
+    { order: ["sys.createdAt"] },
     preview
   );
 }
@@ -699,22 +699,7 @@ export function transformVoice(entry: Entry<VoiceSkeleton>): ProcessedVoice {
   return {
     id: sys.id,
     title: (fields.title as string) || "",
-    description:
-      (fields.shortDescription as string) ||
-      generateVoiceDescription(fields.title as string),
-    date: formatVoiceDate(fields.date as string),
-    image: getAssetUrl(fields.thumbnail as Asset),
-    badge: determineVoiceBadge(
-      fields.date as string,
-      fields.featured as boolean
-    ),
-    href: fields.videoLinkYoutube
-      ? (fields.videoLinkYoutube as string)
-      : `/resources/voices/${sys.id}`,
-    type: "video" as const,
-    category: determineVoiceCategory(fields.title as string),
-    videoUrl: fields.videoLinkYoutube as string,
-    featured: fields.featured as boolean,
+    videoUrl: (fields.videoLinkYoutube as string) || "",
   };
 }
 
@@ -1296,7 +1281,7 @@ export async function getLatestResources(preview = false) {
       }),
       client.getEntries<VoiceSkeleton>({
         content_type: 'voice',
-        order: ['-fields.date'],
+        order: ['-sys.createdAt'],
         limit: 1,
       }),
       client.getEntries<NewsletterSkeleton>({
