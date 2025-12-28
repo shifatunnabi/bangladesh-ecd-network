@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Mail } from "lucide-react"
 import Link from "next/link"
 import { getAllNewsletters, transformNewsletter } from "@/lib/contentful"
+import { NewsletterSection } from "@/components/newsletter-section"
 
 async function getNewsletters() {
   try {
@@ -67,7 +68,7 @@ export default async function NewsletterPage() {
 
 
               {/* Newsletter Subscription */}
-        <Card className="max-w-2xl mx-auto mb-12 bg-muted/30">
+        {/* <Card className="max-w-2xl mx-auto mb-12 bg-muted/30">
           <CardContent className="p-8 text-center">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <Mail className="w-8 h-8 text-primary" />
@@ -81,7 +82,8 @@ export default async function NewsletterPage() {
               <Link href="/newsletter/subscribe">Subscribe Now</Link>
             </Button>
           </CardContent>
-        </Card>
+        </Card> */}
+        <NewsletterSection />
     </div>
   )
 }

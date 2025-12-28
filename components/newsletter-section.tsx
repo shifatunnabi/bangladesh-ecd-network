@@ -27,7 +27,7 @@ export function NewsletterSection() {
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
               <Mail className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">Stay Connected</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">Subscribe to our Newsletter</h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
               Subscribe to our newsletter to receive the latest updates on early childhood development research, events,
               and resources from Bangladesh ECD Network.
