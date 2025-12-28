@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
+import { useRef } from "react"
 
 // const partners = [
 //   // Row 1
@@ -55,6 +56,32 @@ const partners =[
 export function PartnersSection() {
   // Duplicate partners array for seamless infinite scroll
   const duplicatedPartners = [...partners, ...partners]
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const container = scrollContainerRef.current
+    if (!container) return
+    
+    const startX = e.pageX - container.offsetLeft
+    const scrollLeft = container.scrollLeft
+
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault()
+      const x = e.pageX - container.offsetLeft
+      const walk = (x - startX) * 2
+      container.scrollLeft = scrollLeft - walk
+    }
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+      container.style.cursor = 'grab'
+    }
+
+    container.style.cursor = 'grabbing'
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
 
   return (
     <section className="py-16 bg-white overflow-hidden">
@@ -65,6 +92,7 @@ export function PartnersSection() {
             We collaborate with government agencies, international organizations, and local partners to strengthen early childhood development in Bangladesh.
           </p>
         </div>
+          
         
         <div className="relative">
           {/* Gradient overlays for fade effect */}
@@ -72,24 +100,30 @@ export function PartnersSection() {
           <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" /> */}
           
           {/* Scrolling container */}
-          <div className="flex gap-8 animate-scroll-left">
+          <div 
+            ref={scrollContainerRef}
+            className="overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing"
+            onMouseDown={handleMouseDown}
+          >
+            <div className="flex gap-4 md:gap-8 animate-scroll-left">
             {duplicatedPartners.map((partner, index) => (
               <Link href={partner.link} key={index} target="_blank" rel="noopener noreferrer">
                 <div
-                  className="flex-shrink-0 flex items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 w-48 h-32"
+                  className="flex-shrink-0 flex items-center justify-center p-3 md:p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 w-32 h-24 md:w-48 md:h-32"
                 >
                   <Image
                     src={partner.logo}
                     alt={partner.name}
                     width={150}
                     height={80}
-                    className="max-h-20 w-auto object-contain"
+                    className="max-h-12 md:max-h-20 w-auto object-contain"
                     loading="lazy"
                     quality={60}
                   />
                 </div>
               </Link>
             ))}
+            </div>
           </div>
         </div>
       </div>
@@ -105,11 +139,26 @@ export function PartnersSection() {
         }
 
         .animate-scroll-left {
-          animation: scroll-left 40s linear infinite;
+          animation: scroll-left 35s linear infinite;
         }
 
         .animate-scroll-left:hover {
           animation-play-state: paused;
+        }
+
+        @media (min-width: 768px) {
+          .animate-scroll-left {
+            animation: scroll-left 80s linear infinite;
+          }
+        }
+
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
     </section>
