@@ -11,6 +11,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { VisitorCounter } from "@/components/visitor-counter";
 
 const aboutLinks = [
   { title: "About Us", href: "/about" },
@@ -213,6 +214,7 @@ export function Header() {
 
           {/* CTA Button */}
           <div className="hidden lg:flex items-center space-x-4">
+            <VisitorCounter />
             <Button asChild>
               <Link href="/membership">Join Network</Link>
             </Button>
@@ -379,7 +381,12 @@ export function Header() {
                 </div>
 
                 {/* Improved CTA Button Styling */}
-                <div className="pt-6">
+                <div className="pt-6 space-y-4">
+                  {/* Visitor Counter for Mobile */}
+                  <div className="flex items-center justify-center gap-2 text-primary py-3 bg-primary/5 rounded-lg">
+                    <VisitorCounter mobile />
+                  </div>
+                  
                   <Button asChild className="w-full h-12 text-base font-medium">
                     <Link href="/membership" onClick={() => setIsOpen(false)}>
                       Join Network

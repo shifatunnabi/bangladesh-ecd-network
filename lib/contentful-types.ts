@@ -181,11 +181,7 @@ export interface VoiceSkeleton extends EntrySkeletonType {
   contentTypeId: 'voice'
   fields: {
     title: EntryFieldTypes.Text
-    shortDescription?: EntryFieldTypes.Text
     videoLinkYoutube?: EntryFieldTypes.Text
-    thumbnail: EntryFieldTypes.AssetLink
-    date: EntryFieldTypes.Date
-    featured: EntryFieldTypes.Boolean
   }
 }
 
@@ -506,15 +502,7 @@ export interface ProcessedResearch {
 export interface ProcessedVoice {
   id: string
   title: string
-  description: string
-  date: string
-  image: string
-  badge?: string
-  href: string
-  type: "video"
-  category: string
-  videoUrl?: string
-  featured?: boolean
+  videoUrl: string
 }
 
 export interface ProcessedAboutPage {

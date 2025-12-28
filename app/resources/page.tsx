@@ -162,7 +162,7 @@ export default async function ResourcesPage() {
       </section> */}
 
       {/* Call to Action */}
-      <section className="py-16 bg-secondary">
+      {/* <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-foreground mb-4">Contribute Your Knowledge</h2>
           <p className="text-lg text-secondary-foreground/80 max-w-2xl mx-auto mb-8">
@@ -183,7 +183,7 @@ export default async function ResourcesPage() {
             </Button>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }

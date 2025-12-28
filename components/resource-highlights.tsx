@@ -14,6 +14,17 @@ interface ResourceHighlightsProps {
 }
 
 export function ResourceHighlights({ latestResearch, latestVoice, latestNewsletter, latestPolicy }: ResourceHighlightsProps) {
+  // Helper function to extract YouTube thumbnail
+  const getYouTubeThumbnail = (url: string): string => {
+    if (!url) return "/images/resources/video-thumbnail.jpg";
+    
+    const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=))([^?&]+)/);
+    if (videoId && videoId[1]) {
+      return `https://img.youtube.com/vi/${videoId[1]}/mqdefault.jpg`;
+    }
+    return "/images/resources/video-thumbnail.jpg";
+  };
+
   const resources = [
     latestResearch ? {
       type: "Research Report",
@@ -28,10 +39,10 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
     latestVoice ? {
       type: "Video Resource",
       title: latestVoice.title,
-      date: latestVoice.date,
-      image: latestVoice.image || "/images/resources/video-thumbnail.jpg",
-      badge: latestVoice.badge || "Featured",
-      href: `/resources/voices/${latestVoice.id}`,
+      date: "Recent",
+      image: getYouTubeThumbnail(latestVoice.videoUrl),
+      badge: "Featured",
+      href: `/resources/voices`,
       action: "Watch Video",
       icon: Play,
     } : null,
@@ -75,10 +86,10 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
           {resources.map((resource, index) => (
             <Card
               key={index}
-              className="group hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-blue-200 hover:border-blue-300"
+              className="group hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm border-blue-200 hover:border-blue-300 flex flex-col"
             >
               <CardHeader className="p-0">
-                <div className="relative h-48 overflow-hidden rounded-t-lg border-b border-blue-200">
+                <div className="relative h-48 overflow-hidden rounded-t-lg">
                   <Image
                     src={resource.image || "/placeholder.svg"}
                     alt={resource.title}
@@ -86,7 +97,7 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
                     height={192}
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
-                    quality={75}
+                    quality={70}
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                   <div className="absolute top-3 left-3">
@@ -94,36 +105,38 @@ export function ResourceHighlights({ latestResearch, latestVoice, latestNewslett
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  <div>
+              <CardContent className="p-4 flex flex-col flex-grow">
+                <div className="flex flex-col h-full">
+                  <div className="mb-3">
                     <p className="text-sm text-blue-600">{resource.type}</p>
-                    <CardTitle className="text-base leading-tight line-clamp-2 text-blue-900">
+                    <CardTitle className="text-base leading-tight line-clamp-2 text-blue-900 min-h-[40px]">
                       {resource.title}
                     </CardTitle>
                   </div>
-                  <div className="flex items-center text-sm text-blue-600">
+                  <div className="flex items-center text-sm text-blue-600 mb-3 h-5">
                     <Calendar className="w-4 h-4 mr-1" />
                     {resource.date}
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full bg-transparent border-blue-300 text-blue-700 hover:bg-blue-50"
-                    asChild
-                  >
-                    {resource.type === "Policy Brief" ? (
-                      <a href={resource.href} target="_blank" rel="noopener noreferrer">
-                        <resource.icon className="w-4 h-4 mr-2" />
-                        {resource.action}
-                      </a>
-                    ) : (
-                      <Link href={resource.href}>
-                        <resource.icon className="w-4 h-4 mr-2" />
-                        {resource.action}
-                      </Link>
-                    )}
-                  </Button>
+                  <div className="mt-auto">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent border-blue-300 text-blue-700 hover:bg-blue-50"
+                      asChild
+                    >
+                      {resource.type === "Policy Brief" ? (
+                        <a href={resource.href} target="_blank" rel="noopener noreferrer">
+                          <resource.icon className="w-4 h-4 mr-2" />
+                          {resource.action}
+                        </a>
+                      ) : (
+                        <Link href={resource.href}>
+                          <resource.icon className="w-4 h-4 mr-2" />
+                          {resource.action}
+                        </Link>
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

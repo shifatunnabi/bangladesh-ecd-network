@@ -1,8 +1,4 @@
-import { ResourceCard } from "@/components/resource-card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Search, Filter } from "lucide-react"
+import { Card } from "@/components/ui/card"
 import { getAllVoices, transformVoice } from "@/lib/contentful"
 
 async function getVoices() {
@@ -15,8 +11,30 @@ async function getVoices() {
   }
 }
 
+// Helper function to extract YouTube video ID from various URL formats
+function getYouTubeVideoId(url: string): string | null {
+  if (!url) return null
+  
+  // Handle youtu.be short links
+  const shortLinkMatch = url.match(/youtu\.be\/([^?]+)/)
+  if (shortLinkMatch) return shortLinkMatch[1]
+  
+  // Handle standard youtube.com links
+  const longLinkMatch = url.match(/[?&]v=([^&]+)/)
+  if (longLinkMatch) return longLinkMatch[1]
+  
+  // Handle embed links
+  const embedMatch = url.match(/embed\/([^?]+)/)
+  if (embedMatch) return embedMatch[1]
+  
+  // If it's already just an ID
+  if (url.length === 11 && !url.includes('/')) return url
+  
+  return null
+}
+
 export default async function VoicesPage() {
-  const voicesResources = await getVoices()
+  const voices = await getVoices()
 
   return (
     <div className="flex flex-col">
@@ -33,63 +51,52 @@ export default async function VoicesPage() {
       </section>
 
       <div className="container mx-auto px-4 py-12">
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input placeholder="Search videos and stories..." className="pl-10" />
-          </div>
-          <Button variant="outline" className="sm:w-auto bg-transparent">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-        </div>
-
-        {/* Filter Tags */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            All Stories
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Community Stories
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Best Practices
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Children's Perspectives
-          </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
-            Parent Engagement
-          </Badge>
-        </div>
-
         {/* Results Count */}
-        <div className="text-sm text-muted-foreground mb-6">Showing {voicesResources.length} videos and stories</div>
+        {voices.length > 0 && (
+          <div className="text-sm text-muted-foreground mb-6">
+            Showing {voices.length} {voices.length === 1 ? 'video' : 'videos'}
+          </div>
+        )}
 
         {/* Videos Grid */}
-        {voicesResources.length > 0 ? (
+        {voices.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {voicesResources.map((resource, index) => (
-              <ResourceCard key={index} {...resource} />
-            ))}
+            {voices.map((voice) => {
+              const videoId = getYouTubeVideoId(voice.videoUrl)
+              
+              return (
+                <Card key={voice.id} className="overflow-hidden">
+                  <div className="aspect-video">
+                    {videoId ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${videoId}`}
+                        title={voice.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-muted">
+                        <p className="text-muted-foreground">Invalid video URL</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg">{voice.title}</h3>
+                  </div>
+                </Card>
+              )
+            })}
           </div>
         ) : (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🎬</div>
-            <h3 className="text-xl font-semibold mb-2">No Stories Available</h3>
+            <h3 className="text-xl font-semibold mb-2">No Videos Available</h3>
             <p className="text-muted-foreground">
               We're working on adding inspiring voices and stories from our community.
             </p>
           </div>
         )}
-
-        {/* Load More */}
-        <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
-            Load More Stories
-          </Button>
-        </div>
       </div>
     </div>
   )

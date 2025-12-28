@@ -85,7 +85,7 @@ export function PartnersSection() {
                     height={80}
                     className="max-h-20 w-auto object-contain"
                     loading="lazy"
-                    quality={70}
+                    quality={60}
                   />
                 </div>
               </Link>
