@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Calendar, Camera, Newspaper, Users } from "lucide-react"
 import { getMediaCounts } from "@/lib/contentful"
+import { NewsletterSection } from "@/components/newsletter-section"
 
 const featuredContent = [
   {
@@ -204,7 +205,7 @@ export default async function MediaPage() {
       </section> */}
 
       {/* Newsletter Signup */}
-      <section className="py-16 bg-secondary">
+      {/* <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-foreground mb-4">Stay Updated</h2>
           <p className="text-lg text-secondary-foreground/80 max-w-2xl mx-auto mb-8">
@@ -213,7 +214,7 @@ export default async function MediaPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="outline" className="bg-white text-secondary hover:bg-white/90" asChild>
-              <Link href="/newsletter/subscribe">Subscribe to Newsletter</Link>
+              <Link href="/resources/newsletter">View All Resources</Link>
             </Button>
             <Button
               size="lg"
@@ -225,7 +226,9 @@ export default async function MediaPage() {
             </Button>
           </div>
         </div>
-      </section>
+      </section> */}
+
+      <NewsletterSection />
     </div>
   )
 }
