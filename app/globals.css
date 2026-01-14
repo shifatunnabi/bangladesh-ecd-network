@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color scheme to match Bangladesh ECD Network brand colors */
+  /* Updated color scheme to match Bangladesh ECD Network (BEN) brand colors */
   --background: oklch(1 0 0); /* #ffffff */
   --foreground: oklch(0.35 0 0); /* #475569 */
   --card: oklch(0.96 0 0); /* #f1f5f9 */

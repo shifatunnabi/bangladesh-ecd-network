@@ -1,9 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import Image from "next/image"
-import { Calendar, MapPin } from "lucide-react"
 import { getAllEvents, transformEvent } from "@/lib/contentful"
+import { EventsClient } from "./events-client"
 
 async function getEvents() {
   try {
@@ -32,57 +28,7 @@ export default async function EventsPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
-        {/* Results Count */}
-        <div className="text-sm text-muted-foreground mb-6">Showing {events.length} events</div>
-
-        {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.length > 0 ? (
-            events.map((event) => (
-            <Card key={event.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col" style={{ minHeight: '420px' }}>
-              <div className="relative h-64 w-full overflow-hidden">
-                <Image
-                  src={event.thumbnail || "/placeholder.svg"}
-                  alt={event.title}
-                  width={400}
-                  height={256}
-                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                  quality={75}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-              </div>
-              <CardContent className="p-5 flex-1 flex flex-col">
-                <div className="space-y-3 flex-1">
-                  <CardTitle className="text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors">
-                    {event.title}
-                  </CardTitle>
-                  <div className="space-y-2">
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span className="line-clamp-1">{event.date}{event.time && ` • ${event.time}`}</span>
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span className="line-clamp-1">{event.location}</span>
-                    </div>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" className="w-full bg-transparent mt-4" asChild>
-                  <Link href={event.href}>View Details</Link>
-                </Button>
-              </CardContent>
-            </Card>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground text-lg">No events found.</p>
-              <p className="text-sm text-muted-foreground mt-2">Please check back later for upcoming events.</p>
-            </div>
-          )}
-        </div>
-      </div>
+      <EventsClient events={events} />
     </div>
   )
 }

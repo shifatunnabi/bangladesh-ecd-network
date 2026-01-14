@@ -362,7 +362,7 @@ export default function BENMembershipForm() {
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white my-10">
       <div className="text-center mb-8 border-b pb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Bangladesh ECD Network (BEN) Membership Form</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Bangladesh ECD Network (BEN) (BEN) Membership Form</h1>
         <p className="text-gray-600 mt-2">
           Secretariat: BRAC Institute of Educational Development (BRAC IED)<br />
           House # 113, Road # 2, Block # A, Niketan, Gulshan 1, Dhaka 1212

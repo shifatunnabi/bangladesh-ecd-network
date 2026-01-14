@@ -430,7 +430,7 @@ export default async function MembersPage() {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Member Organizations</h1>
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Bangladesh ECD Network comprises {members.length} member organizations across the country, including Government agencies, UN agencies, academic institutes, research institutes, national and international organizations, and local NGOs.
+              Bangladesh ECD Network (BEN) comprises {members.length} member organizations across the country, including Government agencies, UN agencies, academic institutes, research institutes, national and international organizations, and local NGOs.
             </p>
           </div>
         </div>

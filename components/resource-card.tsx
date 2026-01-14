@@ -115,7 +115,7 @@ export function ResourceCard({
           )}
           {href && !downloadUrl && (
             <Button variant="outline" size="sm" className="flex-1 bg-transparent" asChild>
-              <Link href={href}>
+              <Link href={href} target="_blank" rel="noopener noreferrer">
                 <Icon className="w-4 h-4 mr-2" />
                 {getActionText()}
               </Link>

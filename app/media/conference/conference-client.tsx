@@ -1,72 +1,77 @@
 "use client"
 
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import Link from "next/link"
+import { Calendar, MapPin } from "lucide-react"
 import Image from "next/image"
-import { Calendar, Download, Users, MapPin, ExternalLink } from "lucide-react"
+import Link from "next/link"
 import { ProcessedConference } from "@/lib/contentful-types"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination"
 
 interface ConferenceClientProps {
   conferences: ProcessedConference[]
 }
 
-// Fallback conferences for when no Contentful data is available
-const fallbackConferences: ProcessedConference[] = [
-  {
-    id: "fallback-2024",
-    title: "Annual ECD Conference 2024",
-    subtitle: "Building Resilient Early Childhood Systems",
-    theme: "Building Resilient Early Childhood Systems",
-    date: "April 20-22, 2024",
-    venue: "Dhaka International Conference Center",
-    organizer: "Bangladesh ECD Network",
-    status: "upcoming",
-    thumbnail: "/placeholder.svg?height=300&width=400",
-    thumbnailUrl: "/placeholder.svg?height=300&width=400",
-    photos: [],
-    href: "/media/conference/fallback-2024",
-    description:
-      "Join us for three days of learning, networking, and sharing best practices in early childhood development. This year's theme focuses on building resilient systems that can adapt to changing needs and challenges.",
-  },
-  {
-    id: "fallback-2023",
-    title: "Annual ECD Conference 2023",
-    subtitle: "Innovation in Early Childhood Development",
-    theme: "Innovation in Early Childhood Development",
-    date: "May 15-17, 2023",
-    venue: "Bangabandhu International Conference Center",
-    organizer: "Bangladesh ECD Network",
-    status: "completed",
-    thumbnail: "/placeholder.svg?height=300&width=400",
-    thumbnailUrl: "/placeholder.svg?height=300&width=400",
-    photos: [],
-    href: "/media/conference/fallback-2023",
-    description:
-      "Our 2023 conference brought together leading experts, practitioners, and policymakers to explore innovative approaches to early childhood development in Bangladesh and beyond.",
-  },
-  {
-    id: "fallback-2022",
-    title: "Annual ECD Conference 2022",
-    subtitle: "Strengthening ECD Systems Post-Pandemic",
-    theme: "Strengthening ECD Systems Post-Pandemic",
-    date: "June 10-12, 2022",
-    venue: "Virtual Conference",
-    organizer: "Bangladesh ECD Network",
-    status: "completed",
-    thumbnail: "/placeholder.svg?height=300&width=400",
-    thumbnailUrl: "/placeholder.svg?height=300&width=400",
-    photos: [],
-    href: "/media/conference/fallback-2022",
-    description:
-      "Our first virtual conference addressed the challenges and opportunities in early childhood development following the COVID-19 pandemic, with a focus on system strengthening and recovery.",
-  },
-]
+const ITEMS_PER_PAGE = 12
 
 export function ConferenceClient({ conferences }: ConferenceClientProps) {
-  // Use Contentful data if available, otherwise use fallback data
-  const displayConferences = conferences.length > 0 ? conferences : fallbackConferences
+  const [currentPage, setCurrentPage] = useState(1)
+
+  // Calculate pagination
+  const totalPages = Math.ceil(conferences.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+  const currentConferences = conferences.slice(startIndex, endIndex)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = []
+    const maxVisible = 5
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i)
+        }
+        pages.push("ellipsis")
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1)
+        pages.push("ellipsis")
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        pages.push(1)
+        pages.push("ellipsis")
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i)
+        }
+        pages.push("ellipsis")
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
 
   return (
     <div className="flex flex-col">
@@ -83,90 +88,101 @@ export function ConferenceClient({ conferences }: ConferenceClientProps) {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
-        {/* Conference Timeline */}
-        <div className="space-y-8">
-          {displayConferences.map((conference) => (
-            <Card key={conference.id} className="overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
-                {/* Image */}
-                <div className="relative h-64 lg:h-auto bg-gray-100">
-                  <Image
-                    src={conference.thumbnailUrl || "/placeholder.svg"}
-                    alt={conference.title}
-                    fill
-                    className="object-cover"
-                    loading="lazy"
-                    unoptimized
-                    sizes="(max-width: 1024px) 100vw, 33vw"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge variant={conference.status === "upcoming" ? "default" : "secondary"}>
-                      {conference.status === "upcoming" ? "Upcoming" : "Completed"}
-                    </Badge>
-                    {/* {conference.badge && (
-                      <Badge className="ml-2" variant="destructive">
-                        {conference.badge}
-                      </Badge>
-                    )} */}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="lg:col-span-2 p-6">
-                  <div className="space-y-4">
-                    <div>
-                      <CardTitle className="text-2xl text-primary mb-2">{conference.title}</CardTitle>
-                      {conference.subtitle && (
-                        <p className="text-lg font-medium text-muted-foreground">{conference.subtitle}</p>
-                      )}
+      <div className="container mx-auto px-4 py-8">
+        {currentConferences.length === 0 ? (
+          <p className="text-center text-muted-foreground py-12">
+            No conferences available at the moment.
+          </p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {currentConferences.map((conference) => (
+                <Card key={conference.id} style={{ minHeight: '420px' }} className="flex flex-col">
+                  {conference.thumbnail && (
+                    <div className="h-64 w-full overflow-hidden rounded-t-lg">
+                      <Image
+                        src={conference.thumbnail}
+                        alt={conference.title}
+                        width={400}
+                        height={256}
+                        className="object-cover w-full h-full"
+                        loading="lazy"
+                        quality={75}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                      <div className="flex items-center text-muted-foreground">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {conference.date}
-                      </div>
+                  )}
+                  <CardContent className="p-5 flex-1 flex flex-col">
+                    <h2 className="text-xl font-semibold mb-2 line-clamp-2">
+                      {conference.title}
+                    </h2>
+                    {conference.theme && (
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                        {conference.theme}
+                      </p>
+                    )}
+                    <div className="space-y-2 mb-4 flex-1">
+                      {conference.date && (
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          {conference.date}
+                        </div>
+                      )}
                       {conference.venue && (
-                        <div className="flex items-center text-muted-foreground">
-                          <MapPin className="w-4 h-4 mr-2" />
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <MapPin className="h-4 w-4 mr-2" />
                           {conference.venue}
                         </div>
                       )}
                     </div>
+                    <Link href={conference.href}>
+                      <Button className="w-full mt-4">View Details</Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-                    {conference.description && (
-                      <p className="text-muted-foreground leading-relaxed">{conference.description}</p>
-                    )}
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
 
-                    {/* No materials or registration links in new model */}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+                  {getPageNumbers().map((page, index) =>
+                    page === "ellipsis" ? (
+                      <PaginationItem key={`ellipsis-${index}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(page as number)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )
+                  )}
 
-        {/* Call to Action */}
-        <div className="mt-16">
-          <Card className="bg-muted/30">
-            <CardContent className="p-8 text-center">
-              <h3 className="text-2xl font-bold text-primary mb-4">Join Our Next Conference</h3>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                Don't miss our upcoming conferences. Register early to secure your spot and join the
-                conversation on advancing early childhood development in Bangladesh.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" asChild>
-                  <Link href="/media/events">View All Events</Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/contact">Contact Us</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </>
+        )}
       </div>
     </div>
   )

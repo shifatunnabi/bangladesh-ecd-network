@@ -8,10 +8,21 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import Image from "next/image"
 import { Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, X } from "lucide-react"
 import { ProcessedGallery } from "@/lib/contentful-types"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/pagination"
 
 interface GalleryClientProps {
   initialGalleryEvents: ProcessedGallery[]
 }
+
+const ITEMS_PER_PAGE = 12
 
 export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
   const [searchTerm, setSearchTerm] = useState("")
@@ -22,6 +33,7 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
   const [currentEventPhotos, setCurrentEventPhotos] = useState<string[]>([])
   const [currentEventTitle, setCurrentEventTitle] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -54,7 +66,55 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
   useEffect(() => {
     setExpandAll(false)
     setExpandedSections(new Set())
+    setCurrentPage(1)
   }, [activeTab, searchTerm])
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+  const currentEvents = filteredEvents.slice(startIndex, endIndex)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = []
+    const maxVisible = 5
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i)
+        }
+        pages.push("ellipsis")
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1)
+        pages.push("ellipsis")
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        pages.push(1)
+        pages.push("ellipsis")
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i)
+        }
+        pages.push("ellipsis")
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
 
   const toggleSection = (eventId: string) => {
     setExpandedSections(prev => {
@@ -73,7 +133,7 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
       setExpandedSections(new Set())
       setExpandAll(false)
     } else {
-      setExpandedSections(new Set(filteredEvents.map(e => e.id)))
+      setExpandedSections(new Set(currentEvents.map(e => e.id)))
       setExpandAll(true)
     }
   }
@@ -127,7 +187,7 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
         </div>
 
         {/* Expand All/Collapse All Button */}
-        {filteredEvents.length > 0 && (
+        {currentEvents.length > 0 && (
           <div className="flex justify-end mb-6">
             <Button
               variant="outline"
@@ -139,10 +199,18 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
           </div>
         )}
 
+        {/* Results Count */}
+        {filteredEvents.length > 0 && (
+          <div className="text-sm text-muted-foreground mb-6">
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredEvents.length)} of {filteredEvents.length} {activeTab === "photo" ? "events" : "videos"}
+          </div>
+        )}
+
         {/* Gallery Sections */}
-        {filteredEvents.length > 0 ? (
-          <div className={activeTab === "video" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"}>
-            {filteredEvents.map((event) => (
+        {currentEvents.length > 0 ? (
+          <>
+            <div className={activeTab === "video" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" : "space-y-4 mb-8"}>
+              {currentEvents.map((event) => (
               activeTab === "video" && !event.typeOfContent && event.youtubeLink ? (
                 /* Video Card */
                 <div key={event.id} className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
@@ -221,6 +289,46 @@ export function GalleryClient({ initialGalleryEvents }: GalleryClientProps) {
               )
             ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+
+                {getPageNumbers().map((page, index) =>
+                  page === "ellipsis" ? (
+                    <PaginationItem key={`ellipsis-${index}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(page as number)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )
+                )}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
         ) : (
           <div className="text-center py-12">
             <p className="text-muted-foreground">

@@ -10,7 +10,7 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               
-              <span className="font-bold text-lg">Bangladesh ECD Network</span>
+              <span className="font-bold text-lg">Bangladesh ECD Network (BEN)</span>
             </div>
             <p className="text-sm text-primary-foreground/80 leading-relaxed">
                Building partnership for Early Childhood Development (ECD).
@@ -139,7 +139,7 @@ export function Footer() {
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-sm text-primary-foreground/80">© 2026 Bangladesh ECD Network. All rights reserved.</p>
+            <p className="text-sm text-primary-foreground/80">© 2026 Bangladesh ECD Network (BEN). All rights reserved.</p>
             <div className="flex space-x-6">
               <Link href="/images/PP.pdf" target="_blank" className="text-sm text-primary-foreground/80 hover:text-primary-foreground">
                 Privacy Policy

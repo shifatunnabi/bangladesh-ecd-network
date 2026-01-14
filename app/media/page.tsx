@@ -10,7 +10,7 @@ import { NewsletterSection } from "@/components/newsletter-section"
 const featuredContent = [
   {
     type: "news",
-    title: "Bangladesh ECD Network Launches New Research Initiative",
+    title: "Bangladesh ECD Network (BEN) Launches New Research Initiative",
     description: "Comprehensive study on early childhood development outcomes in urban and rural settings begins.",
     date: "March 15, 2024",
     image: "/placeholder.svg?height=200&width=300",
@@ -83,7 +83,7 @@ export default async function MediaPage() {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Media Hub</h1>
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Stay connected with the latest news, events, and visual stories from the Bangladesh ECD Network and our
+              Stay connected with the latest news, events, and visual stories from the Bangladesh ECD Network (BEN) and our
               community of partners.
             </p>
           </div>

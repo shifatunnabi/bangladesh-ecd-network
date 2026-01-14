@@ -9,7 +9,7 @@ import { Footer } from "@/components/footer"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "Bangladesh ECD Network",
+  title: "Bangladesh ECD Network (BEN)",
   description:
     "A professional network focused on improving outcomes for young children and their caregivers in Bangladesh",
   generator: "v0.app",

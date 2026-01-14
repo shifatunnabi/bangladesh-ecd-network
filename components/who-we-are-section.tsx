@@ -57,7 +57,7 @@ export function WhoWeAreSection({ whoWeAreData }: WhoWeAreSectionProps) {
             ) : (
               <>
                 <p className="text-lg text-blue-100 leading-relaxed">
-                  The Bangladesh ECD Network is a collaborative platform that brings together policymakers, researchers,
+                  The Bangladesh ECD Network (BEN) is a collaborative platform that brings together policymakers, researchers,
                   practitioners, and organizations committed to advancing early childhood development across Bangladesh.
                 </p>
                 

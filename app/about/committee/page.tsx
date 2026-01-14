@@ -29,21 +29,21 @@ export default async function CommitteePage() {
       </section>
 
       <div className="container mx-auto px-4 py-12">
-        {/* Steering Committee */}
-        {steeringMembers.length > 0 && (
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold mb-2 text-center">Steering Committee</h2>
-            <p className="text-md mb-8 text-center">(names are chronological)</p>
-            <MemberCardGrid members={steeringMembers} />
-          </div>
-        )}
-
         {/* Executive Committee */}
         {executiveMembers.length > 0 && (
-          <div>
+          <div className="mb-16">
             <h2 className="text-3xl font-bold mb-2 text-center">Executive Committee</h2>
             <p className="text-md mb-8 text-center">(names are by position)</p>
             <MemberCardGrid members={executiveMembers} />
+          </div>
+        )}
+
+        {/* Steering Committee */}
+        {steeringMembers.length > 0 && (
+          <div>
+            <h2 className="text-3xl font-bold mb-2 text-center">Steering Committee</h2>
+            <p className="text-md mb-8 text-center">(names are chronological)</p>
+            <MemberCardGrid members={steeringMembers} />
           </div>
         )}
 

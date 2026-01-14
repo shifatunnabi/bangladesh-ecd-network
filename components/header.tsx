@@ -17,6 +17,7 @@ const aboutLinks = [
   { title: "About Us", href: "/about" },
   { title: "Committee", href: "/about/committee" },
   { title: "Secretariat", href: "/about/secretariat" },
+  { title: "Former Members", href: "/about/former-members" },
 ];
 
 const memberLinks = [
@@ -86,10 +87,10 @@ export function Header() {
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/logobencd-HusWl4EXf6z8GeA5kD9wuSDNRS7b4T.png"
               height={40}
               width={40}
-              alt="Bangladesh ECD Network Logo"
+              alt="Bangladesh ECD Network (BEN) Logo"
             />
             <span className="font-bold text-lg text-primary">
-              Bangladesh ECD Network
+              Bangladesh ECD Network (BEN)
             </span>
           </Link>
 

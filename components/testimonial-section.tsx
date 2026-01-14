@@ -34,7 +34,7 @@ export function TestimonialSection({ quotesData }: TestimonialSectionProps) {
       author: "Dr. Rashida Ahmed",
       authorDesignation: "Director, Child Development Institute",
       authorPhoto: "/placeholder.svg?height=96&width=96",
-      quote: "The Bangladesh ECD Network has been instrumental in bringing together diverse stakeholders to create meaningful change for children and families across our country. Their evidence-based approach and collaborative spirit make them an invaluable partner."
+      quote: "The Bangladesh ECD Network (BEN) has been instrumental in bringing together diverse stakeholders to create meaningful change for children and families across our country. Their evidence-based approach and collaborative spirit make them an invaluable partner."
     }
   ]
 

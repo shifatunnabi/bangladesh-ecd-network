@@ -655,3 +655,22 @@ export interface ProcessedAbout {
     designation: string;
   }>;
 }
+
+// About Page Mission Vision Content Type
+export interface AboutPageMissionVisionSkeleton {
+  contentTypeId: "aboutPageMissionVision";
+  fields: {
+    mission: EntryFieldTypes.Symbol;
+    vision: EntryFieldTypes.Symbol;
+    goal: EntryFieldTypes.Symbol;
+    objectives: EntryFieldTypes.Array<EntryFieldTypes.Symbol>;
+  };
+}
+
+export interface ProcessedMissionVision {
+  id: string;
+  mission: string;
+  vision: string;
+  goal: string;
+  objectives: string[];
+}

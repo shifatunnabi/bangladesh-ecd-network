@@ -136,7 +136,7 @@ export default function BENMembershipForm() {
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white shadow-xl rounded-lg my-10">
       <div className="text-center mb-8 border-b pb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Bangladesh ECD Network (BEN) Membership Form</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Bangladesh ECD Network (BEN) (BEN) Membership Form</h1>
         <p className="text-sm text-gray-600">Based on BEN Membership Form-2025 [cite: 1]</p>
       </div>
 

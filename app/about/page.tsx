@@ -1,19 +1,14 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronDown } from "lucide-react";
-import { getAbout } from "@/lib/contentful";
+import { getAbout, getMissionVision } from "@/lib/contentful";
 import { PartnersSection } from "@/components/partners-section";
+import { CheckCircle2 } from "lucide-react";
 
 export default async function AboutPage() {
   // Fetch about content from Contentful
   const aboutContent = await getAbout();
+  const missionVision = await getMissionVision();
 
   return (
     <div className="min-h-screen">
@@ -23,7 +18,7 @@ export default async function AboutPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              {aboutContent?.name || "About Bangladesh ECD Network"}
+              {aboutContent?.name || "About Bangladesh ECD Network (BEN)"}
             </h1>
             <p className="text-lg md:text-xl text-blue-100">
               A collaborative organization dedicated to advancing early childhood
@@ -70,75 +65,70 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Former Members Section */}
-      {aboutContent?.formerMembers && aboutContent.formerMembers.length > 0 && (
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4 max-w-4xl">
-            {/* Headline and Subheader */}
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-3">
-                Our Legacy
-              </h2>
-              <p className="text-lg text-muted-foreground">
-                Honoring the former members who have shaped our journey
+      {/* Mission, Vision, Goals & Objectives Section */}
+      {missionVision && (
+        <section className="py-16 bg-[#0055a3]">
+          <div className="container mx-auto px-4 max-w-6xl">
+            {/* Title and Subtitle */}
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Who We Are</h2>
+              <p className="text-lg text-blue-100 max-w-2xl mx-auto">
+                Know about our mission, vision, goal and objectives that drive our commitment to early childhood development
               </p>
             </div>
 
-            {/* Always Visible First Two Members */}
-            <Card className="max-w-3xl mx-auto mb-4">
-              <CardContent className="p-0">
-                {aboutContent.formerMembers.slice(0, 2).map((member, index) => (
-                  <div key={index}>
-                    <div className="p-6 hover:bg-muted/50 transition-colors">
-                      <h3 className="font-semibold text-lg text-primary mb-1">
-                        {member.name}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {member.designation}
-                      </p>
-                    </div>
-                    {index < 1 && (
-                      <div className="border-b border-border mx-6" />
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            {/* Mission, Vision, Goal in 3 columns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              {/* Vision */}
+              <Card className="bg-white hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200">
+                <CardContent className="p-6">
+                  <h3 className="text-2xl font-bold text-primary mb-4">Vision</h3>
+                  <p className="text-blue-900 leading-relaxed">
+                    {missionVision.vision}
+                  </p>
+                </CardContent>
+              </Card>
 
-            {/* Collapsible for Remaining Members */}
-            {aboutContent.formerMembers.length > 2 && (
-              <Collapsible defaultOpen={false} className="w-full">
-                <CollapsibleContent className="mb-4">
-                  <Card className="max-w-3xl mx-auto">
-                    <CardContent className="p-0">
-                      {aboutContent.formerMembers.slice(2).map((member, index) => (
-                        <div key={index}>
-                          <div className="p-6 hover:bg-muted/50 transition-colors">
-                            <h3 className="font-semibold text-lg text-primary mb-1">
-                              {member.name}
-                            </h3>
-                            <p className="text-muted-foreground">
-                              {member.designation}
-                            </p>
-                          </div>
-                          {index < aboutContent.formerMembers.slice(2).length - 1 && (
-                            <div className="border-b border-border mx-6" />
-                          )}
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                </CollapsibleContent>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full max-w-3xl mx-auto flex items-center justify-center gap-2 text-lg font-semibold p-6 bg-white hover:bg-gray-50"
-                  >
-                    <span>View All Members</span>
-                    <ChevronDown className="h-5 w-5 transition-transform duration-200" />
-                  </Button>
-                </CollapsibleTrigger>
-              </Collapsible>
+              {/* Mission */}
+              <Card className="bg-white hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200">
+                <CardContent className="p-6">
+                  <h3 className="text-2xl font-bold text-primary mb-4">Mission</h3>
+                  <p className="text-blue-900 leading-relaxed">
+                    {missionVision.mission}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Goal */}
+              <Card className="bg-white hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200">
+                <CardContent className="p-6">
+                  <h3 className="text-2xl font-bold text-primary mb-4">Goal</h3>
+                  <p className="text-blue-900 leading-relaxed">
+                    {missionVision.goal}
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Objectives in 2 columns */}
+            {missionVision.objectives && missionVision.objectives.length > 0 && (
+              <div>
+                <h3 className="text-3xl font-bold text-white mb-6 text-center">
+                  Objectives
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {missionVision.objectives.map((objective, index) => (
+                    <Card key={index} className="bg-white hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl border-blue-200">
+                      <CardContent className="p-4 flex items-start gap-3">
+                        <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0 mt-1" />
+                        <p className="text-blue-900 leading-relaxed">
+                          {objective}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </section>

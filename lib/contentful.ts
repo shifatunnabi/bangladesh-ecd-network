@@ -46,6 +46,8 @@ import type {
   ProcessedSecretariat,
   AboutSkeleton,
   ProcessedAbout,
+  AboutPageMissionVisionSkeleton,
+  ProcessedMissionVision,
 } from "./contentful-types";
 
 // Environment variables validation
@@ -303,7 +305,7 @@ export function transformNews(entry: Entry<NewsSkeleton>): ProcessedNews {
     id: sys.id,
     title: (fields.title as string) || "Untitled",
     date: (fields.date as string) || "",
-    author: "Bangladesh ECD Network",
+    author: "Bangladesh ECD Network (BEN)",
     newsLink: (fields.newsLink as string) || "#",
   };
 }
@@ -604,7 +606,7 @@ export function transformResearch(
     downloadUrl: fileUrl,
     type: "research" as const,
     category: (fields.category as string) || "Research Report",
-    author: (fields.authorName as string) || "Bangladesh ECD Network",
+    author: (fields.authorName as string) || "Bangladesh ECD Network (BEN)",
   };
 }
 
@@ -777,7 +779,7 @@ export function transformAboutPage(
 
   return {
     id: sys.id,
-    title: (fields.title as string) || "About Bangladesh ECD Network",
+    title: (fields.title as string) || "About Bangladesh ECD Network (BEN)",
     subtitle: fields.subtitle as string | undefined,
     mission: fields.mission as string | undefined,
     vision: fields.vision as string | undefined,
@@ -842,7 +844,7 @@ export function transformCarousel(
 
   return {
     id: sys.id,
-    title: (fields.title as string) || "Welcome to Bangladesh ECD Network",
+    title: (fields.title as string) || "Welcome to Bangladesh ECD Network (BEN)",
     subtitle: (fields.subtitle as string) || "Supporting early childhood development across Bangladesh",
     ctaText: fields.ctaText as string | undefined,
     ctaLink: fields.ctaLink as string | undefined,
@@ -1051,7 +1053,7 @@ export async function getHomepageQuote(
           author: "Dr. Maria Rahman",
           authorDesignation: "Early Childhood Development Specialist",
           authorPhoto: "",
-          quote: "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
+          quote: "The Bangladesh ECD Network (BEN) has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
         },
       ];
     }
@@ -1065,7 +1067,7 @@ export async function getHomepageQuote(
         author: "Dr. Maria Rahman",
         authorDesignation: "Early Childhood Development Specialist",
         authorPhoto: "",
-        quote: "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
+        quote: "The Bangladesh ECD Network (BEN) has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
       },
     ];
   }
@@ -1079,7 +1081,7 @@ function transformHomepageQuote(
     author: (item.fields.author as string) || "Dr. Maria Rahman",
     authorDesignation: (item.fields.authorDesignation as string) || "Early Childhood Development Specialist",
     authorPhoto: item.fields.authorPhoto ? getAssetUrl(item.fields.authorPhoto as any) : "",
-    quote: item.fields.quote ? extractPlainText(item.fields.quote) : "The Bangladesh ECD Network has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
+    quote: item.fields.quote ? extractPlainText(item.fields.quote) : "The Bangladesh ECD Network (BEN) has been instrumental in bringing together professionals and creating meaningful change in early childhood development across the country.",
     quoteRichText: item.fields.quote || null,
   };
 }
@@ -1383,7 +1385,7 @@ export async function getWhoWeAre(
     if (response.items.length === 0) {
       return {
         id: "fallback",
-        description: "The Bangladesh ECD Network is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
+        description: "The Bangladesh ECD Network (BEN) is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
         descriptionRichText: null,
         photoUrl: "/images/ecd-team-meeting.jpg",
         vision: "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
@@ -1396,7 +1398,7 @@ export async function getWhoWeAre(
     console.error("Error fetching who we are:", error);
     return {
       id: "fallback",
-      description: "The Bangladesh ECD Network is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
+      description: "The Bangladesh ECD Network (BEN) is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
       descriptionRichText: null,
       photoUrl: "/images/ecd-team-meeting.jpg",
       vision: "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
@@ -1410,7 +1412,7 @@ function transformWhoWeAre(
 ): ProcessedWhoWeAre {
   return {
     id: item.sys.id,
-    description: item.fields.description ? extractPlainText(item.fields.description) : "The Bangladesh ECD Network is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
+    description: item.fields.description ? extractPlainText(item.fields.description) : "The Bangladesh ECD Network (BEN) is a collaborative platform that brings together policymakers, researchers, practitioners, and organizations committed to advancing early childhood development across Bangladesh.",
     descriptionRichText: item.fields.description || null,
     photoUrl: item.fields.photo ? getAssetUrl(item.fields.photo as any) : "/images/ecd-team-meeting.jpg",
     vision: item.fields.vision ? extractPlainText(item.fields.vision) : "A Bangladesh where every young child is well-nourished, healthy, happy, learning, and safe.",
@@ -1588,6 +1590,37 @@ export async function getAbout(preview = false): Promise<ProcessedAbout | null> 
     return transformAbout(response.items[0]);
   } catch (error) {
     console.error("Error fetching about data:", error);
+    return null;
+  }
+}
+
+// Transform Mission Vision entry
+function transformMissionVision(entry: Entry<AboutPageMissionVisionSkeleton>): ProcessedMissionVision {
+  return {
+    id: entry.sys.id,
+    mission: (entry.fields.mission as string) || "",
+    vision: (entry.fields.vision as string) || "",
+    goal: (entry.fields.goal as string) || "",
+    objectives: (entry.fields.objectives as string[]) || [],
+  };
+}
+
+// Fetch Mission Vision data
+export async function getMissionVision(preview = false): Promise<ProcessedMissionVision | null> {
+  try {
+    const client = getClient(preview);
+    const response = await client.getEntries<AboutPageMissionVisionSkeleton>({
+      content_type: "aboutPageMissionVision",
+      limit: 1,
+    });
+
+    if (response.items.length === 0) {
+      return null;
+    }
+
+    return transformMissionVision(response.items[0]);
+  } catch (error) {
+    console.error("Error fetching mission vision data:", error);
     return null;
   }
 }

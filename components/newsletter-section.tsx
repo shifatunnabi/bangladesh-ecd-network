@@ -30,7 +30,7 @@ export function NewsletterSection() {
             <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">Subscribe to our Newsletter</h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
               Subscribe to our newsletter to receive the latest updates on early childhood development research, events,
-              and resources from Bangladesh ECD Network.
+              and resources from Bangladesh ECD Network (BEN).
             </p>
 
             {isSubmitted ? (

@@ -12,7 +12,7 @@ export default async function SecretariatPage() {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">Secretariat Team</h1>
             <p className="text-xl text-primary-foreground/90 leading-relaxed">
-              Our dedicated secretariat team ensures the smooth operation of the Bangladesh ECD Network. They coordinate
+              Our dedicated secretariat team ensures the smooth operation of the Bangladesh ECD Network (BEN). They coordinate
               activities, manage programs, and provide essential support to our members and partners.
             </p>
           </div>

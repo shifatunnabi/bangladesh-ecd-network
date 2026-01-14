@@ -14,7 +14,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-            <p className="text-xl text-blue-100">Get in touch with the Bangladesh ECD Network team</p>
+            <p className="text-xl text-blue-100">Get in touch with the Bangladesh ECD Network (BEN) team</p>
           </div>
         </div>
       </section>

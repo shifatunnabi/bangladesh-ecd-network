@@ -22,7 +22,7 @@ export default function MembershipPage() {
   ]
 
   const membershipBenefits = [
-    "Access to the resourceful website of Bangladesh ECD Network (BEN) (www.ecd-bangladesh.net)",
+    "Access to the resourceful website of Bangladesh ECD Network (BEN) (BEN) (www.ecd-bangladesh.net)",
     "Complimentary copies of the ECD Newsletter, BEN Directory, and other publications and promotional materials developed by the network",
     "Access to capacity development opportunities related to ECD offered by BEN itself and other member organizations, either free of charge or with cost-sharing",
     "Opportunities for training and orientation organized by the network or in collaboration with partner organizations and institutions",
@@ -121,7 +121,7 @@ export default function MembershipPage() {
                   
                   <div className="bg-white p-8 rounded-lg shadow-sm mb-8">
                     <p className="text-gray-700 leading-relaxed mb-6">
-                      Any organization, institution, agency, sectoral department, network, forum, or corporate body that promotes the holistic development of young children from conception to transition into primary education will be eligible to apply for membership of the Bangladesh ECD Network (BEN).
+                      Any organization, institution, agency, sectoral department, network, forum, or corporate body that promotes the holistic development of young children from conception to transition into primary education will be eligible to apply for membership of the Bangladesh ECD Network (BEN) (BEN).
                     </p>
                     <p className="text-gray-700 leading-relaxed mb-6 font-medium">
                       Interested organizations will have to fulfill one or more of the following specific criteria related to holistic development, including cognitive, linguistic, emotional, and social development of young children in Bangladesh:

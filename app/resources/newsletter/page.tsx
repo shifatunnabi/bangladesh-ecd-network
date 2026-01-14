@@ -1,10 +1,6 @@
-import { ResourceCard } from "@/components/resource-card"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Mail } from "lucide-react"
-import Link from "next/link"
 import { getAllNewsletters, transformNewsletter } from "@/lib/contentful"
 import { NewsletterSection } from "@/components/newsletter-section"
+import { NewsletterClient } from "./newsletter-client"
 
 async function getNewsletters() {
   try {
@@ -34,37 +30,7 @@ export default async function NewsletterPage() {
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12">
-
-
-        {/* Newsletter Archive */}
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-primary mb-4">Newsletter Archive</h2>
-          <p className="text-muted-foreground">Browse our previous newsletters and special issues</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {newsletters.length > 0 ? (
-            newsletters.map((newsletter, index) => (
-              <ResourceCard key={newsletter.id || index} {...newsletter} />
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground text-lg">No newsletters found.</p>
-              <p className="text-sm text-muted-foreground mt-2">Please check back later for new issues.</p>
-            </div>
-          )}
-        </div>
-
-        {/* Load More */}
-        {newsletters.length > 0 && (
-          <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
-              Load More Issues
-            </Button>
-          </div>
-        )}
-      </div>
+      <NewsletterClient newsletters={newsletters} />
 
 
               {/* Newsletter Subscription */}

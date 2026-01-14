@@ -61,9 +61,9 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredMembers.map((member) => (
           <Dialog key={member.id}>
-            <Card className="hover:shadow-lg transition-all duration-300 group h-full">
-              <CardContent className="p-6 text-center h-full flex flex-col">
-                <div className="relative w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden">
+            <Card className="hover:shadow-lg transition-all duration-300 group">
+              <CardContent className="p-6 text-center">
+                <div className="relative w-40 h-40 mx-auto mb-4 rounded-full overflow-hidden">
                   <Image
                     src={member.photoUrl || "/placeholder.svg"}
                     alt={member.name}
@@ -78,20 +78,18 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
                 {/* {'professionalDetails' in member && member.professionalDetails && (
                   <p className="text-xs text-muted-foreground mb-4">{member.professionalDetails}</p>
                 )} */}
-                <div className="mt-auto pt-4">
-                  <DialogTrigger asChild>
-                    <Button size="sm" className="text-xs px-3 py-1 h-auto">
-                      View Details
-                    </Button>
-                  </DialogTrigger>
-                </div>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="text-xs px-3 py-1 h-auto">
+                    View Details
+                  </Button>
+                </DialogTrigger>
               </CardContent>
             </Card>
 
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <div className="flex items-start gap-4">
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
+                  <div className="relative w-40 h-40 rounded-full overflow-hidden flex-shrink-0">
                     <Image src={member.photoUrl || "/placeholder.svg"} alt={member.name} fill className="object-cover" />
                   </div>
                   <div className="flex-1">
@@ -107,9 +105,9 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
                 {'professionalDetails' in member && member.professionalDetails && (
                   <div>
                     <h4 className="font-semibold text-lg mb-3">Professional Details</h4>
-                    <div className="text-muted-foreground leading-relaxed space-y-3">
-                      {member.professionalDetails.split(/\n+/).filter(p => p.trim()).map((line, index) => (
-                        <p key={index}>{line.trim()}</p>
+                    <div className="text-muted-foreground leading-relaxed space-y-4">
+                      {member.professionalDetails.split(/\n\s*\n/).filter(p => p.trim()).map((paragraph, index) => (
+                        <p key={index}>{paragraph.replace(/\n/g, ' ')}</p>
                       ))}
                     </div>
                   </div>
@@ -118,9 +116,9 @@ export function MemberCardGrid({ members, showSearch = false }: MemberCardGridPr
                 {member.biography && (
                   <div>
                     <h4 className="font-semibold text-lg mb-3">Biography</h4>
-                    <div className="text-muted-foreground leading-relaxed space-y-3">
-                      {member.biography.split(/\n+/).filter(p => p.trim()).map((line, index) => (
-                        <p key={index}>{line.trim()}</p>
+                    <div className="text-muted-foreground leading-relaxed space-y-4">
+                      {member.biography.split(/\n\s*\n/).filter(p => p.trim()).map((paragraph, index) => (
+                        <p key={index}>{paragraph.replace(/\n/g, ' ')}</p>
                       ))}
                     </div>
                   </div>
