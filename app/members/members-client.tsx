@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, MapPin, User, Building } from "lucide-react"
+import { Mail, MapPin, User, Building, Globe } from "lucide-react"
 
 interface Member {
   id: string
@@ -17,6 +17,7 @@ interface Member {
   focalDesignation: string
   focalEmail: string
   division: string
+  website?: string
 }
 
 interface MemberCardProps {
@@ -68,6 +69,20 @@ function MemberCard({ member }: MemberCardProps) {
                   {member.focalEmail}
                 </a>
               </div>
+
+              {member.website && (
+                <div className="flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                  <a
+                    href={member.website.startsWith('http') ? member.website : `https://${member.website}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:underline truncate"
+                  >
+                    {member.website}
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </div>

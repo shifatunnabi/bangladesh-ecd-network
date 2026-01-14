@@ -58,7 +58,7 @@ export function TestimonialSection({ quotesData }: TestimonialSectionProps) {
                         <div className="flex-shrink-0">
                           <div className="relative w-24 h-24 rounded-full overflow-hidden ring-4 ring-blue-200">
                             <Image
-                              src={testimonial.authorPhoto || "/placeholder.svg?height=96&width=96"}
+                              src={testimonial.authorPhoto || "/placeholder.svg"}
                               alt={testimonial.author}
                               fill
                               className="object-cover"

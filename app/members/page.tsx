@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Mail, MapPin, User, Building } from "lucide-react"
-import { getMembers } from "@/lib/members"
+import { getMembersFromDB, getMembers } from "@/lib/members"
 import MembersClient from "./members-client"
 
 interface Member {
@@ -104,7 +104,7 @@ const sampleMembers: Member[] = [
     focalEmail: "islam.dipu@gmail.com",
     division: "Barishal"
   },
-  
+
   // Chattogram Division
   {
     id: "8",
@@ -419,9 +419,16 @@ const sampleMembers: Member[] = [
 ]
 
 export default async function MembersPage() {
-  // Load all members from CSV
-  const allMembers = await getMembers()
-  const members = allMembers.length > 0 ? allMembers : sampleMembers
+  // Load members from database, with fallback to CSV/sample
+  let members = await getMembersFromDB()
+  if (members.length === 0) {
+    // Fallback to CSV if database is empty
+    members = await getMembers()
+  }
+  if (members.length === 0) {
+    // If still empty, use sample data
+    members = sampleMembers
+  }
 
   return (
     <div className="flex flex-col">

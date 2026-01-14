@@ -329,7 +329,7 @@ function FormRadioGroup({ label, options, register, name }: FormRadioGroupProps)
 }
 
 export default function BENMembershipForm() {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<MembershipFormData>({
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<MembershipFormData>({
     defaultValues: {
       sectionA: {
         majorActivities: [],
@@ -342,6 +342,8 @@ export default function BENMembershipForm() {
   });
 
   const [openSections, setOpenSections] = useState<string[]>(['sectionA']);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const organizationType = watch('sectionA.organizationType');
   const hasProgram0to3 = watch('program0to3.hasProgram');
   const hasProgram3to5 = watch('program3to5.hasProgram');
@@ -354,23 +356,71 @@ export default function BENMembershipForm() {
     );
   };
 
-  const onSubmit: SubmitHandler<MembershipFormData> = (data) => {
-    console.log('Form Data:', data);
-    alert('Form submitted! Check console for data.');
+  const onSubmit: SubmitHandler<MembershipFormData> = async (data) => {
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('/api/membership', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus({
+          type: 'success',
+          message: 'Your membership application has been submitted successfully! We will review it and get back to you soon.',
+        });
+        reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setSubmitStatus({
+          type: 'error',
+          message: result.error || 'Failed to submit application. Please try again.',
+        });
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'An error occurred while submitting. Please check your connection and try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white my-10">
       <div className="text-center mb-8 border-b pb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Bangladesh ECD Network (BEN) (BEN) Membership Form</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Bangladesh ECD Network (BEN) Membership Form</h1>
         <p className="text-gray-600 mt-2">
           Secretariat: BRAC Institute of Educational Development (BRAC IED)<br />
           House # 113, Road # 2, Block # A, Niketan, Gulshan 1, Dhaka 1212
         </p>
       </div>
 
+      {submitStatus && (
+        <div
+          className={`p-4 rounded-lg mb-6 ${submitStatus.type === 'success'
+              ? 'bg-green-50 border border-green-200 text-green-800'
+              : 'bg-red-50 border border-red-200 text-red-800'
+            }`}
+        >
+          <p className="font-medium">
+            {submitStatus.type === 'success' ? '✓ Success!' : '✕ Error'}
+          </p>
+          <p className="mt-1">{submitStatus.message}</p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        
+
         {/* SECTION A: General Information */}
         <CollapsibleSection
           title="Section A: General Information"
@@ -870,9 +920,23 @@ export default function BENMembershipForm() {
         <div className="flex justify-center pt-8 border-t">
           <button
             type="submit"
-            className="px-8 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            disabled={isSubmitting}
+            className={`px-8 py-3 font-medium rounded-lg transition-colors ${isSubmitting
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-indigo-600 hover:bg-indigo-700'
+              } text-white`}
           >
-            Submit Form
+            {isSubmitting ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Submitting...
+              </span>
+            ) : (
+              'Submit Application'
+            )}
           </button>
         </div>
       </form>

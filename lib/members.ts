@@ -12,6 +12,7 @@ export interface Member {
   focalDesignation: string
   focalEmail: string
   division: string
+  website?: string
 }
 
 // Simple CSV parser without external dependencies
@@ -21,7 +22,7 @@ function parseCSV(content: string): Record<string, string>[] {
 
   // Parse header
   const headers = parseCSVLine(lines[0])
-  
+
   // Parse data rows
   const records: Record<string, string>[] = []
   let currentLine = ''
@@ -29,29 +30,29 @@ function parseCSV(content: string): Record<string, string>[] {
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i]
-    
+
     // Handle multi-line quoted fields
     currentLine += (currentLine ? '\n' : '') + line
-    
+
     // Count quotes to determine if we're still in a quoted field
     let quoteCount = 0
     for (let j = 0; j < currentLine.length; j++) {
       if (currentLine[j] === '"') quoteCount++
     }
-    
+
     // If even number of quotes, we have a complete row
     if (quoteCount % 2 === 0) {
       const fields = parseCSVLine(currentLine)
       const record: Record<string, string> = {}
-      
+
       headers.forEach((header, index) => {
         record[header] = fields[index] || ''
       })
-      
+
       if (record['Name of organization']) {
         records.push(record)
       }
-      
+
       currentLine = ''
     }
   }
@@ -94,9 +95,9 @@ export async function getMembers(): Promise<Member[]> {
   try {
     const csvPath = path.join(process.cwd(), 'public', 'members.csv')
     const fileContent = fs.readFileSync(csvPath, 'utf-8')
-    
+
     const records = parseCSV(fileContent)
-    
+
     const members: Member[] = records.map((row: any, index: number) => {
       // Parse head name and designation from the "Name and designation" field
       const headFullText = row['Name and designation of the Head of the organization'] || ''
@@ -126,6 +127,7 @@ export async function getMembers(): Promise<Member[]> {
         focalDesignation: focalDesignation.trim(),
         focalEmail: row['Email of the ECD Focal Person']?.trim() || '',
         division: division,
+        website: row['Website']?.trim() || '',
       }
     }).filter((member: Member) => member.organization) // Filter out empty rows
 
@@ -135,3 +137,37 @@ export async function getMembers(): Promise<Member[]> {
     return []
   }
 }
+
+// Get members from MongoDB
+export async function getMembersFromDB(): Promise<Member[]> {
+  try {
+    const { default: connectDB } = await import('./db')
+    const { default: MemberModel } = await import('./models/Member')
+
+    await connectDB()
+
+    const dbMembers = await MemberModel.find().sort({ organization: 1 }).lean()
+
+    // Map MongoDB documents to Member interface
+    const members: Member[] = dbMembers.map((doc: any, index: number) => ({
+      id: doc._id.toString(),
+      organization: doc.organization || '',
+      address: doc.address || '',
+      headName: doc.headName || '',
+      headDesignation: doc.headDesignation || '',
+      headEmail: doc.headEmail || '',
+      focalName: doc.focalName || '',
+      focalDesignation: doc.focalDesignation || '',
+      focalEmail: doc.focalEmail || '',
+      division: doc.division || '',
+      website: doc.website || '',
+    }))
+
+    return members
+  } catch (error) {
+    console.error('Error fetching members from DB:', error)
+    // Fallback to CSV if DB is not available
+    return getMembers()
+  }
+}
+
