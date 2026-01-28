@@ -104,7 +104,7 @@ const sampleMembers: Member[] = [
     focalEmail: "islam.dipu@gmail.com",
     division: "Barishal"
   },
-  
+
   // Chattogram Division
   {
     id: "8",
@@ -419,9 +419,40 @@ const sampleMembers: Member[] = [
 ]
 
 export default async function MembersPage() {
-  // Load all members from CSV
-  const allMembers = await getMembers()
-  const members = allMembers.length > 0 ? allMembers : sampleMembers
+  // Try to load members from database first, fallback to CSV
+  let members: Member[] = []
+
+  try {
+    // Try to import from database directly (server-side)
+    const dbConnect = (await import('@/lib/mongodb')).default;
+    const MemberModel = (await import('@/models/Member')).default;
+
+    await dbConnect();
+    const dbMembers = await MemberModel.find({ isActive: true }).sort({ organization: 1 }).lean();
+
+    if (dbMembers.length > 0) {
+      members = dbMembers.map((m: any) => ({
+        id: m._id.toString(),
+        organization: m.organization,
+        address: m.address || '',
+        headName: m.headName || '',
+        headDesignation: m.headDesignation || '',
+        headEmail: m.headEmail || '',
+        focalName: m.focalName || '',
+        focalDesignation: m.focalDesignation || '',
+        focalEmail: m.focalEmail || '',
+        division: m.division || '',
+      }))
+    }
+  } catch (error) {
+    console.log('Database fetch failed, falling back to CSV:', error)
+  }
+
+  // Fallback to CSV if database is empty
+  if (members.length === 0) {
+    const allMembers = await getMembers()
+    members = allMembers.length > 0 ? allMembers : sampleMembers
+  }
 
   return (
     <div className="flex flex-col">
