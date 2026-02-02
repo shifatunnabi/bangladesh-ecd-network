@@ -21,7 +21,7 @@ function parseCSV(content: string): Record<string, string>[] {
 
   // Parse header
   const headers = parseCSVLine(lines[0])
-  
+
   // Parse data rows
   const records: Record<string, string>[] = []
   let currentLine = ''
@@ -29,29 +29,29 @@ function parseCSV(content: string): Record<string, string>[] {
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i]
-    
+
     // Handle multi-line quoted fields
     currentLine += (currentLine ? '\n' : '') + line
-    
+
     // Count quotes to determine if we're still in a quoted field
     let quoteCount = 0
     for (let j = 0; j < currentLine.length; j++) {
       if (currentLine[j] === '"') quoteCount++
     }
-    
+
     // If even number of quotes, we have a complete row
     if (quoteCount % 2 === 0) {
       const fields = parseCSVLine(currentLine)
       const record: Record<string, string> = {}
-      
+
       headers.forEach((header, index) => {
         record[header] = fields[index] || ''
       })
-      
+
       if (record['Name of organization']) {
         records.push(record)
       }
-      
+
       currentLine = ''
     }
   }
@@ -91,12 +91,31 @@ function parseCSVLine(line: string): string[] {
 }
 
 export async function getMembers(): Promise<Member[]> {
+  // First, try to get members from the database API
+  try {
+    const baseUrl = process.env.NEXTAUTH_URL || process.env.VERCEL_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/members`, {
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.members && data.members.length > 0) {
+        return data.members;
+      }
+    }
+  } catch (error) {
+    console.log('Could not fetch from database, falling back to CSV');
+  }
+
+  // Fall back to CSV file
   try {
     const csvPath = path.join(process.cwd(), 'public', 'members.csv')
     const fileContent = fs.readFileSync(csvPath, 'utf-8')
-    
+
     const records = parseCSV(fileContent)
-    
+
     const members: Member[] = records.map((row: any, index: number) => {
       // Parse head name and designation from the "Name and designation" field
       const headFullText = row['Name and designation of the Head of the organization'] || ''
@@ -135,3 +154,4 @@ export async function getMembers(): Promise<Member[]> {
     return []
   }
 }
+
