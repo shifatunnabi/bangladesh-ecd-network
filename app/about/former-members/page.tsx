@@ -1,6 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { getAbout } from "@/lib/contentful";
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 export default async function FormerMembersPage() {
   // Fetch about content from Contentful
   const aboutContent = await getAbout();

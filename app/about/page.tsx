@@ -5,6 +5,9 @@ import { getAbout, getMissionVision } from "@/lib/contentful";
 import { PartnersSection } from "@/components/partners-section";
 import { CheckCircle2 } from "lucide-react";
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 export default async function AboutPage() {
   // Fetch about content from Contentful
   const aboutContent = await getAbout();

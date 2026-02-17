@@ -7,6 +7,9 @@ import { Calendar, Camera, Newspaper, Users } from "lucide-react"
 import { getMediaCounts } from "@/lib/contentful"
 import { NewsletterSection } from "@/components/newsletter-section"
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 const featuredContent = [
   {
     type: "news",

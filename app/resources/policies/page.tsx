@@ -6,6 +6,9 @@ import Image from "next/image"
 import { ExternalLink, FileText } from "lucide-react"
 import { getPoliciesLinks } from "@/lib/contentful"
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 export default async function PoliciesPage() {
   // Fetch policies from Contentful
   const policiesData = await getPoliciesLinks();

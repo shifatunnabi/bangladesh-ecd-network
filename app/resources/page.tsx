@@ -5,6 +5,9 @@ import Link from "next/link"
 import { BookOpen, Video, FileText, ExternalLink } from "lucide-react"
 import { getResourceCounts } from "@/lib/contentful"
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 const featuredResources = [
   {
     title: "Early Childhood Development in Rural Bangladesh: Current State and Opportunities",

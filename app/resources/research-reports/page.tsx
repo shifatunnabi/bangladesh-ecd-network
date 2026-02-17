@@ -1,6 +1,9 @@
 import { getAllResearch, transformResearch } from "@/lib/contentful"
 import { ResearchReportsClient } from "./research-reports-client"
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 async function getResearchReports() {
   try {
     const researchEntries = await getAllResearch()

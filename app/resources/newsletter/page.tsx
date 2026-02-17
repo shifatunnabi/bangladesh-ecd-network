@@ -2,6 +2,9 @@ import { getAllNewsletters, transformNewsletter } from "@/lib/contentful"
 import { NewsletterSection } from "@/components/newsletter-section"
 import { NewsletterClient } from "./newsletter-client"
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 async function getNewsletters() {
   try {
     const newsletterEntries = await getAllNewsletters()

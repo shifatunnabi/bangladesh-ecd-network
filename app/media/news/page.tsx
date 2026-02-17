@@ -1,6 +1,9 @@
 import { getAllNews, transformNews } from "@/lib/contentful"
 import { NewsClient } from "./news-client"
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 async function getNewsArticles() {
   try {
     const newsEntries = await getAllNews()

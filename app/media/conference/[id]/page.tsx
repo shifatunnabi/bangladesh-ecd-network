@@ -4,6 +4,9 @@ import { Calendar, MapPin, Building2 } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 export default async function ConferenceDetailsPage({
   params,
 }: {

@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getEventById, transformEvent } from "@/lib/contentful";
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 interface EventDetailPageProps {
   params: Promise<{
     id: string;

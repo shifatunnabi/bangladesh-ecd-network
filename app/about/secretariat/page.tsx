@@ -1,6 +1,9 @@
 import { MemberCardGrid } from "@/components/member-card-grid"
 import { getSecretariatMembers } from "@/lib/contentful"
 
+// Enable ISR - Revalidate every 60 seconds
+export const revalidate = 60;
+
 export default async function SecretariatPage() {
   // Fetch secretariat members from Contentful
   const secretariatMembers = await getSecretariatMembers()
