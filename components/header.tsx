@@ -205,12 +205,12 @@ export function Header() {
             </div>
 
             {/* Learning Link */}
-            <Link
+            {/* <Link
               href="https://lms-edu-three.vercel.app/"
               className="flex items-center px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
             >
               Learning
-            </Link>
+            </Link> */}
           </nav>
 
           {/* CTA Button */}
@@ -241,13 +241,13 @@ export function Header() {
             <SheetContent side="right" className="w-[320px] sm:w-[400px] p-0">
               <div className="flex items-center justify-between p-6 border-b">
                 <div className="flex items-center space-x-2">
-                  <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
+                  {/* <div className="h-6 w-6 rounded-full bg-primary flex items-center justify-center">
                     <span className="text-primary-foreground font-bold text-xs">
                       BD
                     </span>
-                  </div>
+                  </div> */}
                   <span className="font-semibold text-primary">
-                    ECD Network
+                    Bangladesh ECD Network
                   </span>
                 </div>
               </div>
@@ -362,13 +362,13 @@ export function Header() {
                 </Collapsible>
 
                 {/* Learning Link */}
-                <Link
+                {/* <Link
                   href="https://lms-edu-three.vercel.app/"
                   className="block p-3 text-left font-medium text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
                   Learning
-                </Link>
+                </Link> */}
 
                 {/* Direct Navigation Links */}
                 <div className="pt-4 border-t space-y-2">
