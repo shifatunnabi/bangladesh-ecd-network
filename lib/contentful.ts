@@ -253,7 +253,7 @@ export function extractParagraphs(richText: any): string[] {
 export async function getAllNews(
   preview = false
 ): Promise<Entry<NewsSkeleton>[]> {
-  return getEntries<NewsSkeleton>("news", { order: ["sys.createdAt"] }, preview);
+  return getEntries<NewsSkeleton>("news", { order: ["-sys.createdAt"] }, preview);
 }
 
 export async function getNewsByCategory(
