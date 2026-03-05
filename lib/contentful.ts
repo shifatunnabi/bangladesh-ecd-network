@@ -1624,3 +1624,39 @@ export async function getMissionVision(preview = false): Promise<ProcessedMissio
     return null;
   }
 }
+
+// Awareness Document-specific functions
+export async function getAllAwarenessDocuments(
+  preview = false
+): Promise<Entry<AwarenessDocumentSkeleton>[]> {
+  return getEntries<AwarenessDocumentSkeleton>(
+    "awarenessDocument",
+    { order: ["-fields.date"] },
+    preview
+  );
+}
+
+// Transform Contentful awareness document entry to processed format
+export function transformAwarenessDocument(
+  entry: Entry<AwarenessDocumentSkeleton>
+): ProcessedAwarenessDocument {
+  const { fields, sys } = entry;
+
+  const date = fields.date as string;
+  const formattedDate = date
+    ? new Date(date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+      })
+    : "";
+
+  return {
+    id: sys.id,
+    title: (fields.name as string) || "",
+    date: formattedDate,
+    image: getAssetUrl(fields.thumbnailImage as Asset),
+    author: (fields.author as string) || "Bangladesh ECD Network",
+    downloadUrl: getAssetUrl(fields.pdf as Asset),
+    type: "awareness" as const,
+  };
+}

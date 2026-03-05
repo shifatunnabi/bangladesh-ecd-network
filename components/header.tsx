@@ -28,6 +28,7 @@ const memberLinks = [
 const resourceLinks = [
   { title: "All Resources", href: "/resources" },
   { title: "Research & Reports", href: "/resources/research-reports" },
+  { title: "Awareness Documents", href: "/resources/awareness-documents" },
   { title: "Voices", href: "/resources/voices" },
   { title: "Newsletter", href: "/resources/newsletter" },
   { title: "Policies & Links", href: "/resources/policies" },

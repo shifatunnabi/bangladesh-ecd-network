@@ -656,21 +656,24 @@ export interface ProcessedAbout {
   }>;
 }
 
-// About Page Mission Vision Content Type
-export interface AboutPageMissionVisionSkeleton {
-  contentTypeId: "aboutPageMissionVision";
+// Awareness Document Content Type (matches Contentful structure)
+export interface AwarenessDocumentSkeleton extends EntrySkeletonType {
+  contentTypeId: 'awarenessDocument'
   fields: {
-    mission: EntryFieldTypes.Symbol;
-    vision: EntryFieldTypes.Symbol;
-    goal: EntryFieldTypes.Symbol;
-    objectives: EntryFieldTypes.Array<EntryFieldTypes.Symbol>;
-  };
+    name?: EntryFieldTypes.Symbol
+    thumbnailImage?: EntryFieldTypes.AssetLink
+    pdf?: EntryFieldTypes.AssetLink
+    date?: EntryFieldTypes.Date
+    author?: EntryFieldTypes.Symbol
+  }
 }
 
-export interface ProcessedMissionVision {
-  id: string;
-  mission: string;
-  vision: string;
-  goal: string;
-  objectives: string[];
+export interface ProcessedAwarenessDocument {
+  id: string
+  title: string
+  date: string
+  image: string
+  author: string
+  downloadUrl: string
+  type: 'awareness'
 }
