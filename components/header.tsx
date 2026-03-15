@@ -15,9 +15,9 @@ import { VisitorCounter } from "@/components/visitor-counter";
 
 const aboutLinks = [
   { title: "About Us", href: "/about" },
-  { title: "Committee", href: "/about/committee" },
+  //{ title: "Committee", href: "/about/committee" },
   { title: "Secretariat", href: "/about/secretariat" },
-  { title: "Former Members", href: "/about/former-members" },
+  //{ title: "Former Members", href: "/about/former-members" },
 ];
 
 const memberLinks = [
